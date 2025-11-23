@@ -71,7 +71,7 @@ This document outlines the standards, workflows, and conventions for the
 ### Root
     .
     ├── apps/
-    │   ├── api/        # Nest.js Backend
+    │   ├── api/        # Hono Backend
     │   └── web/        # Next.js Frontend
     ├── packages/
     │   ├── shared/     # Shared utilities, types, Zod schemas
@@ -83,7 +83,7 @@ This document outlines the standards, workflows, and conventions for the
 
 ## 5. Detailed Folder Structure
 
-### **apps/api (Nest.js backend)**
+### **apps/api (Hono backend)**
     /src
       /config         # Config values & env management
       /controllers    # API controllers
