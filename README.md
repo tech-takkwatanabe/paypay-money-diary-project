@@ -34,6 +34,7 @@ PayPay アプリからダウンロードできる取引履歴 CSV をアップ�
 
 ### 前提条件
 - Node.js (v20以上推奨)
+- Bun (Backend Runtime)
 - pnpm
 
 ### インストール & 起動
