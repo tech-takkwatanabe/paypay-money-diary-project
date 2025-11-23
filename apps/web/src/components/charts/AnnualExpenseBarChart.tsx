@@ -1,18 +1,10 @@
 "use client";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Line,
-  ComposedChart,
-} from "recharts";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const data = [
   { name: "1月", 食費: 40000, 日用品: 2400, 交通費: 2400, 趣味: 5000, その他: 2000 },
@@ -29,45 +21,87 @@ const data = [
   { name: "12月", 食費: 50000, 日用品: 10000, 交通費: 5000, 趣味: 20000, その他: 10000 },
 ];
 
-// Calculate totals for average line (mock logic)
-const dataWithTotal = data.map(item => {
-  const total = item.食費 + item.日用品 + item.交通費 + item.趣味 + item.その他;
-  return { ...item, total };
-});
-
 export function AnnualExpenseBarChart() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const options: ApexCharts.ApexOptions = {
+    chart: {
+      type: "bar",
+      stacked: true,
+      fontFamily: "inherit",
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+      },
+    },
+    xaxis: {
+      categories: data.map((item) => item.name),
+    },
+    yaxis: {
+      labels: {
+        formatter: (val: number) => `¥${val.toLocaleString()}`,
+      },
+    },
+    legend: {
+      position: "bottom",
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    tooltip: {
+      y: {
+        formatter: (val: number) => `¥${val.toLocaleString()}`,
+      },
+    },
+    colors: ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#6b7280"],
+  };
+
+  const series = [
+    {
+      name: "食費",
+      data: data.map((item) => item.食費),
+    },
+    {
+      name: "日用品",
+      data: data.map((item) => item.日用品),
+    },
+    {
+      name: "交通費",
+      data: data.map((item) => item.交通費),
+    },
+    {
+      name: "趣味",
+      data: data.map((item) => item.趣味),
+    },
+    {
+      name: "その他",
+      data: data.map((item) => item.その他),
+    },
+  ];
+
   return (
     <Card className="w-full h-full min-h-[400px]">
       <CardHeader>
         <CardTitle>年間支出推移</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={dataWithTotal}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip formatter={(value: number) => `¥${value.toLocaleString()}`} />
-              <Legend />
-              <Bar dataKey="食費" stackId="a" fill="#ef4444" />
-              <Bar dataKey="日用品" stackId="a" fill="#3b82f6" />
-              <Bar dataKey="交通費" stackId="a" fill="#10b981" />
-              <Bar dataKey="趣味" stackId="a" fill="#f59e0b" />
-              <Bar dataKey="その他" stackId="a" fill="#6b7280" />
-              {/* Total Line */}
-              {/* <Line type="monotone" dataKey="total" stroke="#ff7300" /> */}
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+        {mounted ? (
+          <div className="w-full h-[300px]">
+            <Chart options={options} series={series} type="bar" height="100%" />
+          </div>
+        ) : (
+          <div className="w-full h-[300px] flex items-center justify-center">
+            <p className="text-muted-foreground">読み込み中...</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
