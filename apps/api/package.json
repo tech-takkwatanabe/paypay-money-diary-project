@@ -3,9 +3,13 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.7.5",
+    "@paypay-money-diary/shared": "workspace:^",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.10.6",
@@ -13,6 +17,8 @@
     "postgres": "^3.4.7"
   },
   "devDependencies": {
+    "@paypay-money-diary/eslint-config": "workspace:*",
+    "@types/bcryptjs": "^3.0.0",
     "@types/bun": "latest",
     "@types/pg": "^8.15.6",
     "drizzle-kit": "^0.31.7"

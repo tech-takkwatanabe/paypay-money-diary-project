@@ -2,9 +2,10 @@
   "name": "@paypay-money-diary/eslint-config",
   "version": "0.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "index.ts",
   "dependencies": {
-    "eslint": "^8.0.0",
-    "eslint-config-next": "latest"
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0"
   }
 }
