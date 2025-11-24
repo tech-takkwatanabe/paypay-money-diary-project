@@ -9,11 +9,14 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "turbo": "latest",
-    "prettier": "latest"
+    "prettier": "latest",
+    "turbo": "latest"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "zod": "^4.1.13"
   }
 }
