@@ -1,39 +1,132 @@
-# Phase 1 Walkthrough: Frontend Visuals
+# Phase 2 進捗報告: 認証基盤構築
 
-## 概要
-プロジェクトの基盤構築（Monorepo）と、クライアント要望の「月次・年次レポート」の可視化プロトタイプを実装しました。
+## 完了した作業
 
-## 実施内容
+### 1. 共通パッケージ整備 (`packages/shared`)
+- ✅ ValueObject 実装
+  - `Email` VO: メールアドレスのバリデーションとカプセル化
+  - `Password` VO: パスワードのバリデーション (8文字以上)
+- ✅ Zod Schema 定義
+  - `UserSchema`: ユーザーエンティティ
+  - `CreateUserSchema`: ユーザー登録用
+  - `LoginSchema`: ログイン用
+  - `UserResponse`: API レスポンス用 (パスワード除外)
 
-### 1. Monorepo 環境構築
-- **Turborepo** を導入し、`apps/web` (Frontend), `apps/api` (Backend), `packages/*` の構成を作成しました。
-- `pnpm-workspace.yaml` を設定し、ワークスペース管理を有効化しました。
+### 2. インフラ & 開発環境
+- ✅ Docker Compose 設定
+  - PostgreSQL 15 (ポート 5432)
+  - Redis 7 (ポート 6379)
+- ✅ Makefile 作成
+  - `make init`: コンテナビルド & 起動
+  - `make up`: コンテナ起動
+  - `make down`: コンテナ停止
+  - `make clean`: コンテナ削除 & データリセット
+- ✅ HTTPS 設定
+  - `.certificate` ディレクトリの証明書を使用
+  - `https://localhost:8080` で接続可能
 
-### 2. フロントエンド基盤 (apps/web)
-- **Next.js (App Router)** プロジェクトを作成。
-- **Tailwind CSS** と **Shadcn UI** をセットアップし、モダンな UI 基盤を整えました。
-- **Recharts** をインストールし、チャート描画環境を構築しました。
+### 3. バックエンド基盤 (Hono + DDD)
+- ✅ Clean Architecture 構成
+  ```
+  src/
+  ├── domain/          # ドメイン層
+  │   └── repository/  # リポジトリインターフェース
+  ├── usecase/         # ユースケース層
+  │   └── auth/        # 認証ユースケース
+  ├── infrastructure/  # インフラ層
+  │   ├── repository/  # リポジトリ実装
+  │   └── redis/       # Redis クライアント
+  └── interface/       # インターフェース層
+      └── http/        # HTTP ハンドラー
+  ```
 
-### 3. チャート実装
-以下のコンポーネントを実装し、モックデータで表示を確認しました。
+- ✅ Drizzle ORM セットアップ
+  - `users` テーブル作成
+  - マイグレーション設定完了
 
-- **MonthlyExpensePieChart**: カテゴリ別の支出割合を表示する円グラフ。
-- **AnnualExpenseBarChart**: 月ごとのカテゴリ別支出を表示する積み上げ棒グラフ。
+- ✅ 開発環境改善
+  - ESLint 共通化 (`packages/eslint`)
+  - `@typescript-eslint/no-explicit-any: error` 設定
+  - パスエイリアス設定 (`@/*` → `src/*`)
 
-### 4. ダッシュボード画面
-- `/` (ルートページ) にダッシュボードを作成。
-- KPI カード（今月の支出、年間支出など）とチャートを配置。
-- レスポンシブデザインに対応。
+### 4. Signup API 実装 ✅
 
-## 動作確認方法
+**エンドポイント**: `POST /api/auth/signup`
 
-以下のコマンドで開発サーバーを起動し、ブラウザで `http://localhost:3000` にアクセスしてください。
+**実装内容**:
+- ✅ Domain層: `IUserRepository` インターフェース
+- ✅ Infrastructure層: `UserRepository` (Drizzle ORM)
+- ✅ UseCase層: `SignupUseCase`
+  - メールアドレス重複チェック
+  - bcrypt でパスワードハッシュ化
+  - UUID 生成
+- ✅ Interface層: `signupHandler` (Hono + Zod バリデーション)
 
+**リクエスト例**:
 ```bash
-pnpm dev
+curl -k -X POST https://localhost:8080/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123"
+  }'
 ```
 
-## 次のステップ (Phase 2)
-- Hono バックエンド (`apps/api`) の本格実装。
-- PostgreSQL データベースの構築と接続。
-- CSV アップロード機能の実装。
+**レスポンス**:
+```json
+{
+  "id": "uuid-here",
+  "name": "Test User",
+  "email": "test@example.com"
+}
+```
+
+## 次のステップ (Phase 2 残作業)
+
+### 1. JWT ユーティリティ実装
+- トークン生成 (Access Token + Refresh Token)
+- トークン検証
+- 環境変数で秘密鍵管理
+
+### 2. Login API (`POST /api/auth/login`)
+- メールアドレスとパスワードで認証
+- bcrypt でパスワード検証
+- JWT トークン発行
+- Redis にリフレッシュトークン保存
+
+### 3. Refresh API (`POST /api/auth/refresh`)
+- リフレッシュトークン検証
+- 新しいアクセストークン発行
+
+### 4. Logout API (`POST /api/auth/logout`)
+- Redis からリフレッシュトークン削除
+
+### 5. Me API (`GET /api/auth/me`)
+- JWT 認証ミドルウェア実装
+- 認証済みユーザー情報返却
+
+### 6. OpenAPI 定義
+- Swagger ドキュメント作成
+- Orval で API クライアント自動生成
+
+## 技術スタック
+
+### Backend
+- **Runtime**: Bun
+- **Framework**: Hono
+- **Database**: PostgreSQL 15
+- **ORM**: Drizzle
+- **Cache**: Redis 7
+- **Validation**: Zod
+- **Password**: bcryptjs
+- **Architecture**: Clean Architecture (DDD)
+
+### Shared
+- **Validation**: Zod
+- **Value Objects**: Email, Password
+
+### Development
+- **Monorepo**: Turborepo + pnpm
+- **Linting**: ESLint (共通化)
+- **Type Safety**: TypeScript (strict mode)

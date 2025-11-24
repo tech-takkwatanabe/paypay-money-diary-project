@@ -47,32 +47,44 @@
 **目的**: ユーザー認証基盤を構築し、`userId` に紐づいたデータ管理を可能にする。また、DDD を意識したバックエンド構成と共通型定義を整備する。
 
 ### 2.1 共通パッケージ整備 (packages/shared)
-- [ ] ディレクトリ構成の整理 (`src/types`, `src/schema`, `src/vo`)
-- [ ] **ValueObject & Zod Schema 実装**
-    - [ ] `Email` VO & Schema
-    - [ ] `User` Entity & Schema
-    - [ ] `Password` VO (バリデーションルール)
+- [x] ディレクトリ構成の整理 (`src/types`, `src/schema`, `src/vo`)
+- [x] **ValueObject & Zod Schema 実装**
+    - [x] `Email` VO & Schema
+    - [x] `User` Entity & Schema
+    - [x] `Password` VO (バリデーションルール)
+    - [x] `UserResponse` 型 (API レスポンス用)
 
 ### 2.2 インフラ & 開発環境 (Docker)
-- [ ] `docker-compose.yml` 作成 (PostgreSQL, Redis)
-- [ ] `Makefile` 作成 (`make init`, `make up` 等)
-- [ ] 環境変数設定 (`.env`)
+- [x] `docker-compose.yml` 作成 (PostgreSQL, Redis)
+- [x] `Makefile` 作成 (`make init`, `make up` 等)
+- [x] 環境変数設定 (`.env`)
+- [x] HTTPS 設定 (TLS 証明書)
 
 ### 2.3 バックエンド基盤 (apps/api - Hono + DDD)
-- [ ] アーキテクチャ構成 (Clean Architecture)
+- [x] アーキテクチャ構成 (Clean Architecture)
     - `src/domain`, `src/usecase`, `src/interface`, `src/infrastructure`
-- [ ] **Drizzle ORM** セットアップ (PostgreSQL 接続)
-- [ ] **Redis** 接続設定 (リフレッシュトークン用)
-- [ ] マイグレーション設定 & `users` テーブル作成
+- [x] **Drizzle ORM** セットアップ (PostgreSQL 接続)
+- [x] **Redis** 接続設定 (リフレッシュトークン用)
+- [x] マイグレーション設定 & `users` テーブル作成
+- [x] ESLint 共通化 (packages/eslint)
+- [x] パスエイリアス設定 (`@/*`)
 
 ### 2.4 認証 API 実装
 - [ ] **JWT** ユーティリティ実装 (Sign, Verify)
 - [ ] **API エンドポイント実装**
-    - [ ] `POST /api/auth/signup` (登録)
+    - [x] `POST /api/auth/signup` (登録) ✅
     - [ ] `POST /api/auth/login` (ログイン)
+        - bcrypt でパスワード検証
+        - JWT トークン生成 (access + refresh)
+        - Redis にリフレッシュトークン保存
     - [ ] `POST /api/auth/refresh` (トークン更新)
+        - リフレッシュトークン検証
+        - 新しいアクセストークン発行
     - [ ] `POST /api/auth/logout` (ログアウト)
+        - Redis からリフレッシュトークン削除
     - [ ] `GET /api/auth/me` (ユーザー情報取得)
+        - JWT 認証ミドルウェア実装
+        - 認証済みユーザー情報返却
 - [ ] **OpenAPI (Swagger)** 定義 & 自動生成
 
 ---
