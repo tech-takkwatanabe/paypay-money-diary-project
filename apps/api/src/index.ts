@@ -13,7 +13,13 @@ const api = app.basePath('/api')
 
 api.post('/auth/signup', zValidator('json', CreateUserSchema), signupHandler)
 
+const port = process.env.PORT || 8080;
+
 export default {
-  port: process.env.PORT || 8080,
+  port,
   fetch: app.fetch,
+  tls: {
+    cert: Bun.file('../../.certificate/localhost-cert.pem'),
+    key: Bun.file('../../.certificate/localhost-key.pem'),
+  },
 }
