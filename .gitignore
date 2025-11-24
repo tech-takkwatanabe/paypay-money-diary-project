@@ -27,3 +27,6 @@ dist-ssr
 .certificate/*
 
 .csv/*
+
+.env
+.env.local
