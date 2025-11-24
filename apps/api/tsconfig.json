@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "bundler",
-    "target": "esnext"
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
