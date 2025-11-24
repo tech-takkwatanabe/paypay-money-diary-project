@@ -19,7 +19,7 @@ PayPay アプリからダウンロードできる取引履歴 CSV をアップ�
 - **Framework**: Next.js (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS, Shadcn UI
-- **Charts**: Recharts (予定)
+- **Charts**: ApexCharts
 
 ### Backend
 - **Framework**: Hono
