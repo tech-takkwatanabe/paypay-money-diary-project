@@ -8,4 +8,5 @@
         - [x] マイグレーション設定 & `users` テーブル作成
         - [x] Redis 接続設定
         - [x] アーキテクチャ構成 (Clean Architecture)
-    - [ ] 2.4 認証 API 実装
+    - [x] 2.4 認証 API 実装
+        - [x] POST /api/auth/signup (登録)

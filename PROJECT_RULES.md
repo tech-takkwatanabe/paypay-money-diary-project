@@ -63,6 +63,10 @@ This document outlines the standards, workflows, and conventions for the
 - Tailwind CSS のユーティリティクラスは 必ず JSX の className 内に記述する（IntelliSense が効かなくなる書き方は禁止）
     - 条件分岐の結果（condition ? "text-red-500" : "text-blue-500"）も className 内で完結させる
     - clsx / cva / cn などは使用禁止
+- **`any` 型の使用禁止**
+    - TypeScript で `any` 型を使用しないこと
+    - エラーハンドリングでは型注釈を省略し、適切な型ガード (`instanceof Error` など) を実装する
+    - ESLint で `@typescript-eslint/no-explicit-any: error` を設定する
 
 ------------------------------------------------------------------------
 

@@ -27,3 +27,12 @@ export const LoginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof LoginSchema>;
+
+// Response type for API (without password)
+export const UserResponseSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+});
+
+export type UserResponse = z.infer<typeof UserResponseSchema>;
