@@ -38,6 +38,23 @@ export class UserRepository implements IUserRepository {
     };
   }
 
+  async findById(id: string): Promise<User | null> {
+    const result = await db.select().from(users).where(eq(users.uuid, id)).limit(1);
+    
+    if (result.length === 0) {
+      return null;
+    }
+
+    const user = result[0];
+    
+    return {
+      id: user.uuid,
+      name: user.name,
+      email: Email.create(user.email),
+      password: Password.create(user.passwordHash),
+    };
+  }
+
   async create(input: CreateUserInput & { passwordHash: string; uuid: string }): Promise<User> {
     const result = await db.insert(users).values({
       uuid: input.uuid,
