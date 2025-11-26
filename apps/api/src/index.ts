@@ -3,6 +3,8 @@ import { zValidator } from '@hono/zod-validator'
 import { CreateUserSchema, LoginSchema } from '@paypay-money-diary/shared'
 import { signupHandler } from '@/interface/http/auth/signup'
 import { loginHandler } from '@/interface/http/auth/login'
+import { meHandler } from '@/interface/http/auth/me'
+import { authMiddleware } from '@/interface/http/middleware/auth'
 
 const app = new Hono()
 
@@ -14,6 +16,7 @@ const api = app.basePath('/api')
 
 api.post('/auth/signup', zValidator('json', CreateUserSchema), signupHandler)
 api.post('/auth/login', zValidator('json', LoginSchema), loginHandler)
+api.get('/auth/me', authMiddleware, meHandler)
 
 const port = process.env.PORT || 8080;
 
