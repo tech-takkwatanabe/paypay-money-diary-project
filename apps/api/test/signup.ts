@@ -2,7 +2,9 @@ import { serve } from 'bun';
 
 // Test the signup endpoint
 const testSignup = async () => {
-  const response = await fetch('http://localhost:3000/api/auth/signup', {
+  const apiUrl = process.env.API_URL || 'https://localhost:8080';
+  
+  const response = await fetch(`${apiUrl}/api/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
