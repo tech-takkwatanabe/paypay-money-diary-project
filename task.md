@@ -8,12 +8,16 @@
         - [x] マイグレーション設定 & `users` テーブル作成
         - [x] Redis 接続設定
         - [x] アーキテクチャ構成 (Clean Architecture)
-    - [/] 2.4 認証 API 実装
+    - [x] 2.4 認証 API 実装
         - [x] POST /api/auth/signup (登録)
-        - [ ] JWT ユーティリティ実装
-        - [ ] POST /api/auth/login (ログイン)
-        - [ ] POST /api/auth/refresh (トークン更新)
-        - [ ] POST /api/auth/logout (ログアウト)
-        - [ ] GET /api/auth/me (ユーザー情報取得)
-        - [ ] JWT 認証ミドルウェア
+        - [x] JWT ユーティリティ実装
+        - [x] POST /api/auth/login (ログイン)
+        - [x] POST /api/auth/refresh (トークン更新)
+        - [x] POST /api/auth/logout (ログアウト)
+        - [x] GET /api/auth/me (ユーザー情報取得)
+        - [x] JWT 認証ミドルウェア
         - [ ] OpenAPI 定義
+    - [x] 2.5 単体テスト再構築 (Bun Test)
+        - [x] テスト環境整備 (bun:test)
+        - [x] UseCase テスト実装 (Mock)
+        - [x] Handler テスト実装 (Mock)

@@ -77,15 +77,34 @@
         - bcrypt でパスワード検証
         - JWT トークン生成 (access + refresh)
         - Redis にリフレッシュトークン保存
-    - [ ] `POST /api/auth/refresh` (トークン更新)
-        - リフレッシュトークン検証
-        - 新しいアクセストークン発行
-    - [ ] `POST /api/auth/logout` (ログアウト)
-        - Redis からリフレッシュトークン削除
-    - [ ] `GET /api/auth/me` (ユーザー情報取得)
-        - JWT 認証ミドルウェア実装
-        - 認証済みユーザー情報返却
+    - [x] `POST /api/auth/refresh` (トークン更新)
+        - [x] リフレッシュトークン検証
+        - [x] 新しいアクセストークン発行
+        - [x] リフレッシュトークンのローテーション (セキュリティ対策)
+    - [x] `POST /api/auth/logout` (ログアウト)
+        - [x] Redis からリフレッシュトークン削除
+    - [x] `GET /api/auth/me` (ユーザー情報取得)
+        - [x] JWT 認証ミドルウェア実装
+        - [x] 認証済みユーザー情報返却
 - [ ] **OpenAPI (Swagger)** 定義 & 自動生成
+
+### 2.5 単体テスト再構築 (Bun Test)
+- [x] **テスト環境整備**
+    - `bun:test` のセットアップ
+    - Mock ライブラリの選定 (Bun 標準 or その他)
+- [x] **UseCase テスト実装**
+    - `SignupUseCase` (Mock Repository)
+    - `LoginUseCase` (Mock Repository, Mock JWT)
+    - `GetMeUseCase` (Mock Repository)
+    - `RefreshUseCase` (Mock Repository, Mock JWT)
+    - `LogoutUseCase` (Mock Repository)
+- [x] **Handler テスト実装**
+    - `signupHandler` (Mock UseCase)
+    - `loginHandler` (Mock UseCase)
+    - `meHandler` (Mock UseCase)
+    - `refreshHandler` (Mock UseCase)
+    - `logoutHandler` (Mock UseCase)
+
 
 ---
 
