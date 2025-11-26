@@ -1,8 +1,8 @@
 import { compare } from 'bcryptjs';
 import { IUserRepository } from '@/domain/repository/userRepository';
+import { ITokenRepository } from '@/domain/repository/tokenRepository';
 import { LoginInput } from '@paypay-money-diary/shared';
 import { generateAccessToken, generateRefreshToken } from '@/infrastructure/auth/jwt';
-import { redis } from '@/infrastructure/redis/client';
 
 interface LoginResponse {
   accessToken: string;
@@ -15,7 +15,10 @@ interface LoginResponse {
 }
 
 export class LoginUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private tokenRepository: ITokenRepository
+  ) {}
 
   async execute(input: LoginInput): Promise<LoginResponse> {
     // 1. Find user by email
@@ -39,9 +42,8 @@ export class LoginUseCase {
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
-    // 4. Store refresh token in Redis (expires in 7 days)
-    const refreshTokenKey = `refresh_token:${user.id}`;
-    await redis.setex(refreshTokenKey, 7 * 24 * 60 * 60, refreshToken);
+    // 4. Store refresh token
+    await this.tokenRepository.saveRefreshToken(user.id!, refreshToken);
 
     // 5. Return tokens and user info
     return {

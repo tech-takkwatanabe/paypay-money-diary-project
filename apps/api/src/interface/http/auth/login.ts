@@ -1,12 +1,14 @@
 import { Context } from 'hono';
 import { LoginUseCase } from '@/usecase/auth/loginUseCase';
 import { UserRepository } from '@/infrastructure/repository/userRepository';
+import { RedisTokenRepository } from '@/infrastructure/repository/tokenRepository';
 import { LoginInput } from '@paypay-money-diary/shared';
 
 export const loginHandler = async (c: Context) => {
   // Dependency Injection
   const userRepository = new UserRepository();
-  const loginUseCase = new LoginUseCase(userRepository);
+  const tokenRepository = new RedisTokenRepository();
+  const loginUseCase = new LoginUseCase(userRepository, tokenRepository);
 
   // Input is already validated by zValidator middleware
   const input = c.req.valid('json' as never) as LoginInput;
