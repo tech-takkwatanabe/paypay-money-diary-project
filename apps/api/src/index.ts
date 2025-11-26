@@ -4,6 +4,8 @@ import { CreateUserSchema, LoginSchema } from '@paypay-money-diary/shared'
 import { signupHandler } from '@/interface/http/auth/signup'
 import { loginHandler } from '@/interface/http/auth/login'
 import { meHandler } from '@/interface/http/auth/me'
+import { refreshHandler } from '@/interface/http/auth/refresh'
+import { logoutHandler } from '@/interface/http/auth/logout'
 import { authMiddleware } from '@/interface/http/middleware/auth'
 
 const app = new Hono()
@@ -16,6 +18,8 @@ const api = app.basePath('/api')
 
 api.post('/auth/signup', zValidator('json', CreateUserSchema), signupHandler)
 api.post('/auth/login', zValidator('json', LoginSchema), loginHandler)
+api.post('/auth/refresh', refreshHandler)
+api.post('/auth/logout', authMiddleware, logoutHandler)
 api.get('/auth/me', authMiddleware, meHandler)
 
 const port = process.env.PORT || 8080;
