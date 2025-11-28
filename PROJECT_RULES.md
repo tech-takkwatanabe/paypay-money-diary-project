@@ -257,5 +257,4 @@ export type EmailType = z.infer<typeof EmailSchema>; // これは Email クラ�
 -   Use Zod schemas for validating mock data
 -   Vitest for unit testing & integration testing
 -   Testing Library for React components
--   Backend tests under `apps/api/src/test`
 -   Frontend tests under `apps/web/src/__tests__`
