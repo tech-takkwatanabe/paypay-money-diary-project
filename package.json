@@ -1,22 +1,22 @@
 {
-  "name": "paypay-money-diary-monorepo",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "prettier": "latest",
-    "turbo": "latest"
-  },
-  "packageManager": "pnpm@9.0.0",
-  "engines": {
-    "node": ">=20"
-  },
-  "dependencies": {
-    "zod": "^4.1.13"
-  }
+	"name": "paypay-money-diary-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+	},
+	"devDependencies": {
+		"prettier": "3.7.2",
+		"turbo": "2.6.1"
+	},
+	"packageManager": "pnpm@9.0.0",
+	"engines": {
+		"node": ">=23"
+	},
+	"dependencies": {
+		"zod": "4.1.13"
+	}
 }
