@@ -1,30 +1,29 @@
 {
-  "name": "api",
-  "scripts": {
-    "dev": "bun run --hot src/index.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "lint": "eslint .",
-    "test": "bun test",
-    "test:watch": "bun test --watch"
-  },
-  "dependencies": {
-    "@hono/zod-validator": "^0.7.5",
-    "@paypay-money-diary/shared": "workspace:^",
-    "bcryptjs": "^3.0.3",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.44.7",
-    "hono": "^4.10.6",
-    "ioredis": "^5.8.2",
-    "jsonwebtoken": "^9.0.2",
-    "postgres": "^3.4.7"
-  },
-  "devDependencies": {
-    "@paypay-money-diary/eslint-config": "workspace:*",
-    "@types/bcryptjs": "^3.0.0",
-    "@types/bun": "latest",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/pg": "^8.15.6",
-    "drizzle-kit": "^0.31.7"
-  }
+	"name": "api",
+	"scripts": {
+		"dev": "bun run --hot src/index.ts",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"lint": "eslint .",
+		"test": "bun test",
+		"test:watch": "bun test --watch"
+	},
+	"dependencies": {
+		"@hono/zod-validator": "0.7.5",
+		"@paypay-money-diary/shared": "workspace:^",
+		"bcryptjs": "3.0.3",
+		"dotenv": "17.2.3",
+		"drizzle-orm": "0.44.7",
+		"hono": "4.10.7",
+		"ioredis": "5.8.2",
+		"jsonwebtoken": "9.0.2",
+		"postgres": "3.4.7"
+	},
+	"devDependencies": {
+		"@paypay-money-diary/eslint-config": "workspace:*",
+		"@types/bun": "1.3.3",
+		"@types/jsonwebtoken": "9.0.10",
+		"@types/pg": "8.15.6",
+		"drizzle-kit": "0.31.7"
+	}
 }
