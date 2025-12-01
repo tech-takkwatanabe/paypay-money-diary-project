@@ -3,29 +3,33 @@ import { ITokenRepository } from '@/domain/repository/tokenRepository';
 import { LogoutUseCase } from './logoutUseCase';
 
 // Mock ITokenRepository
-const mockTokenRepository = {
-  saveRefreshToken: mock(),
-  findRefreshToken: mock(),
-  deleteRefreshToken: mock(),
-} as unknown as ITokenRepository;
+const mockSaveRefreshToken = mock();
+const mockFindRefreshToken = mock();
+const mockDeleteRefreshToken = mock();
+
+const mockTokenRepository: ITokenRepository = {
+	saveRefreshToken: mockSaveRefreshToken as ITokenRepository['saveRefreshToken'],
+	findRefreshToken: mockFindRefreshToken as ITokenRepository['findRefreshToken'],
+	deleteRefreshToken: mockDeleteRefreshToken as ITokenRepository['deleteRefreshToken'],
+};
 
 describe('LogoutUseCase', () => {
-  let logoutUseCase: LogoutUseCase;
+	let logoutUseCase: LogoutUseCase;
 
-  beforeEach(() => {
-    logoutUseCase = new LogoutUseCase(mockTokenRepository);
-    (mockTokenRepository.deleteRefreshToken as any).mockReset();
-  });
+	beforeEach(() => {
+		logoutUseCase = new LogoutUseCase(mockTokenRepository);
+		mockDeleteRefreshToken.mockReset();
+	});
 
-  it('should delete refresh token successfully', async () => {
-    // Arrange
-    const userId = 'uuid-123';
-    (mockTokenRepository.deleteRefreshToken as any).mockResolvedValue(undefined);
+	it('should delete refresh token successfully', async () => {
+		// Arrange
+		const userId = 'uuid-123';
+		mockDeleteRefreshToken.mockResolvedValue(undefined);
 
-    // Act
-    await logoutUseCase.execute(userId);
+		// Act
+		await logoutUseCase.execute(userId);
 
-    // Assert
-    expect(mockTokenRepository.deleteRefreshToken).toHaveBeenCalledWith(userId);
-  });
+		// Assert
+		expect(mockTokenRepository.deleteRefreshToken).toHaveBeenCalledWith(userId);
+	});
 });
