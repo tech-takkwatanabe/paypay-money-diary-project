@@ -1,6 +1,4 @@
-# PayPay Money Diary
-
-** 🚧 Under Construction 🚧 **
+# PayPay Money Diary ** 🚧 Under Construction 🚧 **
 
 PayPay の取引履歴 CSV を活用し、支出を可視化して家計管理をサポートするアプリケーションです。
 
