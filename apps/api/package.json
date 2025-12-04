@@ -16,7 +16,7 @@
 		"drizzle-orm": "0.44.7",
 		"hono": "4.10.7",
 		"ioredis": "5.8.2",
-		"jsonwebtoken": "9.0.2",
+		"jsonwebtoken": "9.0.3",
 		"postgres": "3.4.7"
 	},
 	"devDependencies": {
