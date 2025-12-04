@@ -6,13 +6,27 @@
 		"build": "turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"clean:modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+		"clean:install": "pnpm run clean:modules && pnpm install",
+		"reinstall": "pnpm run clean:install"
 	},
 	"devDependencies": {
 		"prettier": "3.7.2",
 		"turbo": "2.6.1"
 	},
-	"packageManager": "pnpm@9.0.0",
+	"packageManager": "pnpm@10.24.0",
+	"pnpm": {
+		"overrides": {
+			"@esbuild-kit/core-utils": "npm:tsx@^4.19.2",
+			"@esbuild-kit/esm-loader": "npm:tsx@^4.19.2"
+		},
+		"ignoredBuiltDependencies": [
+			"esbuild",
+			"sharp",
+			"unrs-resolver"
+		]
+	},
 	"engines": {
 		"node": ">=23"
 	},
