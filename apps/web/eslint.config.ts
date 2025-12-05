@@ -1,22 +1,36 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
-import sharedConfig from '@paypay-money-diary/eslint-config';
+import type { Linter } from 'eslint';
 
-const eslintConfig = defineConfig([
-	// Shared config from packages/eslint
-	...sharedConfig,
-	// Next.js specific configs
+export default [
+	// Next.js specific configs (includes TypeScript support)
 	...nextVitals,
 	...nextTs,
+	// Custom rules and overrides
+	{
+		files: ['**/*.ts', '**/*.tsx'],
+		rules: {
+			// Shared rules from @paypay-money-diary/eslint-config
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-explicit-any': 'error',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_',
+				},
+			],
+		},
+	},
 	// Override default ignores of eslint-config-next.
-	globalIgnores([
-		// Default ignores of eslint-config-next:
-		'.next/**',
-		'out/**',
-		'build/**',
-		'next-env.d.ts',
-	]),
-]);
-
-export default eslintConfig;
+	{
+		ignores: [
+			// Default ignores of eslint-config-next:
+			'.next/**',
+			'out/**',
+			'build/**',
+			'next-env.d.ts',
+		],
+	},
+] as Linter.Config[];
