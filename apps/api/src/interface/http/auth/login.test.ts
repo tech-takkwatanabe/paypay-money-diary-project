@@ -1,55 +1,55 @@
-import { describe, it, expect, beforeEach, mock } from 'bun:test';
-import { Hono } from 'hono';
-import { zValidator } from '@hono/zod-validator';
-import { LoginSchema } from '@paypay-money-diary/shared';
-import { loginHandler } from './login';
+import { describe, it, expect, beforeEach, mock } from "bun:test";
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { LoginSchema } from "@paypay-money-diary/shared";
+import { loginHandler } from "./login";
 
 // Mock dependencies
 const mockLoginExecute = mock();
 
-mock.module('@/usecase/auth/loginUseCase', () => ({
+mock.module("@/usecase/auth/loginUseCase", () => ({
   LoginUseCase: class {
     execute = mockLoginExecute;
   },
 }));
 
-mock.module('@/infrastructure/repository/userRepository', () => ({
+mock.module("@/infrastructure/repository/userRepository", () => ({
   UserRepository: class {},
 }));
 
-mock.module('@/infrastructure/repository/tokenRepository', () => ({
+mock.module("@/infrastructure/repository/tokenRepository", () => ({
   RedisTokenRepository: class {},
 }));
 
-describe('loginHandler', () => {
+describe("loginHandler", () => {
   let app: Hono;
 
   beforeEach(() => {
     app = new Hono();
-    app.post('/login', zValidator('json', LoginSchema), loginHandler);
+    app.post("/login", zValidator("json", LoginSchema), loginHandler);
     mockLoginExecute.mockReset();
   });
 
-  it('should return 200 with tokens and user data on successful login', async () => {
+  it("should return 200 with tokens and user data on successful login", async () => {
     // Arrange
     const mockResponse = {
-      accessToken: 'access_token_123',
-      refreshToken: 'refresh_token_123',
+      accessToken: "access_token_123",
+      refreshToken: "refresh_token_123",
       user: {
-        id: 'uuid-123',
-        name: 'Test User',
-        email: 'test@example.com',
+        id: "uuid-123",
+        name: "Test User",
+        email: "test@example.com",
       },
     };
     mockLoginExecute.mockResolvedValue(mockResponse);
 
     // Act
-    const res = await app.request('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await app.request("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: "test@example.com",
+        password: "password123",
       }),
     });
 
@@ -59,14 +59,14 @@ describe('loginHandler', () => {
     expect(data).toEqual(mockResponse);
   });
 
-  it('should return 400 on validation error', async () => {
+  it("should return 400 on validation error", async () => {
     // Act
-    const res = await app.request('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await app.request("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: 'invalid-email',
-        password: 'short',
+        email: "invalid-email",
+        password: "short",
       }),
     });
 
@@ -74,23 +74,23 @@ describe('loginHandler', () => {
     expect(res.status).toBe(400);
   });
 
-  it('should return 401 on invalid credentials', async () => {
+  it("should return 401 on invalid credentials", async () => {
     // Arrange
-    mockLoginExecute.mockRejectedValue(new Error('Invalid credentials'));
+    mockLoginExecute.mockRejectedValue(new Error("Invalid credentials"));
 
     // Act
-    const res = await app.request('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await app.request("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'wrongpassword',
+        email: "test@example.com",
+        password: "wrongpassword",
       }),
     });
 
     // Assert
     expect(res.status).toBe(401);
     const data = await res.json();
-    expect(data).toHaveProperty('error');
+    expect(data).toHaveProperty("error");
   });
 });
