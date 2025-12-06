@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 interface TokenPayload {
   userId: string;
@@ -15,16 +15,16 @@ interface JWTConfig {
 const getConfig = (): JWTConfig => {
   const accessSecret = process.env.JWT_ACCESS_SECRET;
   const refreshSecret = process.env.JWT_REFRESH_SECRET;
-  
+
   if (!accessSecret || !refreshSecret) {
-    throw new Error('JWT secrets are not configured');
+    throw new Error("JWT secrets are not configured");
   }
 
   return {
     accessSecret,
     refreshSecret,
-    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
-    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "15m",
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
   };
 };
 
