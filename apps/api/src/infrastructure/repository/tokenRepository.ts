@@ -1,5 +1,5 @@
-import { redis } from '@/infrastructure/redis/client';
-import { ITokenRepository } from '@/domain/repository/tokenRepository';
+import { redis } from "@/infrastructure/redis/client";
+import { ITokenRepository } from "@/domain/repository/tokenRepository";
 
 export class RedisTokenRepository implements ITokenRepository {
   private readonly EXPIRATION_SECONDS = 7 * 24 * 60 * 60; // 7 days
