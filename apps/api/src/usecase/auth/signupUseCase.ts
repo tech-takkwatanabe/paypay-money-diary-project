@@ -1,7 +1,7 @@
-import { hash } from 'bcryptjs';
-import { randomUUID } from 'crypto';
-import { IUserRepository } from '@/domain/repository/userRepository';
-import { CreateUserInput, UserResponse } from '@paypay-money-diary/shared';
+import { hash } from "bcryptjs";
+import { randomUUID } from "crypto";
+import { IUserRepository } from "@/domain/repository/userRepository";
+import { CreateUserInput, UserResponse } from "@paypay-money-diary/shared";
 
 export class SignupUseCase {
   constructor(private userRepository: IUserRepository) {}
@@ -10,7 +10,7 @@ export class SignupUseCase {
     // 1. Check if user already exists
     const existingUser = await this.userRepository.findByEmail(input.email);
     if (existingUser) {
-      throw new Error('User already exists');
+      throw new Error("User already exists");
     }
 
     // 2. Hash password

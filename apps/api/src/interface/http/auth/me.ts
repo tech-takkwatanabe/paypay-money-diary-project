@@ -1,12 +1,12 @@
-import { Context } from 'hono';
-import { GetMeUseCase } from '@/usecase/auth/getMeUseCase';
-import { UserRepository } from '@/infrastructure/repository/userRepository';
+import { Context } from "hono";
+import { GetMeUseCase } from "@/usecase/auth/getMeUseCase";
+import { UserRepository } from "@/infrastructure/repository/userRepository";
 
 export const meHandler = async (c: Context) => {
-  const userPayload = c.get('user');
-  
+  const userPayload = c.get("user");
+
   if (!userPayload || !userPayload.userId) {
-    return c.json({ error: 'Unauthorized' }, 401);
+    return c.json({ error: "Unauthorized" }, 401);
   }
 
   const userRepository = new UserRepository();
@@ -17,6 +17,6 @@ export const meHandler = async (c: Context) => {
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: 'Internal Server Error' }, 500);
+    return c.json({ error: "Internal Server Error" }, 500);
   }
 };

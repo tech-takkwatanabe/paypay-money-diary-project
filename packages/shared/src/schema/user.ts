@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { EmailSchema } from '../vo/email';
-import { PasswordSchema } from '../vo/password';
+import { z } from "zod";
+import { EmailSchema } from "../vo/email";
+import { PasswordSchema } from "../vo/password";
 
 export const UserSchema = z.object({
   id: z.string().uuid().optional(),
@@ -15,7 +15,9 @@ export type User = z.infer<typeof UserSchema>;
 export const CreateUserSchema = z.object({
   name: z.string().min(1, { message: "名前は必須です。" }),
   email: z.string().email({ message: "無効なメールアドレス形式です。" }), // Raw string for input
-  password: z.string().min(8, { message: "パスワードは8文字以上である必要があります。" }), // Raw string for input
+  password: z
+    .string()
+    .min(8, { message: "パスワードは8文字以上である必要があります。" }), // Raw string for input
 });
 
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;
