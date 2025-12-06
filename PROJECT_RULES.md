@@ -3,76 +3,77 @@
 This document outlines the standards, workflows, and conventions for the
 **PayPay Money Diary Project**.
 
-------------------------------------------------------------------------
+---
 
 ## 1. Project Overview
 
--   **Goal**: Visualize PayPay transaction history and manage expenses.
--   **Scope**: Full-stack monorepo (Frontend + Backend + Shared
-    packages).
+- **Goal**: Visualize PayPay transaction history and manage expenses.
+- **Scope**: Full-stack monorepo (Frontend + Backend + Shared
+  packages).
 
-------------------------------------------------------------------------
+---
 
 ## 2. Technology Stack
 
 ### Frontend
 
--   **Framework**: Next.js (App Router)
--   **Styling**: Tailwind CSS, Shadcn UI
--   **State Management**: jotai
--   **Generate API from openapi.yml**: Orval
--   **Language**: TypeScript
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS, Shadcn UI
+- **State Management**: jotai
+- **Generate API from openapi.yml**: Orval
+- **Language**: TypeScript
 
 ### Backend
 
--   **Framework**: Hono
--   **ORM**: Drizzle
--   **Database**: PostgreSQL
+- **Framework**: Hono
+- **ORM**: Drizzle
+- **Database**: PostgreSQL
 
 ### Monorepo & Tooling
 
--   **Package Manager**: pnpm
--   **Monorepo**: Turborepo
--   **Testing**: Vitest / Testing Library
--   **Validation/ValueObject**: Zod
+- **Package Manager**: pnpm
+- **Monorepo**: Turborepo
+- **Testing**: Vitest / Testing Library
+- **Validation/ValueObject**: Zod
 
-------------------------------------------------------------------------
+---
 
 ## 3. Coding Standards
 
 ### Naming Conventions
 
--   **Variables / Functions**: `camelCase`
--   **React Components**: `PascalCase`
--   **Files**:
-    -   Components → PascalCase (`TransactionList.tsx`)
-    -   Hooks / Utils → camelCase (`useUser.ts`, `formatDate.ts`)
-    -   Zod schemas → camelCase + `.schema.ts` (`transaction.schema.ts`)
--   **Constants**: `UPPER_SNAKE_CASE`
--   **Database tables**: snake_case
+- **Variables / Functions**: `camelCase`
+- **React Components**: `PascalCase`
+- **Files**:
+  - Components → PascalCase (`TransactionList.tsx`)
+  - Hooks / Utils → camelCase (`useUser.ts`, `formatDate.ts`)
+  - Zod schemas → camelCase + `.schema.ts` (`transaction.schema.ts`)
+- **Constants**: `UPPER_SNAKE_CASE`
+- **Database tables**: snake_case
 
 ### Code Style
 
--   Prefer functional components with Hooks
--   Keep components small & focused (SRP)
--   Avoid magic numbers; define constants
--   Use **Zod** for:
-    -   API response validation
-    -   form schema validation
-    -   shared domain model validation
+- Prefer functional components with Hooks
+- Keep components small & focused (SRP)
+- Avoid magic numbers; define constants
+- Use **Zod** for:
+  - API response validation
+  - form schema validation
+  - shared domain model validation
 - Tailwind CSS のユーティリティクラスは 必ず JSX の className 内に記述する（IntelliSense が効かなくなる書き方は禁止）
-    - 条件分岐の結果（condition ? "text-red-500" : "text-blue-500"）も className 内で完結させる
-    - clsx / cva / cn などは使用禁止
+  - 条件分岐の結果（condition ? "text-red-500" : "text-blue-500"）も className 内で完結させる
+  - clsx / cva / cn などは使用禁止
 - **`any` 型の使用禁止**
-    - TypeScript で `any` 型を使用しないこと
-    - エラーハンドリングでは型注釈を省略し、適切な型ガード (`instanceof Error` など) を実装する
-    - ESLint で `@typescript-eslint/no-explicit-any: error` を設定する
+  - TypeScript で `any` 型を使用しないこと
+  - エラーハンドリングでは型注釈を省略し、適切な型ガード (`instanceof Error` など) を実装する
+  - ESLint で `@typescript-eslint/no-explicit-any: error` を設定する
 
-------------------------------------------------------------------------
+---
 
 ## 4. Directory Structure (Monorepo)
 
 ### Root
+
     .
     ├── apps/
     │   ├── api/        # Hono Backend
@@ -83,11 +84,12 @@ This document outlines the standards, workflows, and conventions for the
     │   └── eslint/     # Shared ESLint config
     └── turbo.json
 
-------------------------------------------------------------------------
+---
 
 ## 5. Detailed Folder Structure
 
 ### **apps/api (Hono backend)**
+
     /src
       /config         # Config values & env management
       /controllers    # API controllers
@@ -104,6 +106,7 @@ This document outlines the standards, workflows, and conventions for the
       /docker         # Docker for DB
 
 ### **apps/web (Next.js frontend)**
+
     /src
       /api          # Generated API client (orval)
       /components   # Reusable UI components
@@ -114,6 +117,7 @@ This document outlines the standards, workflows, and conventions for the
       /app          # App Router
 
 ### **packages/shared**
+
     /shared
       /types        # Shared TypeScript types, Zod schemas
         ├── src/
@@ -124,7 +128,7 @@ This document outlines the standards, workflows, and conventions for the
         └── package.json
       /utils        # Utility functions usable across apps
 
-------------------------------------------------------------------------
+---
 
 ## 6. Component Structure Rules
 
@@ -132,27 +136,27 @@ This document outlines the standards, workflows, and conventions for the
 
 ### General Rules
 
--   Tailwind for layout & spacing
--   Shadcn UI for forms, buttons, inputs, dialogs
--   Prefer server components unless client-side state is needed
--   Use Zod for form schema validation
+- Tailwind for layout & spacing
+- Shadcn UI for forms, buttons, inputs, dialogs
+- Prefer server components unless client-side state is needed
+- Use Zod for form schema validation
 
-------------------------------------------------------------------------
+---
 
 ## 7. Zod Usage Rules
 
 ### Shared schemas
 
--   Place reusable validation logic in `packages/shared/schemas`
--   Use Zod for:
-    -   API response validation
-    -   request DTO validation
-    -   form validation
-    -   domain model validation
+- Place reusable validation logic in `packages/shared/schemas`
+- Use Zod for:
+  - API response validation
+  - request DTO validation
+  - form validation
+  - domain model validation
 
 ### Example
 
-``` ts
+```ts
 export const TransactionSchema = z.object({
   id: z.string(),
   amount: z.number(),
@@ -161,6 +165,7 @@ export const TransactionSchema = z.object({
 ```
 
 #### packages/types/src/user.ts
+
 ```
 import { z } from 'zod';
 import { EmailSchema, EmailType } from './vo/email'; // Email関連をインポート
@@ -179,6 +184,7 @@ export type CreateUser = z.infer<typeof CreateUserSchema>;
 ```
 
 #### packages/types/src/vo/email.ts
+
 ```
 import { z } from 'zod';
 
@@ -219,6 +225,7 @@ export type EmailType = z.infer<typeof EmailSchema>; // これは Email クラ�
 ```
 
 #### packages/types/package.json
+
 ```
 {
   "name": "@my-monorepo/types",
@@ -236,25 +243,25 @@ export type EmailType = z.infer<typeof EmailSchema>; // これは Email クラ�
 }
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 8. Documentation Rules
 
--   Update `README.md` for:
-    -   setup
-    -   environment variables
-    -   how to run apps
--   Keep `PROJECT_RULES.md` as the **source of truth** for:
-    -   architecture
-    -   coding conventions
-    -   directory structure
--   Record decisions in `/docs/decision-log` (optional ADRs)
+- Update `README.md` for:
+  - setup
+  - environment variables
+  - how to run apps
+- Keep `PROJECT_RULES.md` as the **source of truth** for:
+  - architecture
+  - coding conventions
+  - directory structure
+- Record decisions in `/docs/decision-log` (optional ADRs)
 
-------------------------------------------------------------------------
+---
 
 ## 9. Testing Rules
 
--   Use Zod schemas for validating mock data
--   Vitest for unit testing & integration testing
--   Testing Library for React components
--   Frontend tests under `apps/web/src/__tests__`
+- Use Zod schemas for validating mock data
+- Vitest for unit testing & integration testing
+- Testing Library for React components
+- Frontend tests under `apps/web/src/__tests__`
