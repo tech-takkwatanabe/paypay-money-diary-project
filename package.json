@@ -6,10 +6,8 @@
 		"build": "turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"clean:modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
-		"clean:install": "pnpm run clean:modules && pnpm install",
-		"reinstall": "pnpm run clean:install"
+		"fmt": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
 	},
 	"devDependencies": {
 		"prettier": "3.7.2",
