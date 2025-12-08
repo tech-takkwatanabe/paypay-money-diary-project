@@ -8,6 +8,20 @@
       "when": 1763954525983,
       "tag": "0000_condemned_mephistopheles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765203016766,
+      "tag": "0001_long_wilson_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765203071368,
+      "tag": "0002_flippant_wonder_man",
+      "breakpoints": true
     }
   ]
 }
