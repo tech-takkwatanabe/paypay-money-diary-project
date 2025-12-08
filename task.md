@@ -1,6 +1,6 @@
 # Tasks
 
-- [/] **Phase 2: 認証機能 & 共通スキーマ整備**
+- [x] **Phase 2: 認証機能 & 共通スキーマ整備**
   - [x] 2.1 共通パッケージ整備 (packages/shared)
   - [x] 2.2 インフラ & 開発環境 (Docker)
   - [x] 2.3 バックエンド基盤 (apps/api - Hono + DDD)
@@ -21,3 +21,23 @@
     - [x] テスト環境整備 (bun:test)
     - [x] UseCase テスト実装 (Mock)
     - [x] Handler テスト実装 (Mock)
+
+- [/] **Phase 3: 家計簿機能実装**
+  - [x] 3.1 取引データ DB 設計
+    - [x] テーブル設計 (csv_uploads, categories, category_rules, expenses)
+    - [x] マイグレーション作成 & 実行
+    - [x] インデックス追加
+    - [x] デフォルトカテゴリのシード
+  - [ ] 3.2 CSV 解析ロジック実装
+    - [ ] CSV パーサー実装
+    - [ ] カテゴリ自動分類ロジック
+    - [ ] 重複排除処理
+  - [ ] 3.3 取引データ API
+    - [ ] POST /api/transactions/upload (CSV アップロード)
+    - [ ] GET /api/transactions (取引履歴取得)
+    - [ ] GET /api/transactions/summary (集計データ取得)
+  - [ ] 3.4 カテゴリ管理 API
+    - [ ] GET /api/categories (カテゴリ一覧)
+    - [ ] POST /api/categories (カテゴリ作成)
+    - [ ] PUT /api/categories/:id (カテゴリ更新)
+    - [ ] DELETE /api/categories/:id (カテゴリ削除)

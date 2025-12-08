@@ -120,11 +120,35 @@
 
 **目的**: 認証済みの状態で CSV アップロードとチャート表示を実現する。
 
-### 3.1 取引データ API (Backend)
+### 3.1 取引データ DB 設計
 
-- [ ] `Transaction` Schema & VO 定義
-- [ ] CSV 解析ロジック実装
-- [ ] 取引履歴 API (`GET /transactions`, `POST /transactions/upload`)
+- [x] **テーブル設計**
+  - [x] `csv_uploads` - アップロード履歴 (raw_data を JSONB で保持)
+  - [x] `categories` - カテゴリマスタ (ユーザー編集可能)
+  - [x] `category_rules` - 自動分類ルール
+  - [x] `expenses` - 正規化された支出データ
+- [x] **マイグレーション作成 & 実行**
+- [x] **インデックス追加** (user_id + transaction_date, category_id, merchant)
+- [x] **デフォルトカテゴリのシード** (8カテゴリ)
+
+### 3.2 CSV 解析ロジック実装
+
+- [ ] CSV パーサー実装 (PayPay フォーマット対応)
+- [ ] カテゴリ自動分類ロジック (keyword マッチング)
+- [ ] 重複排除処理 (external_transaction_id)
+
+### 3.3 取引データ API (Backend)
+
+- [ ] `POST /api/transactions/upload` - CSV アップロード
+- [ ] `GET /api/transactions` - 取引履歴取得 (ページネーション)
+- [ ] `GET /api/transactions/summary` - 月別・カテゴリ別集計
+
+### 3.4 カテゴリ管理 API
+
+- [ ] `GET /api/categories` - カテゴリ一覧
+- [ ] `POST /api/categories` - カテゴリ作成
+- [ ] `PUT /api/categories/:id` - カテゴリ更新
+- [ ] `DELETE /api/categories/:id` - カテゴリ削除
 
 ### 3.2 フロントエンド認証連携 (apps/web)
 
