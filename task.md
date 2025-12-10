@@ -28,14 +28,14 @@
     - [x] マイグレーション作成 & 実行
     - [x] インデックス追加
     - [x] デフォルトカテゴリのシード
-  - [ ] 3.2 CSV 解析ロジック実装
-    - [ ] CSV パーサー実装
-    - [ ] カテゴリ自動分類ロジック
-    - [ ] 重複排除処理
-  - [ ] 3.3 取引データ API
-    - [ ] POST /api/transactions/upload (CSV アップロード)
-    - [ ] GET /api/transactions (取引履歴取得)
-    - [ ] GET /api/transactions/summary (集計データ取得)
+  - [x] 3.2 CSV 解析ロジック実装
+    - [x] CSV パーサー実装
+    - [x] カテゴリ自動分類ロジック
+    - [x] 重複排除処理
+  - [x] 3.3 取引データ API
+    - [x] POST /api/transactions/upload (CSV アップロード)
+    - [x] GET /api/transactions (取引履歴取得)
+    - [x] GET /api/transactions/summary (集計データ取得)
   - [ ] 3.4 カテゴリ管理 API
     - [ ] GET /api/categories (カテゴリ一覧)
     - [ ] POST /api/categories (カテゴリ作成)
