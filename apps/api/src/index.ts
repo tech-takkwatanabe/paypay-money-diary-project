@@ -59,7 +59,7 @@ if (process.env.NODE_ENV !== 'production') {
 		},
 		servers: [
 			{
-				url: 'https://localhost:8080/api',
+				url: `${process.env.API_URL}/api`,
 				description: 'Development server',
 			},
 		],
