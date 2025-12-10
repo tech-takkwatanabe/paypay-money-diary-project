@@ -36,8 +36,8 @@
     - [x] POST /api/transactions/upload (CSV アップロード)
     - [x] GET /api/transactions (取引履歴取得)
     - [x] GET /api/transactions/summary (集計データ取得)
-  - [ ] 3.4 カテゴリ管理 API
-    - [ ] GET /api/categories (カテゴリ一覧)
-    - [ ] POST /api/categories (カテゴリ作成)
-    - [ ] PUT /api/categories/:id (カテゴリ更新)
-    - [ ] DELETE /api/categories/:id (カテゴリ削除)
+  - [x] 3.4 カテゴリ管理 API
+    - [x] GET /api/categories (カテゴリ一覧)
+    - [x] POST /api/categories (カテゴリ作成)
+    - [x] PUT /api/categories/:id (カテゴリ更新)
+    - [x] DELETE /api/categories/:id (カテゴリ削除)
