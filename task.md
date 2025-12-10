@@ -16,13 +16,13 @@
     - [x] POST /api/auth/logout (ログアウト)
     - [x] GET /api/auth/me (ユーザー情報取得)
     - [x] JWT 認証ミドルウェア
-    - [ ] OpenAPI 定義
+    - [x] OpenAPI 定義
   - [x] 2.5 単体テスト再構築 (Bun Test)
     - [x] テスト環境整備 (bun:test)
     - [x] UseCase テスト実装 (Mock)
     - [x] Handler テスト実装 (Mock)
 
-- [/] **Phase 3: 家計簿機能実装**
+- [x] **Phase 3: 家計簿機能実装**
   - [x] 3.1 取引データ DB 設計
     - [x] テーブル設計 (csv_uploads, categories, category_rules, expenses)
     - [x] マイグレーション作成 & 実行
@@ -41,3 +41,40 @@
     - [x] POST /api/categories (カテゴリ作成)
     - [x] PUT /api/categories/:id (カテゴリ更新)
     - [x] DELETE /api/categories/:id (カテゴリ削除)
+  - [x] 3.5 OpenAPI スキーマ & API クライアント生成
+    - [x] @hono/zod-openapi 導入
+    - [x] 認証 API OpenAPI 対応
+    - [x] 取引・カテゴリ API スキーマ定義
+    - [x] Swagger UI (/api/docs) 設定 (開発環境のみ)
+    - [x] openapi.yml 生成スクリプト
+    - [x] Orval による API クライアント生成
+
+- [ ] **Phase 4: フロントエンド認証・データ表示**
+  - [ ] 4.1 認証ページ作成
+    - [ ] /login ページ
+    - [ ] /signup ページ
+    - [ ] 認証状態管理 (Context / Zustand)
+    - [ ] 認証ガード (ミドルウェア)
+  - [ ] 4.2 ダッシュボードに実データ表示
+    - [ ] API クライアント統合
+    - [ ] 月別支出グラフ (実データ)
+    - [ ] カテゴリ別支出グラフ (実データ)
+    - [ ] 取引一覧表示
+  - [ ] 4.3 CSV アップロード機能
+    - [ ] アップロード UI
+    - [ ] 進捗表示
+    - [ ] エラーハンドリング
+  - [ ] 4.4 カテゴリ管理 UI
+    - [ ] カテゴリ一覧表示
+    - [ ] カテゴリ作成・編集・削除
+
+- [ ] **Phase 5: 高度な機能**
+  - [ ] 5.1 カテゴリルール管理
+    - [ ] ルール CRUD API
+    - [ ] ルール管理 UI
+  - [ ] 5.2 予算管理
+    - [ ] 予算設定 API
+    - [ ] 予算対実績表示
+  - [ ] 5.3 分析機能
+    - [ ] 月次レポート
+    - [ ] トレンド分析
