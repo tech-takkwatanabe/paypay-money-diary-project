@@ -1,20 +1,36 @@
 /**
  * 認証 API ルート定義 (OpenAPI 対応)
+ * ハンドラーの実際の戻り値に合わせたスキーマ定義
  */
 
 import { createRoute, z } from '@hono/zod-openapi';
 import { CreateUserSchema, LoginSchema } from '@paypay-money-diary/shared';
 
-// ===== スキーマ定義 =====
+// ===== スキーマ定義 (ハンドラーの戻り値に一致) =====
 
-const UserResponseSchema = z
+// signup handler returns: { id, name, email }
+const SignupResponseSchema = z
 	.object({
-		uuid: z.string().openapi({ description: 'ユーザーID' }),
+		id: z.string().openapi({ description: 'ユーザーID' }),
 		name: z.string().openapi({ description: 'ユーザー名' }),
 		email: z.string().email().openapi({ description: 'メールアドレス' }),
 	})
-	.openapi('UserResponse');
+	.openapi('SignupResponse');
 
+// login handler returns: { accessToken, refreshToken, user: { id, name, email } }
+const LoginResponseSchema = z
+	.object({
+		accessToken: z.string().openapi({ description: 'アクセストークン' }),
+		refreshToken: z.string().openapi({ description: 'リフレッシュトークン' }),
+		user: z.object({
+			id: z.string().openapi({ description: 'ユーザーID' }),
+			name: z.string().openapi({ description: 'ユーザー名' }),
+			email: z.string().email().openapi({ description: 'メールアドレス' }),
+		}),
+	})
+	.openapi('LoginResponse');
+
+// refresh handler returns: { accessToken, refreshToken }
 const TokensResponseSchema = z
 	.object({
 		accessToken: z.string().openapi({ description: 'アクセストークン' }),
@@ -22,13 +38,29 @@ const TokensResponseSchema = z
 	})
 	.openapi('TokensResponse');
 
+// me handler returns: { id, name, email }
+const MeResponseSchema = z
+	.object({
+		id: z.string().openapi({ description: 'ユーザーID' }),
+		name: z.string().openapi({ description: 'ユーザー名' }),
+		email: z.string().email().openapi({ description: 'メールアドレス' }),
+	})
+	.openapi('MeResponse');
+
+// logout handler returns: { message }
+const LogoutResponseSchema = z
+	.object({
+		message: z.string().openapi({ description: 'メッセージ' }),
+	})
+	.openapi('LogoutResponse');
+
 const ErrorResponseSchema = z
 	.object({
 		error: z.string().openapi({ description: 'エラーメッセージ' }),
 	})
 	.openapi('ErrorResponse');
 
-const RefreshTokenSchema = z
+const RefreshTokenRequestSchema = z
 	.object({
 		refreshToken: z.string().openapi({ description: 'リフレッシュトークン' }),
 	})
@@ -56,9 +88,7 @@ export const signupRoute = createRoute({
 			description: '登録成功',
 			content: {
 				'application/json': {
-					schema: z.object({
-						user: UserResponseSchema,
-					}),
+					schema: SignupResponseSchema,
 				},
 			},
 		},
@@ -70,6 +100,12 @@ export const signupRoute = createRoute({
 		},
 		409: {
 			description: 'ユーザー既存',
+			content: {
+				'application/json': { schema: ErrorResponseSchema },
+			},
+		},
+		500: {
+			description: 'サーバーエラー',
 			content: {
 				'application/json': { schema: ErrorResponseSchema },
 			},
@@ -97,10 +133,7 @@ export const loginRoute = createRoute({
 			description: 'ログイン成功',
 			content: {
 				'application/json': {
-					schema: z.object({
-						user: UserResponseSchema,
-						tokens: TokensResponseSchema,
-					}),
+					schema: LoginResponseSchema,
 				},
 			},
 		},
@@ -112,6 +145,12 @@ export const loginRoute = createRoute({
 		},
 		401: {
 			description: '認証失敗',
+			content: {
+				'application/json': { schema: ErrorResponseSchema },
+			},
+		},
+		500: {
+			description: 'サーバーエラー',
 			content: {
 				'application/json': { schema: ErrorResponseSchema },
 			},
@@ -129,7 +168,7 @@ export const refreshRoute = createRoute({
 		body: {
 			content: {
 				'application/json': {
-					schema: RefreshTokenSchema,
+					schema: RefreshTokenRequestSchema,
 				},
 			},
 		},
@@ -155,6 +194,12 @@ export const refreshRoute = createRoute({
 				'application/json': { schema: ErrorResponseSchema },
 			},
 		},
+		500: {
+			description: 'サーバーエラー',
+			content: {
+				'application/json': { schema: ErrorResponseSchema },
+			},
+		},
 	},
 });
 
@@ -170,14 +215,18 @@ export const logoutRoute = createRoute({
 			description: 'ログアウト成功',
 			content: {
 				'application/json': {
-					schema: z.object({
-						message: z.string(),
-					}),
+					schema: LogoutResponseSchema,
 				},
 			},
 		},
 		401: {
 			description: '認証エラー',
+			content: {
+				'application/json': { schema: ErrorResponseSchema },
+			},
+		},
+		500: {
+			description: 'サーバーエラー',
 			content: {
 				'application/json': { schema: ErrorResponseSchema },
 			},
@@ -197,9 +246,7 @@ export const meRoute = createRoute({
 			description: '取得成功',
 			content: {
 				'application/json': {
-					schema: z.object({
-						user: UserResponseSchema,
-					}),
+					schema: MeResponseSchema,
 				},
 			},
 		},
@@ -209,5 +256,18 @@ export const meRoute = createRoute({
 				'application/json': { schema: ErrorResponseSchema },
 			},
 		},
+		500: {
+			description: 'サーバーエラー',
+			content: {
+				'application/json': { schema: ErrorResponseSchema },
+			},
+		},
 	},
 });
+
+// ルートから型を抽出してエクスポート
+export type SignupRoute = typeof signupRoute;
+export type LoginRoute = typeof loginRoute;
+export type RefreshRoute = typeof refreshRoute;
+export type LogoutRoute = typeof logoutRoute;
+export type MeRoute = typeof meRoute;

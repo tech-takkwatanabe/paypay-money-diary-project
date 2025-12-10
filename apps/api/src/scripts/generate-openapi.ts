@@ -4,18 +4,47 @@
  */
 
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
+import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute, type SignupRoute, type LoginRoute, type RefreshRoute, type LogoutRoute, type MeRoute } from '@/routes/auth.routes';
+import type { RouteHandler } from '@hono/zod-openapi';
 import YAML from 'yaml';
 import fs from 'fs';
 
 const app = new OpenAPIHono();
 
+// ダミーハンドラーを型安全に定義
+const signupDummy: RouteHandler<SignupRoute> = async (c) => {
+	return c.json({ id: '', name: '', email: '' }, 201);
+};
+
+const loginDummy: RouteHandler<LoginRoute> = async (c) => {
+	return c.json(
+		{
+			accessToken: '',
+			refreshToken: '',
+			user: { id: '', name: '', email: '' },
+		},
+		200
+	);
+};
+
+const refreshDummy: RouteHandler<RefreshRoute> = async (c) => {
+	return c.json({ accessToken: '', refreshToken: '' }, 200);
+};
+
+const logoutDummy: RouteHandler<LogoutRoute> = async (c) => {
+	return c.json({ message: '' }, 200);
+};
+
+const meDummy: RouteHandler<MeRoute> = async (c) => {
+	return c.json({ id: '', name: '', email: '' }, 200);
+};
+
 // ルートを登録
-app.openapi(signupRoute, async (c) => c.json({}));
-app.openapi(loginRoute, async (c) => c.json({}));
-app.openapi(refreshRoute, async (c) => c.json({}));
-app.openapi(logoutRoute, async (c) => c.json({}));
-app.openapi(meRoute, async (c) => c.json({}));
+app.openapi(signupRoute, signupDummy);
+app.openapi(loginRoute, loginDummy);
+app.openapi(refreshRoute, refreshDummy);
+app.openapi(logoutRoute, logoutDummy);
+app.openapi(meRoute, meDummy);
 
 // セキュリティスキームを登録
 app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
