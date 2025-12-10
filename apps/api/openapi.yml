@@ -13,10 +13,10 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    UserResponse:
+    SignupResponse:
       type: object
       properties:
-        uuid:
+        id:
           type: string
           description: ユーザーID
         name:
@@ -27,7 +27,7 @@ components:
           format: email
           description: メールアドレス
       required:
-        - uuid
+        - id
         - name
         - email
     ErrorResponse:
@@ -38,6 +38,36 @@ components:
           description: エラーメッセージ
       required:
         - error
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: アクセストークン
+        refreshToken:
+          type: string
+          description: リフレッシュトークン
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              description: ユーザーID
+            name:
+              type: string
+              description: ユーザー名
+            email:
+              type: string
+              format: email
+              description: メールアドレス
+          required:
+            - id
+            - name
+            - email
+      required:
+        - accessToken
+        - refreshToken
+        - user
     TokensResponse:
       type: object
       properties:
@@ -58,6 +88,320 @@ components:
           description: リフレッシュトークン
       required:
         - refreshToken
+    LogoutResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
+      required:
+        - message
+    MeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ユーザーID
+        name:
+          type: string
+          description: ユーザー名
+        email:
+          type: string
+          format: email
+          description: メールアドレス
+      required:
+        - id
+        - name
+        - email
+    UploadCsvResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
+        uploadId:
+          type: string
+          description: アップロードID
+        totalRows:
+          type: number
+          description: 総行数
+        importedRows:
+          type: number
+          description: インポート行数
+        skippedRows:
+          type: number
+          description: スキップ行数
+        duplicateRows:
+          type: number
+          description: 重複行数
+      required:
+        - message
+        - uploadId
+        - totalRows
+        - importedRows
+        - skippedRows
+        - duplicateRows
+    TransactionErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: エラーメッセージ
+      required:
+        - error
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 取引ID
+        transactionDate:
+          type: string
+          description: 取引日
+        amount:
+          type: number
+          description: 金額
+        merchant:
+          type: string
+          description: 取引先
+        paymentMethod:
+          type: string
+          nullable: true
+          description: 支払い方法
+        categoryId:
+          type: string
+          nullable: true
+          description: カテゴリID
+        categoryName:
+          type: string
+          nullable: true
+          description: カテゴリ名
+        categoryColor:
+          type: string
+          nullable: true
+          description: カテゴリ色
+      required:
+        - id
+        - transactionDate
+        - amount
+        - merchant
+        - paymentMethod
+        - categoryId
+        - categoryName
+        - categoryColor
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: number
+          description: ページ番号
+        limit:
+          type: number
+          description: 1ページあたりの件数
+        totalCount:
+          type: number
+          description: 総件数
+        totalPages:
+          type: number
+          description: 総ページ数
+      required:
+        - page
+        - limit
+        - totalCount
+        - totalPages
+    TransactionListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+          description: 取引一覧
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - data
+        - pagination
+    CategoryBreakdown:
+      type: object
+      properties:
+        categoryId:
+          type: string
+          nullable: true
+          description: カテゴリID
+        categoryName:
+          type: string
+          description: カテゴリ名
+        categoryColor:
+          type: string
+          description: カテゴリ色
+        categoryIcon:
+          type: string
+          nullable: true
+          description: カテゴリアイコン
+        totalAmount:
+          type: number
+          description: 合計金額
+        transactionCount:
+          type: number
+          description: 取引数
+      required:
+        - categoryId
+        - categoryName
+        - categoryColor
+        - categoryIcon
+        - totalAmount
+        - transactionCount
+    MonthlyBreakdown:
+      type: object
+      properties:
+        month:
+          type: number
+          description: 月
+        totalAmount:
+          type: number
+          description: 合計金額
+      required:
+        - month
+        - totalAmount
+    SummaryResponse:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            totalAmount:
+              type: number
+              description: 合計金額
+            transactionCount:
+              type: number
+              description: 取引数
+          required:
+            - totalAmount
+            - transactionCount
+        categoryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryBreakdown"
+          description: カテゴリ別内訳
+        monthlyBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyBreakdown"
+          description: 月別内訳
+      required:
+        - summary
+        - categoryBreakdown
+        - monthlyBreakdown
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          description: カテゴリID
+        name:
+          type: string
+          description: カテゴリ名
+        color:
+          type: string
+          description: 色コード
+        icon:
+          type: string
+          nullable: true
+          description: アイコン
+        displayOrder:
+          type: number
+          description: 表示順
+        isDefault:
+          type: boolean
+          description: デフォルトカテゴリか
+      required:
+        - id
+        - name
+        - color
+        - icon
+        - displayOrder
+        - isDefault
+    CategoryWithSystem:
+      allOf:
+        - $ref: "#/components/schemas/Category"
+        - type: object
+          properties:
+            isSystem:
+              type: boolean
+              description: システムカテゴリか
+          required:
+            - isSystem
+    CategoryListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryWithSystem"
+          description: カテゴリ一覧
+      required:
+        - data
+    CategoryErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: エラーメッセージ
+      required:
+        - error
+    CreateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: カテゴリ名
+        color:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+          description: 色コード (#RRGGBB)
+        icon:
+          type: string
+          maxLength: 50
+          description: アイコン
+        displayOrder:
+          type: integer
+          minimum: 0
+          description: 表示順
+      required:
+        - name
+        - color
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: カテゴリ名
+        color:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+          description: 色コード
+        icon:
+          type: string
+          nullable: true
+          maxLength: 50
+          description: アイコン
+        displayOrder:
+          type: integer
+          minimum: 0
+          description: 表示順
+    DeleteCategoryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
+      required:
+        - message
   parameters: {}
 paths:
   /auth/signup:
@@ -91,12 +435,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/UserResponse"
-                required:
-                  - user
+                $ref: "#/components/schemas/SignupResponse"
         "400":
           description: バリデーションエラー
           content:
@@ -105,6 +444,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "409":
           description: ユーザー既存
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: サーバーエラー
           content:
             application/json:
               schema:
@@ -136,15 +481,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/UserResponse"
-                  tokens:
-                    $ref: "#/components/schemas/TokensResponse"
-                required:
-                  - user
-                  - tokens
+                $ref: "#/components/schemas/LoginResponse"
         "400":
           description: バリデーションエラー
           content:
@@ -153,6 +490,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: サーバーエラー
           content:
             application/json:
               schema:
@@ -187,6 +530,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /auth/logout:
     post:
       tags:
@@ -201,14 +550,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
+                $ref: "#/components/schemas/LogoutResponse"
         "401":
           description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: サーバーエラー
           content:
             application/json:
               schema:
@@ -227,15 +577,346 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/UserResponse"
-                required:
-                  - user
+                $ref: "#/components/schemas/MeResponse"
         "401":
           description: 認証エラー
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /transactions/upload:
+    post:
+      tags:
+        - 取引
+      summary: CSV アップロード
+      description: PayPay CSV ファイルをアップロードして取引データをインポートします
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV ファイル
+              required:
+                - file
+      responses:
+        "201":
+          description: アップロード成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadCsvResponse"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+  /transactions:
+    get:
+      tags:
+        - 取引
+      summary: 取引履歴取得
+      description: 取引履歴を取得します（ページネーション対応）
+      security:
+        - Bearer: []
+      parameters:
+        - schema:
+            type: string
+            description: ページ番号
+          required: false
+          description: ページ番号
+          name: page
+          in: query
+        - schema:
+            type: string
+            description: 1ページあたりの件数
+          required: false
+          description: 1ページあたりの件数
+          name: limit
+          in: query
+        - schema:
+            type: string
+            description: 開始日 (YYYY-MM-DD)
+          required: false
+          description: 開始日 (YYYY-MM-DD)
+          name: startDate
+          in: query
+        - schema:
+            type: string
+            description: 終了日 (YYYY-MM-DD)
+          required: false
+          description: 終了日 (YYYY-MM-DD)
+          name: endDate
+          in: query
+        - schema:
+            type: string
+            description: カテゴリID
+          required: false
+          description: カテゴリID
+          name: categoryId
+          in: query
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionListResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+  /transactions/summary:
+    get:
+      tags:
+        - 取引
+      summary: 取引集計
+      description: 取引データの集計情報を取得します
+      security:
+        - Bearer: []
+      parameters:
+        - schema:
+            type: string
+            description: 年 (YYYY)
+          required: false
+          description: 年 (YYYY)
+          name: year
+          in: query
+        - schema:
+            type: string
+            description: 月 (1-12)
+          required: false
+          description: 月 (1-12)
+          name: month
+          in: query
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SummaryResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+  /categories:
+    get:
+      tags:
+        - カテゴリ
+      summary: カテゴリ一覧取得
+      description: ユーザーが利用可能なカテゴリ一覧を取得します
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryListResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+    post:
+      tags:
+        - カテゴリ
+      summary: カテゴリ作成
+      description: 新しいカテゴリを作成します
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryRequest"
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "409":
+          description: カテゴリ名重複
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+  /categories/{id}:
+    put:
+      tags:
+        - カテゴリ
+      summary: カテゴリ更新
+      description: カテゴリを更新します（システムカテゴリは更新不可）
+      security:
+        - Bearer: []
+      parameters:
+        - schema:
+            type: string
+            description: カテゴリID
+          required: true
+          description: カテゴリID
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoryRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "409":
+          description: カテゴリ名重複
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+    delete:
+      tags:
+        - カテゴリ
+      summary: カテゴリ削除
+      description: カテゴリを削除します（システムカテゴリは削除不可）
+      security:
+        - Bearer: []
+      parameters:
+        - schema:
+            type: string
+            description: カテゴリID
+          required: true
+          description: カテゴリID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteCategoryResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryErrorResponse"

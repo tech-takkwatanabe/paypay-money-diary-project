@@ -13,6 +13,8 @@ import { getCategoriesHandler } from '@/interface/http/category/list';
 import { createCategoryHandler } from '@/interface/http/category/create';
 import { updateCategoryHandler } from '@/interface/http/category/update';
 import { deleteCategoryHandler } from '@/interface/http/category/delete';
+
+// OpenAPI Route definitions (認証APIのみ完全対応)
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
 
 const app = new OpenAPIHono();
@@ -28,19 +30,19 @@ api.openapi(signupRoute, signupHandler);
 api.openapi(loginRoute, loginHandler);
 api.openapi(refreshRoute, refreshHandler);
 
-// 認証必須エンドポイント（ミドルウェア適用）
+// 認証必須エンドポイント
 api.use('/auth/logout', authMiddleware);
 api.openapi(logoutRoute, logoutHandler);
 
 api.use('/auth/me', authMiddleware);
 api.openapi(meRoute, meHandler);
 
-// ===== 取引 API (従来形式 - 後でOpenAPI対応予定) =====
+// ===== 取引 API (従来形式 - OpenAPIスキーマは別途定義) =====
 api.post('/transactions/upload', authMiddleware, uploadCsvHandler);
 api.get('/transactions', authMiddleware, getTransactionsHandler);
 api.get('/transactions/summary', authMiddleware, getTransactionsSummaryHandler);
 
-// ===== カテゴリ API (従来形式 - 後でOpenAPI対応予定) =====
+// ===== カテゴリ API (従来形式 - OpenAPIスキーマは別途定義) =====
 api.get('/categories', authMiddleware, getCategoriesHandler);
 api.post('/categories', authMiddleware, createCategoryHandler);
 api.put('/categories/:id', authMiddleware, updateCategoryHandler);
