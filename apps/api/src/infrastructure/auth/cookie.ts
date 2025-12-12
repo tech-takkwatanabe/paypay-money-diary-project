@@ -15,11 +15,37 @@ const COOKIE_OPTIONS = {
 	path: '/api',
 };
 
-// Access Token: 短い有効期限 (15分)
-const ACCESS_TOKEN_MAX_AGE = 15 * 60; // 15分
+/**
+ * 有効期限文字列を秒数に変換
+ * @example "15m" -> 900, "7d" -> 604800
+ */
+const parseExpiresIn = (expiresIn: string): number => {
+	const match = expiresIn.match(/^(\d+)([smhd])$/);
+	if (!match) {
+		throw new Error(`Invalid expires format: ${expiresIn}`);
+	}
+	const value = parseInt(match[1], 10);
+	const unit = match[2];
 
-// Refresh Token: 長い有効期限 (7日)
-const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7日
+	switch (unit) {
+		case 's':
+			return value;
+		case 'm':
+			return value * 60;
+		case 'h':
+			return value * 60 * 60;
+		case 'd':
+			return value * 24 * 60 * 60;
+		default:
+			throw new Error(`Unknown time unit: ${unit}`);
+	}
+};
+
+// Access Token 有効期限 (環境変数から取得)
+const ACCESS_TOKEN_MAX_AGE = parseExpiresIn(process.env.JWT_ACCESS_EXPIRES_IN || '15m');
+
+// Refresh Token 有効期限 (環境変数から取得)
+const REFRESH_TOKEN_MAX_AGE = parseExpiresIn(process.env.JWT_REFRESH_EXPIRES_IN || '7d');
 
 /**
  * 認証 Cookie を設定
