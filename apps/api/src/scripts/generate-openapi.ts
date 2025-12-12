@@ -47,7 +47,7 @@ const loginDummy: RouteHandler<LoginRoute> = async (c) => {
 };
 
 const refreshDummy: RouteHandler<RefreshRoute> = async (c) => {
-	return c.json({ accessToken: '', refreshToken: '' }, 200);
+	return c.json({ message: '' }, 200);
 };
 
 const logoutDummy: RouteHandler<LogoutRoute> = async (c) => {
