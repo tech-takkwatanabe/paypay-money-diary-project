@@ -79,10 +79,15 @@ export default function Dashboard() {
 					</div>
 					<h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
 				</div>
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2 sm:gap-4">
+					<Link
+						href="/categories"
+						className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+						カテゴリ
+					</Link>
 					<Link href="/upload" className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity">
 						<Upload className="h-4 w-4" />
-						CSV アップロード
+						<span className="hidden sm:inline">CSV アップロード</span>
 					</Link>
 					<span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
 					<button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
