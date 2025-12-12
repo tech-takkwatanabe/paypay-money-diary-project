@@ -1,51 +1,41 @@
 /**
  * 認証 API ルート定義 (OpenAPI 対応)
- * ハンドラーの実際の戻り値に合わせたスキーマ定義
+ * HttpOnly Cookie 認証方式
  */
 
 import { createRoute, z } from '@hono/zod-openapi';
 import { CreateUserSchema, LoginSchema } from '@paypay-money-diary/shared';
 
-// ===== スキーマ定義 (ハンドラーの戻り値に一致) =====
+// ===== スキーマ定義 =====
 
-// signup handler returns: { id, name, email }
-const SignupResponseSchema = z
+// ユーザー情報スキーマ
+const UserSchema = z
 	.object({
 		id: z.string().openapi({ description: 'ユーザーID' }),
 		name: z.string().openapi({ description: 'ユーザー名' }),
 		email: z.string().email().openapi({ description: 'メールアドレス' }),
 	})
-	.openapi('SignupResponse');
+	.openapi('User');
 
-// login handler returns: { accessToken, refreshToken, user: { id, name, email } }
+// signup handler returns: { id, name, email }
+const SignupResponseSchema = UserSchema.openapi('SignupResponse');
+
+// login handler returns: { user } (トークンはCookieで送信)
 const LoginResponseSchema = z
 	.object({
-		accessToken: z.string().openapi({ description: 'アクセストークン' }),
-		refreshToken: z.string().openapi({ description: 'リフレッシュトークン' }),
-		user: z.object({
-			id: z.string().openapi({ description: 'ユーザーID' }),
-			name: z.string().openapi({ description: 'ユーザー名' }),
-			email: z.string().email().openapi({ description: 'メールアドレス' }),
-		}),
+		user: UserSchema,
 	})
 	.openapi('LoginResponse');
 
-// refresh handler returns: { accessToken, refreshToken }
-const TokensResponseSchema = z
+// refresh handler returns: { message } (トークンはCookieで送信)
+const RefreshResponseSchema = z
 	.object({
-		accessToken: z.string().openapi({ description: 'アクセストークン' }),
-		refreshToken: z.string().openapi({ description: 'リフレッシュトークン' }),
+		message: z.string().openapi({ description: 'メッセージ' }),
 	})
-	.openapi('TokensResponse');
+	.openapi('RefreshResponse');
 
 // me handler returns: { id, name, email }
-const MeResponseSchema = z
-	.object({
-		id: z.string().openapi({ description: 'ユーザーID' }),
-		name: z.string().openapi({ description: 'ユーザー名' }),
-		email: z.string().email().openapi({ description: 'メールアドレス' }),
-	})
-	.openapi('MeResponse');
+const MeResponseSchema = UserSchema.openapi('MeResponse');
 
 // logout handler returns: { message }
 const LogoutResponseSchema = z
@@ -59,12 +49,6 @@ const ErrorResponseSchema = z
 		error: z.string().openapi({ description: 'エラーメッセージ' }),
 	})
 	.openapi('ErrorResponse');
-
-const RefreshTokenRequestSchema = z
-	.object({
-		refreshToken: z.string().openapi({ description: 'リフレッシュトークン' }),
-	})
-	.openapi('RefreshTokenRequest');
 
 // ===== ルート定義 =====
 
@@ -118,7 +102,7 @@ export const loginRoute = createRoute({
 	path: '/auth/login',
 	tags: ['認証'],
 	summary: 'ログイン',
-	description: 'メールアドレスとパスワードでログインします',
+	description: 'メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。',
 	request: {
 		body: {
 			content: {
@@ -130,7 +114,7 @@ export const loginRoute = createRoute({
 	},
 	responses: {
 		200: {
-			description: 'ログイン成功',
+			description: 'ログイン成功（トークンはCookieに設定）',
 			content: {
 				'application/json': {
 					schema: LoginResponseSchema,
@@ -163,27 +147,18 @@ export const refreshRoute = createRoute({
 	path: '/auth/refresh',
 	tags: ['認証'],
 	summary: 'トークン更新',
-	description: 'リフレッシュトークンを使用して新しいアクセストークンを取得します',
-	request: {
-		body: {
-			content: {
-				'application/json': {
-					schema: RefreshTokenRequestSchema,
-				},
-			},
-		},
-	},
+	description: 'Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します',
 	responses: {
 		200: {
-			description: '更新成功',
+			description: '更新成功（新しいトークンはCookieに設定）',
 			content: {
 				'application/json': {
-					schema: TokensResponseSchema,
+					schema: RefreshResponseSchema,
 				},
 			},
 		},
 		400: {
-			description: 'リフレッシュトークン不足',
+			description: 'リフレッシュトークンが見つからない',
 			content: {
 				'application/json': { schema: ErrorResponseSchema },
 			},
@@ -208,8 +183,8 @@ export const logoutRoute = createRoute({
 	path: '/auth/logout',
 	tags: ['認証'],
 	summary: 'ログアウト',
-	description: 'リフレッシュトークンを無効化してログアウトします',
-	security: [{ Bearer: [] }],
+	description: '認証Cookieをクリアしてログアウトします',
+	security: [{ Cookie: [] }],
 	responses: {
 		200: {
 			description: 'ログアウト成功',
@@ -239,8 +214,8 @@ export const meRoute = createRoute({
 	path: '/auth/me',
 	tags: ['認証'],
 	summary: 'ユーザー情報取得',
-	description: '認証済みユーザーの情報を取得します',
-	security: [{ Bearer: [] }],
+	description: '認証済みユーザーの情報を取得します（Cookie認証）',
+	security: [{ Cookie: [] }],
 	responses: {
 		200: {
 			description: '取得成功',

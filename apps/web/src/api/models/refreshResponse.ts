@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface RefreshTokenRequest {
-  /** リフレッシュトークン */
-  refreshToken: string;
+export interface RefreshResponse {
+  /** メッセージ */
+  message: string;
 }

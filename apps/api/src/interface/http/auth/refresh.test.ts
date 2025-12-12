@@ -1,86 +1,89 @@
-import { describe, it, expect, beforeEach, mock } from "bun:test";
-import { Hono } from "hono";
-import { refreshHandler } from "./refresh";
+import { describe, it, expect, beforeEach, mock } from 'bun:test';
+import { Hono } from 'hono';
+import { refreshHandler } from './refresh';
 
 // Mock dependencies
 const mockRefreshExecute = mock();
 
-mock.module("@/usecase/auth/refreshUseCase", () => ({
-  RefreshUseCase: class {
-    execute = mockRefreshExecute;
-  },
+mock.module('@/usecase/auth/refreshUseCase', () => ({
+	RefreshUseCase: class {
+		execute = mockRefreshExecute;
+	},
 }));
 
-mock.module("@/infrastructure/repository/userRepository", () => ({
-  UserRepository: class {},
+mock.module('@/infrastructure/repository/userRepository', () => ({
+	UserRepository: class {},
 }));
 
-mock.module("@/infrastructure/repository/tokenRepository", () => ({
-  RedisTokenRepository: class {},
+mock.module('@/infrastructure/repository/tokenRepository', () => ({
+	RedisTokenRepository: class {},
 }));
 
-describe("refreshHandler", () => {
-  let app: Hono;
+describe('refreshHandler', () => {
+	let app: Hono;
 
-  beforeEach(() => {
-    app = new Hono();
-    app.post("/refresh", refreshHandler);
-    mockRefreshExecute.mockReset();
-  });
+	beforeEach(() => {
+		app = new Hono();
+		app.post('/refresh', refreshHandler);
+		mockRefreshExecute.mockReset();
+	});
 
-  it("should return 200 with new tokens on successful refresh", async () => {
-    // Arrange
-    const mockResponse = {
-      accessToken: "new_access_token",
-      refreshToken: "new_refresh_token",
-    };
-    mockRefreshExecute.mockResolvedValue(mockResponse);
+	it('should return 200 with message and set cookies on successful refresh', async () => {
+		// Arrange
+		const mockResponse = {
+			accessToken: 'new_access_token',
+			refreshToken: 'new_refresh_token',
+		};
+		mockRefreshExecute.mockResolvedValue(mockResponse);
 
-    // Act
-    const res = await app.request("/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        refreshToken: "old_refresh_token",
-      }),
-    });
+		// Act - Cookie で refreshToken を送信
+		const res = await app.request('/refresh', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Cookie: 'refreshToken=old_refresh_token',
+			},
+		});
 
-    // Assert
-    expect(res.status).toBe(200);
-    const data = await res.json();
-    expect(data).toEqual(mockResponse);
-  });
+		// Assert
+		expect(res.status).toBe(200);
+		const data = await res.json();
+		expect(data).toEqual({ message: 'Token refreshed successfully' });
 
-  it("should return 400 on missing refresh token", async () => {
-    // Act
-    const res = await app.request("/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
+		// 新しいトークンが Cookie に設定されていることを確認
+		const cookies = res.headers.get('set-cookie');
+		expect(cookies).toContain('accessToken=');
+	});
 
-    // Assert
-    expect(res.status).toBe(400);
-  });
+	it('should return 400 on missing refresh token cookie', async () => {
+		// Act - Cookie なしでリクエスト
+		const res = await app.request('/refresh', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+		});
 
-  it("should return 401 on invalid refresh token", async () => {
-    // Arrange
-    mockRefreshExecute.mockImplementation(() =>
-      Promise.reject(new Error("Invalid refresh token")),
-    );
+		// Assert
+		expect(res.status).toBe(400);
+		const data = await res.json();
+		expect(data).toHaveProperty('error');
+	});
 
-    // Act
-    const res = await app.request("/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        refreshToken: "invalid_token",
-      }),
-    });
+	it('should return 401 on invalid refresh token', async () => {
+		// Arrange
+		mockRefreshExecute.mockImplementation(() => Promise.reject(new Error('Invalid refresh token')));
 
-    // Assert
-    expect(res.status).toBe(401);
-    const data = await res.json();
-    expect(data).toHaveProperty("error");
-  });
+		// Act
+		const res = await app.request('/refresh', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Cookie: 'refreshToken=invalid_token',
+			},
+		});
+
+		// Assert
+		expect(res.status).toBe(401);
+		const data = await res.json();
+		expect(data).toHaveProperty('error');
+	});
 });

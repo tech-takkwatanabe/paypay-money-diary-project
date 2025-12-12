@@ -6,9 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface TokensResponse {
-  /** アクセストークン */
-  accessToken: string;
-  /** リフレッシュトークン */
-  refreshToken: string;
+export interface User {
+  /** ユーザーID */
+  id: string;
+  /** ユーザー名 */
+  name: string;
+  /** メールアドレス */
+  email: string;
 }

@@ -1,5 +1,6 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
+import { cors } from 'hono/cors';
 import { signupHandler } from '@/interface/http/auth/signup';
 import { loginHandler } from '@/interface/http/auth/login';
 import { meHandler } from '@/interface/http/auth/me';
@@ -14,10 +15,19 @@ import { createCategoryHandler } from '@/interface/http/category/create';
 import { updateCategoryHandler } from '@/interface/http/category/update';
 import { deleteCategoryHandler } from '@/interface/http/category/delete';
 
-// OpenAPI Route definitions (認証APIのみ完全対応)
+// OpenAPI Route definitions
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
 
 const app = new OpenAPIHono();
+
+// CORS 設定 (Cookie 認証に必要)
+app.use(
+	'*',
+	cors({
+		origin: process.env.FRONTEND_URL || 'https://localhost:3000',
+		credentials: true, // Cookie 送信を許可
+	})
+);
 
 app.get('/', (c) => {
 	return c.text('Hello Hono!');
@@ -37,12 +47,12 @@ api.openapi(logoutRoute, logoutHandler);
 api.use('/auth/me', authMiddleware);
 api.openapi(meRoute, meHandler);
 
-// ===== 取引 API (従来形式 - OpenAPIスキーマは別途定義) =====
+// ===== 取引 API =====
 api.post('/transactions/upload', authMiddleware, uploadCsvHandler);
 api.get('/transactions', authMiddleware, getTransactionsHandler);
 api.get('/transactions/summary', authMiddleware, getTransactionsSummaryHandler);
 
-// ===== カテゴリ API (従来形式 - OpenAPIスキーマは別途定義) =====
+// ===== カテゴリ API =====
 api.get('/categories', authMiddleware, getCategoriesHandler);
 api.post('/categories', authMiddleware, createCategoryHandler);
 api.put('/categories/:id', authMiddleware, updateCategoryHandler);
@@ -55,7 +65,7 @@ if (process.env.NODE_ENV !== 'production') {
 		info: {
 			title: 'PayPay Money Diary API',
 			version: '1.0.0',
-			description: 'PayPay 家計簿アプリケーション API',
+			description: 'PayPay 家計簿アプリケーション API (HttpOnly Cookie 認証)',
 		},
 		servers: [
 			{
@@ -63,13 +73,14 @@ if (process.env.NODE_ENV !== 'production') {
 				description: 'Development server',
 			},
 		],
-		security: [{ Bearer: [] }],
 	});
 
-	api.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
-		type: 'http',
-		scheme: 'bearer',
-		bearerFormat: 'JWT',
+	// Cookie 認証スキーマを登録
+	api.openAPIRegistry.registerComponent('securitySchemes', 'Cookie', {
+		type: 'apiKey',
+		in: 'cookie',
+		name: 'accessToken',
+		description: 'HttpOnly Cookie に設定されたアクセストークン',
 	});
 
 	api.get('/docs', swaggerUI({ url: '/api/openapi.json' }));

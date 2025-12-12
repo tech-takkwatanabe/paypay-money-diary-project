@@ -12,9 +12,8 @@ import type {
   MeResponse,
   PostAuthLoginBody,
   PostAuthSignupBody,
-  RefreshTokenRequest,
+  RefreshResponse,
   SignupResponse,
-  TokensResponse,
 } from "../../models";
 
 import { customFetch } from "../../customFetch";
@@ -75,7 +74,7 @@ export const postAuthSignup = async (
 };
 
 /**
- * メールアドレスとパスワードでログインします
+ * メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。
  * @summary ログイン
  */
 export type postAuthLoginResponse200 = {
@@ -130,11 +129,11 @@ export const postAuthLogin = async (
 };
 
 /**
- * リフレッシュトークンを使用して新しいアクセストークンを取得します
+ * Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します
  * @summary トークン更新
  */
 export type postAuthRefreshResponse200 = {
-  data: TokensResponse;
+  data: RefreshResponse;
   status: 200;
 };
 
@@ -173,19 +172,16 @@ export const getPostAuthRefreshUrl = () => {
 };
 
 export const postAuthRefresh = async (
-  refreshTokenRequest: RefreshTokenRequest,
   options?: RequestInit,
 ): Promise<postAuthRefreshResponse> => {
   return customFetch<postAuthRefreshResponse>(getPostAuthRefreshUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(refreshTokenRequest),
   });
 };
 
 /**
- * リフレッシュトークンを無効化してログアウトします
+ * 認証Cookieをクリアしてログアウトします
  * @summary ログアウト
  */
 export type postAuthLogoutResponse200 = {
@@ -231,7 +227,7 @@ export const postAuthLogout = async (
 };
 
 /**
- * 認証済みユーザーの情報を取得します
+ * 認証済みユーザーの情報を取得します（Cookie認証）
  * @summary ユーザー情報取得
  */
 export type getAuthMeResponse200 = {

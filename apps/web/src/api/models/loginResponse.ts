@@ -5,12 +5,8 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
-import type { LoginResponseUser } from "./loginResponseUser";
+import type { User } from "./user";
 
 export interface LoginResponse {
-  /** アクセストークン */
-  accessToken: string;
-  /** リフレッシュトークン */
-  refreshToken: string;
-  user: LoginResponseUser;
+  user: User;
 }
