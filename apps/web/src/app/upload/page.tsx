@@ -184,7 +184,7 @@ export default function UploadPage() {
 							{/* エラー表示 */}
 							{error && (
 								<div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3">
-									<AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+									<AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
 									<p className="text-sm text-red-600 dark:text-red-400">{error}</p>
 								</div>
 							)}
