@@ -17,7 +17,7 @@
 		"@paypay-money-diary/shared": "workspace:^",
 		"bcryptjs": "3.0.3",
 		"dotenv": "17.2.3",
-		"drizzle-orm": "0.45.0",
+		"drizzle-orm": "0.45.1",
 		"hono": "4.10.8",
 		"ioredis": "5.8.2",
 		"jsonwebtoken": "9.0.3",
