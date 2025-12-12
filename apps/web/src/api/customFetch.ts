@@ -7,6 +7,9 @@ const getBaseUrl = () => {
 	return process.env.NEXT_PUBLIC_API_URL || 'https://localhost:8080/api';
 };
 
+// 401でリダイレクトしないパス（認証チェック用）
+const NO_REDIRECT_PATHS = ['/auth/me', '/auth/refresh'];
+
 export const customFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
 	const baseUrl = getBaseUrl();
 	const fullUrl = `${baseUrl}${url}`;
@@ -18,6 +21,12 @@ export const customFetch = async <T>(url: string, options?: RequestInit): Promis
 
 	// Handle 401 - token expired
 	if (response.status === 401) {
+		// 認証チェック系のAPIは、401でも例外を投げるだけでリダイレクトしない
+		if (NO_REDIRECT_PATHS.some((path) => url.startsWith(path))) {
+			const data = await response.json().catch(() => ({ error: 'Unauthorized' }));
+			return { status: 401, data, headers: response.headers } as T;
+		}
+
 		// トークンリフレッシュを試行
 		const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
 			method: 'POST',
@@ -31,32 +40,21 @@ export const customFetch = async <T>(url: string, options?: RequestInit): Promis
 				credentials: 'include',
 			});
 
-			if (retryResponse.ok) {
-				const text = await retryResponse.text();
-				return text ? JSON.parse(text) : ({} as T);
-			}
+			const text = await retryResponse.text();
+			const data = text ? JSON.parse(text) : {};
+			return { status: retryResponse.status, data, headers: retryResponse.headers } as T;
 		}
 
-		// リフレッシュ失敗 → ログインページへ
-		if (typeof window !== 'undefined') {
-			window.location.href = '/login';
-		}
-		throw new Error('Unauthorized');
+		// リフレッシュ失敗
+		const data = await response.json().catch(() => ({ error: 'Unauthorized' }));
+		return { status: 401, data, headers: response.headers } as T;
 	}
 
-	// Parse response
-	if (!response.ok) {
-		const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-		throw new Error(error.error || `HTTP ${response.status}`);
-	}
-
-	// Handle empty response
+	// すべてのレスポンスを { status, data, headers } 形式で返す
 	const text = await response.text();
-	if (!text) {
-		return {} as T;
-	}
+	const data = text ? JSON.parse(text) : {};
 
-	return JSON.parse(text) as T;
+	return { status: response.status, data, headers: response.headers } as T;
 };
 
 export default customFetch;
