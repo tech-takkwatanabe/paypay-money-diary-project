@@ -60,11 +60,8 @@ pnpm dev
 │   ├── web/        # Next.js Frontend
 │   └── api/        # Hono Backend
 ├── packages/
-│   ├── shared/     # Shared types & utilities
-│   └── config/     # Shared configurations
+│   ├── eslint/     # ESLint configuration
+│   └── shared/     # Shared types & utilities
 └── ...
 ```
 
-## ライセンス
-
-Private
