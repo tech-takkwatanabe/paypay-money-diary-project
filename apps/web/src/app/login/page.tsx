@@ -35,7 +35,7 @@ export default function LoginPage() {
 	return (
 		<div className="min-h-screen flex">
 			{/* 左側：ブランドエリア */}
-			<div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-red-500 via-red-600 to-pink-600 relative overflow-hidden">
+			<div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-red-500 via-red-600 to-pink-600 relative overflow-hidden">
 				{/* 装飾的な背景要素 */}
 				<div className="absolute inset-0">
 					<div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
@@ -99,7 +99,7 @@ export default function LoginPage() {
 					{/* モバイル用ロゴ */}
 					<div className="lg:hidden mb-8 text-center">
 						<div className="inline-flex items-center gap-2 mb-4">
-							<div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center">
+							<div className="w-10 h-10 bg-linear-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center">
 								<span className="text-white font-bold text-lg">¥</span>
 							</div>
 							<h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayPay 家計簿</h1>
@@ -152,7 +152,7 @@ export default function LoginPage() {
 							<button
 								type="submit"
 								disabled={isLoading}
-								className="w-full py-3 px-4 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+								className="w-full py-3 px-4 bg-linear-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
 								{isLoading ? (
 									<span className="flex items-center justify-center gap-2">
 										<svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
