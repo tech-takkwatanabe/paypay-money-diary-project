@@ -10,6 +10,7 @@ import { authMiddleware } from '@/interface/http/middleware/auth';
 import { uploadCsvHandler } from '@/interface/http/transaction/upload';
 import { getTransactionsHandler } from '@/interface/http/transaction/list';
 import { getTransactionsSummaryHandler } from '@/interface/http/transaction/summary';
+import { getAvailableYearsHandler } from '@/interface/http/transaction/availableYears';
 import { getCategoriesHandler } from '@/interface/http/category/list';
 import { createCategoryHandler } from '@/interface/http/category/create';
 import { updateCategoryHandler } from '@/interface/http/category/update';
@@ -51,6 +52,7 @@ api.openapi(meRoute, meHandler);
 api.post('/transactions/upload', authMiddleware, uploadCsvHandler);
 api.get('/transactions', authMiddleware, getTransactionsHandler);
 api.get('/transactions/summary', authMiddleware, getTransactionsSummaryHandler);
+api.get('/transactions/years', authMiddleware, getAvailableYearsHandler);
 
 // ===== カテゴリ API =====
 api.get('/categories', authMiddleware, getCategoriesHandler);

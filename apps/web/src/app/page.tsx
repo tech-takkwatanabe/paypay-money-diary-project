@@ -1,42 +1,73 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MonthlyExpensePieChart } from '@/components/charts/MonthlyExpensePieChart';
 import { AnnualExpenseBarChart } from '@/components/charts/AnnualExpenseBarChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, TrendingUp, Wallet, LogOut, Upload } from 'lucide-react';
+import { DollarSign, TrendingUp, Wallet, LogOut, Upload, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTransactionsSummary } from '@/api/generated/取引/取引';
+import { customFetch } from '@/api/customFetch';
 import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from '@/api/models';
 import Link from 'next/link';
+
+interface AvailableYearsResponse {
+	status: number;
+	data: { years: number[] };
+}
 
 export default function Dashboard() {
 	const { user, logout } = useAuth();
 	const [summary, setSummary] = useState<SummaryResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [availableYears, setAvailableYears] = useState<number[]>([]);
+	const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
-	const currentYear = new Date().getFullYear();
 	const currentMonth = new Date().getMonth() + 1;
 
+	// 利用可能な年を取得
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchYears = async () => {
 			try {
-				const response = await getTransactionsSummary({
-					year: currentYear.toString(),
-				});
-
-				if (response.status === 200 && 'data' in response) {
-					setSummary(response.data);
+				const response = await customFetch<AvailableYearsResponse>('/transactions/years');
+				if (response.status === 200 && response.data.years) {
+					setAvailableYears(response.data.years);
+					// 最新の年をデフォルト選択
+					if (response.data.years.length > 0) {
+						setSelectedYear(response.data.years[0]);
+					}
 				}
 			} catch (_error) {
-				console.error('Failed to fetch summary');
-			} finally {
-				setIsLoading(false);
+				console.error('Failed to fetch available years');
 			}
 		};
+		fetchYears();
+	}, []);
 
-		fetchData();
-	}, [currentYear]);
+	// サマリーデータを取得
+	const fetchSummary = useCallback(async (year: number) => {
+		setIsLoading(true);
+		try {
+			const response = await getTransactionsSummary({
+				year: year.toString(),
+			});
+
+			if (response.status === 200 && 'data' in response) {
+				setSummary(response.data);
+			}
+		} catch (_error) {
+			console.error('Failed to fetch summary');
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	// 年が選択されたらデータを取得
+	useEffect(() => {
+		if (selectedYear) {
+			fetchSummary(selectedYear);
+		}
+	}, [selectedYear, fetchSummary]);
 
 	// 今月の支出を計算
 	const thisMonthExpense = summary?.monthlyBreakdown?.find((m: MonthlyBreakdown) => m.month === currentMonth)?.totalAmount ?? 0;
@@ -98,11 +129,29 @@ export default function Dashboard() {
 			</header>
 
 			<main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-6 md:gap-8">
+				{/* 年選択ドロップダウン */}
+				<div className="flex items-center gap-4">
+					<div className="relative">
+						<select
+							value={selectedYear ?? ''}
+							onChange={(e) => setSelectedYear(Number(e.target.value))}
+							className="appearance-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 pr-10 text-lg font-semibold focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none cursor-pointer">
+							{availableYears.map((year) => (
+								<option key={year} value={year}>
+									{year}年
+								</option>
+							))}
+						</select>
+						<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+					</div>
+					<span className="text-muted-foreground">の支出データ</span>
+				</div>
+
 				{/* KPI Cards */}
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">今月の支出</CardTitle>
+							<CardTitle className="text-sm font-medium">{currentMonth}月の支出</CardTitle>
 							<DollarSign className="h-4 w-4 text-muted-foreground" />
 						</CardHeader>
 						<CardContent>
@@ -130,7 +179,7 @@ export default function Dashboard() {
 							) : (
 								<>
 									<div className="text-2xl font-bold">{formatCurrency(yearlyTotal)}</div>
-									<p className="text-xs text-muted-foreground">{currentYear}年度</p>
+									<p className="text-xs text-muted-foreground">{selectedYear}年度</p>
 								</>
 							)}
 						</CardContent>
