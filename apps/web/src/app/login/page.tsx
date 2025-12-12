@@ -4,9 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { postAuthLogin } from '@/api/generated/認証/認証';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
 	const router = useRouter();
+	const { login } = useAuth();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
@@ -21,6 +23,7 @@ export default function LoginPage() {
 			const response = await postAuthLogin({ email, password });
 
 			if (response.status === 200) {
+				await login();
 				router.push('/');
 			} else if ('data' in response && 'error' in response.data) {
 				setError(response.data.error);
