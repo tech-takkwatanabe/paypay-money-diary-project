@@ -1,59 +1,78 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import dynamic from 'next/dynamic';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { CategoryBreakdown } from '@/api/models';
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const data = [
-  { name: "食費", value: 45000, color: "#ef4444" },
-  { name: "日用品", value: 12000, color: "#3b82f6" },
-  { name: "交通費", value: 8000, color: "#10b981" },
-  { name: "趣味", value: 15000, color: "#f59e0b" },
-  { name: "その他", value: 5000, color: "#6b7280" },
-];
+interface MonthlyExpensePieChartProps {
+	data: CategoryBreakdown[];
+	isLoading?: boolean;
+}
 
-export function MonthlyExpensePieChart() {
-  const options: ApexCharts.ApexOptions = {
-    chart: {
-      type: "donut",
-      fontFamily: "inherit",
-    },
-    labels: data.map((item) => item.name),
-    colors: data.map((item) => item.color),
-    legend: {
-      position: "bottom",
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: (val: number) => `${val.toFixed(0)}%`,
-    },
-    tooltip: {
-      y: {
-        formatter: (val: number) => `¥${val.toLocaleString()}`,
-      },
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "65%",
-        },
-      },
-    },
-  };
+// デフォルトカラー
+const defaultColors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6b7280'];
 
-  const series = data.map((item) => item.value);
+export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieChartProps) {
+	const chartData =
+		data.length > 0
+			? data.map((item, index) => ({
+					name: item.categoryName,
+					value: item.totalAmount,
+					color: item.categoryColor || defaultColors[index % defaultColors.length],
+				}))
+			: [{ name: 'データなし', value: 1, color: '#e5e7eb' }];
 
-  return (
-    <Card className="w-full h-full min-h-[400px]">
-      <CardHeader>
-        <CardTitle>今月の支出内訳</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="w-full h-[300px]">
-          <Chart options={options} series={series} type="donut" height="100%" />
-        </div>
-      </CardContent>
-    </Card>
-  );
+	const options: ApexCharts.ApexOptions = {
+		chart: {
+			type: 'donut',
+			fontFamily: 'inherit',
+		},
+		labels: chartData.map((item) => item.name),
+		colors: chartData.map((item) => item.color),
+		legend: {
+			position: 'bottom',
+		},
+		dataLabels: {
+			enabled: data.length > 0,
+			formatter: (val: number) => `${val.toFixed(0)}%`,
+		},
+		tooltip: {
+			y: {
+				formatter: (val: number) => `¥${val.toLocaleString()}`,
+			},
+		},
+		plotOptions: {
+			pie: {
+				donut: {
+					size: '65%',
+				},
+			},
+		},
+		noData: {
+			text: 'データがありません',
+		},
+	};
+
+	const series = chartData.map((item) => item.value);
+
+	return (
+		<Card className="w-full h-full min-h-[400px]">
+			<CardHeader>
+				<CardTitle>カテゴリ別支出</CardTitle>
+			</CardHeader>
+			<CardContent>
+				{isLoading ? (
+					<div className="w-full h-[300px] flex items-center justify-center">
+						<div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+					</div>
+				) : (
+					<div className="w-full h-[300px]">
+						<Chart options={options} series={series} type="donut" height="100%" />
+					</div>
+				)}
+			</CardContent>
+		</Card>
+	);
 }
