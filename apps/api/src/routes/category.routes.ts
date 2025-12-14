@@ -38,7 +38,7 @@ const CategoryListResponseSchema = z
 export const getCategoriesRoute = createRoute({
 	method: 'get',
 	path: '/categories',
-	tags: ['カテゴリ'],
+	tags: ['Category'],
 	summary: 'カテゴリ一覧取得',
 	description: 'ユーザーが利用可能なカテゴリ一覧を取得します',
 	security: [{ Bearer: [] }],
@@ -81,7 +81,7 @@ const CreateCategoryRequestSchema = z
 export const createCategoryRoute = createRoute({
 	method: 'post',
 	path: '/categories',
-	tags: ['カテゴリ'],
+	tags: ['Category'],
 	summary: 'カテゴリ作成',
 	description: '新しいカテゴリを作成します',
 	security: [{ Bearer: [] }],
@@ -144,7 +144,7 @@ const UpdateCategoryRequestSchema = z
 export const updateCategoryRoute = createRoute({
 	method: 'put',
 	path: '/categories/{id}',
-	tags: ['カテゴリ'],
+	tags: ['Category'],
 	summary: 'カテゴリ更新',
 	description: 'カテゴリを更新します（システムカテゴリは更新不可）',
 	security: [{ Bearer: [] }],
@@ -215,7 +215,7 @@ const DeleteCategoryResponseSchema = z
 export const deleteCategoryRoute = createRoute({
 	method: 'delete',
 	path: '/categories/{id}',
-	tags: ['カテゴリ'],
+	tags: ['Category'],
 	summary: 'カテゴリ削除',
 	description: 'カテゴリを削除します（システムカテゴリは削除不可）',
 	security: [{ Bearer: [] }],
