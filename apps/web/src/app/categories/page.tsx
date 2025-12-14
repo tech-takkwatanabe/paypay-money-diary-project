@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getCategories, postCategories, putCategoriesId, deleteCategoriesId } from '@/api/generated/カテゴリ/カテゴリ';
+import { getCategories, postCategories, putCategoriesId, deleteCategoriesId } from '@/api/generated/category/category';
 import type { CategoryWithSystem } from '@/api/models';
 
 // プリセットカラー
