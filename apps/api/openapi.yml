@@ -389,7 +389,7 @@ paths:
   /auth/signup:
     post:
       tags:
-        - 認証
+        - Auth
       summary: ユーザー登録
       description: 新規ユーザーを登録します
       requestBody:
@@ -439,7 +439,7 @@ paths:
   /auth/login:
     post:
       tags:
-        - 認証
+        - Auth
       summary: ログイン
       description: メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。
       requestBody:
@@ -485,7 +485,7 @@ paths:
   /auth/refresh:
     post:
       tags:
-        - 認証
+        - Auth
       summary: トークン更新
       description: Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します
       responses:
@@ -516,7 +516,7 @@ paths:
   /auth/logout:
     post:
       tags:
-        - 認証
+        - Auth
       summary: ログアウト
       description: 認証Cookieをクリアしてログアウトします
       security:
@@ -543,7 +543,7 @@ paths:
   /auth/me:
     get:
       tags:
-        - 認証
+        - Auth
       summary: ユーザー情報取得
       description: 認証済みユーザーの情報を取得します（Cookie認証）
       security:
@@ -570,7 +570,7 @@ paths:
   /transactions/upload:
     post:
       tags:
-        - 取引
+        - Transaction
       summary: CSV アップロード
       description: PayPay CSV ファイルをアップロードして取引データをインポートします
       security:
@@ -615,7 +615,7 @@ paths:
   /transactions:
     get:
       tags:
-        - 取引
+        - Transaction
       summary: 取引履歴取得
       description: 取引履歴を取得します（ページネーション対応）
       security:
@@ -678,7 +678,7 @@ paths:
   /transactions/summary:
     get:
       tags:
-        - 取引
+        - Transaction
       summary: 取引集計
       description: 取引データの集計情報を取得します
       security:
@@ -720,7 +720,7 @@ paths:
   /categories:
     get:
       tags:
-        - カテゴリ
+        - Category
       summary: カテゴリ一覧取得
       description: ユーザーが利用可能なカテゴリ一覧を取得します
       security:
@@ -746,7 +746,7 @@ paths:
                 $ref: "#/components/schemas/CategoryErrorResponse"
     post:
       tags:
-        - カテゴリ
+        - Category
       summary: カテゴリ作成
       description: 新しいカテゴリを作成します
       security:
@@ -790,7 +790,7 @@ paths:
   /categories/{id}:
     put:
       tags:
-        - カテゴリ
+        - Category
       summary: カテゴリ更新
       description: カテゴリを更新します（システムカテゴリは更新不可）
       security:
@@ -853,7 +853,7 @@ paths:
                 $ref: "#/components/schemas/CategoryErrorResponse"
     delete:
       tags:
-        - カテゴリ
+        - Category
       summary: カテゴリ削除
       description: カテゴリを削除します（システムカテゴリは削除不可）
       security:
