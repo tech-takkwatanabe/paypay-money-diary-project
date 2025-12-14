@@ -6,7 +6,7 @@ import { AnnualExpenseBarChart } from '@/components/charts/AnnualExpenseBarChart
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, TrendingUp, Wallet, LogOut, Upload, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTransactionsSummary } from '@/api/generated/取引/取引';
+import { getTransactionsSummary } from '@/api/generated/transaction/transaction';
 import { customFetch } from '@/api/customFetch';
 import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from '@/api/models';
 import Link from 'next/link';
