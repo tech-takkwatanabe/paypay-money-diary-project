@@ -55,7 +55,7 @@ const ErrorResponseSchema = z
 export const signupRoute = createRoute({
 	method: 'post',
 	path: '/auth/signup',
-	tags: ['認証'],
+	tags: ['Auth'],
 	summary: 'ユーザー登録',
 	description: '新規ユーザーを登録します',
 	request: {
@@ -100,7 +100,7 @@ export const signupRoute = createRoute({
 export const loginRoute = createRoute({
 	method: 'post',
 	path: '/auth/login',
-	tags: ['認証'],
+	tags: ['Auth'],
 	summary: 'ログイン',
 	description: 'メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。',
 	request: {
@@ -145,7 +145,7 @@ export const loginRoute = createRoute({
 export const refreshRoute = createRoute({
 	method: 'post',
 	path: '/auth/refresh',
-	tags: ['認証'],
+	tags: ['Auth'],
 	summary: 'トークン更新',
 	description: 'Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します',
 	responses: {
@@ -181,7 +181,7 @@ export const refreshRoute = createRoute({
 export const logoutRoute = createRoute({
 	method: 'post',
 	path: '/auth/logout',
-	tags: ['認証'],
+	tags: ['Auth'],
 	summary: 'ログアウト',
 	description: '認証Cookieをクリアしてログアウトします',
 	security: [{ Cookie: [] }],
@@ -212,7 +212,7 @@ export const logoutRoute = createRoute({
 export const meRoute = createRoute({
 	method: 'get',
 	path: '/auth/me',
-	tags: ['認証'],
+	tags: ['Auth'],
 	summary: 'ユーザー情報取得',
 	description: '認証済みユーザーの情報を取得します（Cookie認証）',
 	security: [{ Cookie: [] }],
