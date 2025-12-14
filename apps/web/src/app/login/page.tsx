@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { postAuthLogin } from '@/api/generated/認証/認証';
+import { postAuthLogin } from '@/api/generated/auth/auth';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
