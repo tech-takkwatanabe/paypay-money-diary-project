@@ -28,7 +28,7 @@ const UploadCsvResponseSchema = z
 export const uploadCsvRoute = createRoute({
 	method: 'post',
 	path: '/transactions/upload',
-	tags: ['取引'],
+	tags: ['Transaction'],
 	summary: 'CSV アップロード',
 	description: 'PayPay CSV ファイルをアップロードして取引データをインポートします',
 	security: [{ Bearer: [] }],
@@ -108,7 +108,7 @@ const TransactionListResponseSchema = z
 export const getTransactionsRoute = createRoute({
 	method: 'get',
 	path: '/transactions',
-	tags: ['取引'],
+	tags: ['Transaction'],
 	summary: '取引履歴取得',
 	description: '取引履歴を取得します（ページネーション対応）',
 	security: [{ Bearer: [] }],
@@ -177,7 +177,7 @@ const SummaryResponseSchema = z
 export const getSummaryRoute = createRoute({
 	method: 'get',
 	path: '/transactions/summary',
-	tags: ['取引'],
+	tags: ['Transaction'],
 	summary: '取引集計',
 	description: '取引データの集計情報を取得します',
 	security: [{ Bearer: [] }],
