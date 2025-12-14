@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { getAuthMe, postAuthLogout } from '@/api/generated/認証/認証';
+import { getAuthMe, postAuthLogout } from '@/api/generated/auth/auth';
 import type { User } from '@/api/models';
 
 interface AuthContextType {
