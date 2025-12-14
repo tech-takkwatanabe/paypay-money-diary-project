@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { postTransactionsUpload } from '@/api/generated/取引/取引';
+import { postTransactionsUpload } from '@/api/generated/transaction/transaction';
 
 type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
 
