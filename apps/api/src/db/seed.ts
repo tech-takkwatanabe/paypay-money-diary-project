@@ -1,6 +1,6 @@
 import { db } from './index';
-import { categories, categoryRules } from './schema';
-import { isNull } from 'drizzle-orm';
+import { categories, categoryRules, expenses } from './schema';
+import { isNull, eq, and } from 'drizzle-orm';
 
 const defaultCategories = [
 	{ name: '食費', color: '#FF6B6B', icon: 'utensils', displayOrder: 1, isDefault: true },
@@ -29,16 +29,51 @@ const defaultRules = [
 ];
 
 async function seed() {
+	console.log('🔍 Checking for duplicate system categories...');
+
+	// 1. 重複データのクリーンアップ
+	const systemCategories = await db.select().from(categories).where(isNull(categories.userId));
+	const nameToIds = new Map<string, string[]>();
+
+	for (const cat of systemCategories) {
+		const ids = nameToIds.get(cat.name) || [];
+		ids.push(cat.id);
+		nameToIds.set(cat.name, ids);
+	}
+
+	for (const [name, ids] of nameToIds.entries()) {
+		if (ids.length > 1) {
+			console.log(`🧹 Cleaning up duplicates for category: ${name}`);
+			const [keepId, ...deleteIds] = ids;
+
+			// 関連データの移行 (expenses)
+			for (const deleteId of deleteIds) {
+				await db.update(expenses).set({ categoryId: keepId }).where(eq(expenses.categoryId, deleteId));
+				await db.update(categoryRules).set({ categoryId: keepId }).where(eq(categoryRules.categoryId, deleteId));
+				await db.delete(categories).where(eq(categories.id, deleteId));
+			}
+		}
+	}
+
 	console.log('🌱 Seeding default categories...');
 
 	for (const category of defaultCategories) {
-		await db
-			.insert(categories)
-			.values({
-				userId: null, // システム共通カテゴリ
+		// 存在チェック
+		const existing = await db
+			.select()
+			.from(categories)
+			.where(and(isNull(categories.userId), eq(categories.name, category.name)))
+			.limit(1);
+
+		if (existing.length === 0) {
+			await db.insert(categories).values({
+				userId: null,
 				...category,
-			})
-			.onConflictDoNothing();
+			});
+		} else {
+			// 既存データの更新 (色やアイコンが変わっている場合)
+			await db.update(categories).set(category).where(eq(categories.id, existing[0].id));
+		}
 	}
 
 	console.log('🌱 Seeding default category rules...');
@@ -50,15 +85,20 @@ async function seed() {
 	for (const rule of defaultRules) {
 		const categoryId = categoryMap.get(rule.categoryName);
 		if (categoryId) {
-			await db
-				.insert(categoryRules)
-				.values({
-					userId: null, // システム共通ルール
+			const existingRule = await db
+				.select()
+				.from(categoryRules)
+				.where(and(isNull(categoryRules.userId), eq(categoryRules.keyword, rule.keyword)))
+				.limit(1);
+
+			if (existingRule.length === 0) {
+				await db.insert(categoryRules).values({
+					userId: null,
 					keyword: rule.keyword,
 					categoryId: categoryId,
 					priority: 0,
-				})
-				.onConflictDoNothing();
+				});
+			}
 		}
 	}
 
