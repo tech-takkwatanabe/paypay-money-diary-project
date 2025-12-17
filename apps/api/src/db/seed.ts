@@ -1,5 +1,6 @@
 import { db } from './index';
-import { categories } from './schema';
+import { categories, categoryRules } from './schema';
+import { isNull } from 'drizzle-orm';
 
 const defaultCategories = [
 	{ name: '食費', color: '#FF6B6B', icon: 'utensils', displayOrder: 1, isDefault: true },
@@ -10,6 +11,21 @@ const defaultCategories = [
 	{ name: '光熱費', color: '#DDA0DD', icon: 'zap', displayOrder: 6, isDefault: true },
 	{ name: '医療費', color: '#98D8C8', icon: 'stethoscope', displayOrder: 7, isDefault: true },
 	{ name: 'その他', color: '#B8B8B8', icon: 'circle-dot', displayOrder: 99, isDefault: true },
+];
+
+const defaultRules = [
+	{ keyword: 'ファミリーマート', categoryName: '日用品' },
+	{ keyword: 'セブン－イレブン', categoryName: '日用品' },
+	{ keyword: 'ローソン', categoryName: '日用品' },
+	{ keyword: 'マクドナルド', categoryName: '食費' },
+	{ keyword: '吉野家', categoryName: '食費' },
+	{ keyword: 'スターバックス', categoryName: '食費' },
+	{ keyword: 'ＪＲ', categoryName: '交通費' },
+	{ keyword: '地下鉄', categoryName: '交通費' },
+	{ keyword: 'タクシー', categoryName: '交通費' },
+	{ keyword: 'ソフトバンク', categoryName: '通信費' },
+	{ keyword: 'ドコモ', categoryName: '通信費' },
+	{ keyword: 'ａｕ', categoryName: '通信費' },
 ];
 
 async function seed() {
@@ -23,6 +39,27 @@ async function seed() {
 				...category,
 			})
 			.onConflictDoNothing();
+	}
+
+	console.log('🌱 Seeding default category rules...');
+
+	// カテゴリ名からIDへのマップを作成
+	const allCategories = await db.select().from(categories).where(isNull(categories.userId));
+	const categoryMap = new Map(allCategories.map((c) => [c.name, c.id]));
+
+	for (const rule of defaultRules) {
+		const categoryId = categoryMap.get(rule.categoryName);
+		if (categoryId) {
+			await db
+				.insert(categoryRules)
+				.values({
+					userId: null, // システム共通ルール
+					keyword: rule.keyword,
+					categoryId: categoryId,
+					priority: 0,
+				})
+				.onConflictDoNothing();
+		}
 	}
 
 	console.log('✅ Seeding completed!');
