@@ -384,6 +384,93 @@ components:
           description: メッセージ
       required:
         - message
+    Rule:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ルールID
+        keyword:
+          type: string
+          description: キーワード
+        categoryId:
+          type: string
+          description: カテゴリID
+        categoryName:
+          type: string
+          description: カテゴリ名
+        priority:
+          type: number
+          description: 優先度
+        isSystem:
+          type: boolean
+          description: システムルールか
+      required:
+        - id
+        - keyword
+        - categoryId
+        - categoryName
+        - priority
+        - isSystem
+    RuleListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rule"
+          description: ルール一覧
+      required:
+        - data
+    RuleErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: エラーメッセージ
+      required:
+        - error
+    CreateRuleRequest:
+      type: object
+      properties:
+        keyword:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: キーワード
+        categoryId:
+          type: string
+          description: カテゴリID
+        priority:
+          type: integer
+          minimum: 0
+          description: 優先度
+      required:
+        - keyword
+        - categoryId
+    UpdateRuleRequest:
+      type: object
+      properties:
+        keyword:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: キーワード
+        categoryId:
+          type: string
+          description: カテゴリID
+        priority:
+          type: integer
+          minimum: 0
+          description: 優先度
+    DeleteRuleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
+      required:
+        - message
   parameters: {}
 paths:
   /auth/signup:
@@ -717,6 +804,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TransactionErrorResponse"
+  /transactions/re-categorize:
+    post:
+      tags:
+        - Transaction
+      summary: 取引再カテゴリ分類
+      description: 現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します
+      security:
+        - Cookie: []
+      responses:
+        "200":
+          description: 処理成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
   /categories:
     get:
       tags:
@@ -897,3 +1026,171 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CategoryErrorResponse"
+  /rules:
+    get:
+      tags:
+        - Rule
+      summary: ルール一覧取得
+      description: ユーザーのカテゴリルール一覧を取得します
+      security:
+        - Cookie: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleListResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+    post:
+      tags:
+        - Rule
+      summary: ルール作成
+      description: 新しいカテゴリルールを作成します
+      security:
+        - Cookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRuleRequest"
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rule"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+  /rules/{id}:
+    put:
+      tags:
+        - Rule
+      summary: ルール更新
+      description: カテゴリルールを更新します（システムルールは更新不可）
+      security:
+        - Cookie: []
+      parameters:
+        - schema:
+            type: string
+            description: ルールID
+          required: true
+          description: ルールID
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRuleRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rule"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "404":
+          description: ルールが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+    delete:
+      tags:
+        - Rule
+      summary: ルール削除
+      description: カテゴリルールを削除します（システムルールは削除不可）
+      security:
+        - Cookie: []
+      parameters:
+        - schema:
+            type: string
+            description: ルールID
+          required: true
+          description: ルールID
+          name: id
+          in: path
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteRuleResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "404":
+          description: ルールが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleErrorResponse"
