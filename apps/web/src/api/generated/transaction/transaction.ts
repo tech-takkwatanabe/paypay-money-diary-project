@@ -8,6 +8,9 @@
 import type {
   GetTransactionsParams,
   GetTransactionsSummaryParams,
+  PostTransactionsReCategorize200,
+  PostTransactionsReCategorize401,
+  PostTransactionsReCategorize500,
   PostTransactionsUploadBody,
   SummaryResponse,
   TransactionErrorResponse,
@@ -198,6 +201,56 @@ export const getTransactionsSummary = async (
     {
       ...options,
       method: "GET",
+    },
+  );
+};
+
+/**
+ * 現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します
+ * @summary 取引再カテゴリ分類
+ */
+export type postTransactionsReCategorizeResponse200 = {
+  data: PostTransactionsReCategorize200;
+  status: 200;
+};
+
+export type postTransactionsReCategorizeResponse401 = {
+  data: PostTransactionsReCategorize401;
+  status: 401;
+};
+
+export type postTransactionsReCategorizeResponse500 = {
+  data: PostTransactionsReCategorize500;
+  status: 500;
+};
+
+export type postTransactionsReCategorizeResponseSuccess =
+  postTransactionsReCategorizeResponse200 & {
+    headers: Headers;
+  };
+export type postTransactionsReCategorizeResponseError = (
+  | postTransactionsReCategorizeResponse401
+  | postTransactionsReCategorizeResponse500
+) & {
+  headers: Headers;
+};
+
+export type postTransactionsReCategorizeResponse =
+  | postTransactionsReCategorizeResponseSuccess
+  | postTransactionsReCategorizeResponseError;
+
+export const getPostTransactionsReCategorizeUrl = () => {
+  return `/transactions/re-categorize`;
+};
+
+export const postTransactionsReCategorize = async (
+  options?: RequestInit,
+): Promise<postTransactionsReCategorizeResponse> => {
+  return customFetch<postTransactionsReCategorizeResponse>(
+    getPostTransactionsReCategorizeUrl(),
+    {
+      ...options,
+      method: "POST",
     },
   );
 };
