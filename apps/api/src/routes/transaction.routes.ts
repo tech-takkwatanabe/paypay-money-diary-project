@@ -209,7 +209,45 @@ export const getSummaryRoute = createRoute({
 	},
 });
 
+export const reCategorizeRoute = createRoute({
+	method: 'post',
+	path: '/transactions/re-categorize',
+	tags: ['Transaction'],
+	summary: '取引再カテゴリ分類',
+	description: '現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します',
+	security: [{ Cookie: [] }],
+	responses: {
+		200: {
+			description: '処理成功',
+			content: {
+				'application/json': {
+					schema: z.object({
+						message: z.string(),
+					}),
+				},
+			},
+		},
+		401: {
+			description: '認証エラー',
+			content: {
+				'application/json': {
+					schema: z.object({ error: z.string() }),
+				},
+			},
+		},
+		500: {
+			description: 'サーバーエラー',
+			content: {
+				'application/json': {
+					schema: z.object({ error: z.string() }),
+				},
+			},
+		},
+	},
+});
+
 // 型エクスポート
 export type UploadCsvRoute = typeof uploadCsvRoute;
 export type GetTransactionsRoute = typeof getTransactionsRoute;
 export type GetSummaryRoute = typeof getSummaryRoute;
+export type ReCategorizeRoute = typeof reCategorizeRoute;
