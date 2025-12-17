@@ -1,4 +1,5 @@
 import { pgTable, bigserial, varchar, timestamp, char, integer, jsonb, boolean, uuid as pgUuid, unique, index } from 'drizzle-orm/pg-core';
+import { isNull } from 'drizzle-orm';
 
 export const users = pgTable('users', {
 	id: bigserial('id', { mode: 'number' }).primaryKey(),
@@ -36,6 +37,7 @@ export const categories = pgTable(
 	},
 	(table) => ({
 		uniqueCategoryPerUser: unique('unique_category_per_user').on(table.userId, table.name),
+		uniqueSystemCategory: index('unique_system_category').on(table.name).where(isNull(table.userId)),
 	})
 );
 
