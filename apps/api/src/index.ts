@@ -11,13 +11,19 @@ import { uploadCsvHandler } from '@/interface/http/transaction/upload';
 import { getTransactionsHandler } from '@/interface/http/transaction/list';
 import { getTransactionsSummaryHandler } from '@/interface/http/transaction/summary';
 import { getAvailableYearsHandler } from '@/interface/http/transaction/availableYears';
+import { reCategorizeHandler } from '@/interface/http/transaction/reCategorize';
 import { getCategoriesHandler } from '@/interface/http/category/list';
 import { createCategoryHandler } from '@/interface/http/category/create';
 import { updateCategoryHandler } from '@/interface/http/category/update';
 import { deleteCategoryHandler } from '@/interface/http/category/delete';
+import { getRulesHandler } from '@/interface/http/rule/list';
+import { createRuleHandler } from '@/interface/http/rule/create';
+import { updateRuleHandler } from '@/interface/http/rule/update';
+import { deleteRuleHandler } from '@/interface/http/rule/delete';
 
 // OpenAPI Route definitions
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
+import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from '@/routes/rule.routes';
 
 const app = new OpenAPIHono();
 
@@ -53,12 +59,19 @@ api.post('/transactions/upload', authMiddleware, uploadCsvHandler);
 api.get('/transactions', authMiddleware, getTransactionsHandler);
 api.get('/transactions/summary', authMiddleware, getTransactionsSummaryHandler);
 api.get('/transactions/years', authMiddleware, getAvailableYearsHandler);
+api.post('/transactions/re-categorize', authMiddleware, reCategorizeHandler);
 
 // ===== カテゴリ API =====
 api.get('/categories', authMiddleware, getCategoriesHandler);
 api.post('/categories', authMiddleware, createCategoryHandler);
 api.put('/categories/:id', authMiddleware, updateCategoryHandler);
 api.delete('/categories/:id', authMiddleware, deleteCategoryHandler);
+
+// ===== ルール API =====
+api.openapi(getRulesRoute, getRulesHandler);
+api.openapi(createRuleRoute, createRuleHandler);
+api.openapi(updateRuleRoute, updateRuleHandler);
+api.openapi(deleteRuleRoute, deleteRuleHandler);
 
 // ===== OpenAPI ドキュメント (開発環境のみ) =====
 if (process.env.NODE_ENV !== 'production') {
