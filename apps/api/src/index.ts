@@ -1,29 +1,20 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import { cors } from 'hono/cors';
-import { signupHandler } from '@/interface/http/auth/signup';
-import { loginHandler } from '@/interface/http/auth/login';
-import { meHandler } from '@/interface/http/auth/me';
-import { refreshHandler } from '@/interface/http/auth/refresh';
-import { logoutHandler } from '@/interface/http/auth/logout';
 import { authMiddleware } from '@/interface/http/middleware/auth';
-import { uploadCsvHandler } from '@/interface/http/transaction/upload';
-import { getTransactionsHandler } from '@/interface/http/transaction/list';
-import { getTransactionsSummaryHandler } from '@/interface/http/transaction/summary';
-import { getAvailableYearsHandler } from '@/interface/http/transaction/availableYears';
-import { reCategorizeHandler } from '@/interface/http/transaction/reCategorize';
-import { getCategoriesHandler } from '@/interface/http/category/list';
-import { createCategoryHandler } from '@/interface/http/category/create';
-import { updateCategoryHandler } from '@/interface/http/category/update';
-import { deleteCategoryHandler } from '@/interface/http/category/delete';
-import { getRulesHandler } from '@/interface/http/rule/list';
-import { createRuleHandler } from '@/interface/http/rule/create';
-import { updateRuleHandler } from '@/interface/http/rule/update';
-import { deleteRuleHandler } from '@/interface/http/rule/delete';
+
+// Handlers
+import { signupHandler, loginHandler, refreshHandler, logoutHandler, meHandler } from '@/interface/http/auth';
+import { uploadCsvHandler, getTransactionsHandler, getTransactionsSummaryHandler, getAvailableYearsHandler, reCategorizeHandler } from '@/interface/http/transaction';
+import { getCategoriesHandler, createCategoryHandler, updateCategoryHandler, deleteCategoryHandler } from '@/interface/http/category';
+import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandler } from '@/interface/http/rule';
+import { getBudgetsHandler } from '@/interface/http/budget/list';
+import { upsertBudgetHandler } from '@/interface/http/budget/upsert';
 
 // OpenAPI Route definitions
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
 import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from '@/routes/rule.routes';
+import { getBudgetsRoute, upsertBudgetRoute } from '@/routes/budget.routes';
 
 const app = new OpenAPIHono();
 
@@ -72,6 +63,10 @@ api.openapi(getRulesRoute, getRulesHandler);
 api.openapi(createRuleRoute, createRuleHandler);
 api.openapi(updateRuleRoute, updateRuleHandler);
 api.openapi(deleteRuleRoute, deleteRuleHandler);
+
+// ===== 予算 API =====
+api.openapi(getBudgetsRoute, getBudgetsHandler);
+api.openapi(upsertBudgetRoute, upsertBudgetHandler);
 
 // ===== OpenAPI ドキュメント (開発環境のみ) =====
 if (process.env.NODE_ENV !== 'production') {

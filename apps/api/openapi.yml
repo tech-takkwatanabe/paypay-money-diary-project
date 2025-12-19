@@ -1194,3 +1194,201 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RuleErrorResponse"
+  /budgets:
+    get:
+      tags:
+        - Budget
+      summary: 予算一覧取得
+      description: 指定した年月の予算一覧を取得します。
+      security:
+        - Cookie: []
+      parameters:
+        - schema:
+            type: string
+          required: false
+          name: year
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: month
+          in: query
+      responses:
+        "200":
+          description: 予算一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        userId:
+                          type: string
+                        categoryId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        categoryName:
+                          type: string
+                          nullable: true
+                        amount:
+                          type: integer
+                          minimum: 0
+                        year:
+                          type: integer
+                        month:
+                          type: integer
+                          minimum: 1
+                          maximum: 12
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                      required:
+                        - id
+                        - userId
+                        - categoryId
+                        - categoryName
+                        - amount
+                        - year
+                        - month
+                        - createdAt
+                        - updatedAt
+                required:
+                  - data
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+    post:
+      tags:
+        - Budget
+      summary: 予算設定・更新
+      description: 予算を設定または更新します。
+      security:
+        - Cookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: string
+                  nullable: true
+                  format: uuid
+                amount:
+                  type: integer
+                  minimum: 0
+                year:
+                  type: integer
+                month:
+                  type: integer
+                  minimum: 1
+                  maximum: 12
+              required:
+                - categoryId
+                - amount
+                - year
+                - month
+      responses:
+        "200":
+          description: 設定された予算
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                  categoryId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  categoryName:
+                    type: string
+                    nullable: true
+                  amount:
+                    type: integer
+                    minimum: 0
+                  year:
+                    type: integer
+                  month:
+                    type: integer
+                    minimum: 1
+                    maximum: 12
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                required:
+                  - id
+                  - userId
+                  - categoryId
+                  - categoryName
+                  - amount
+                  - year
+                  - month
+                  - createdAt
+                  - updatedAt
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
