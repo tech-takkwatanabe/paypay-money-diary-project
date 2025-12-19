@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, TrendingUp, Wallet, LogOut, Upload, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTransactionsSummary } from '@/api/generated/transaction/transaction';
+import { getBudgets } from '@/api/generated/budget/budget';
 import { customFetch } from '@/api/customFetch';
 import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from '@/api/models';
+import type { GetBudgets200DataItem } from '@/api/models';
 import Link from 'next/link';
 
 interface AvailableYearsResponse {
@@ -22,8 +24,32 @@ export default function Dashboard() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [availableYears, setAvailableYears] = useState<number[]>([]);
 	const [selectedYear, setSelectedYear] = useState<number | null>(null);
+	const [monthlyBudget, setMonthlyBudget] = useState<GetBudgets200DataItem | null>(null);
 
-	const currentMonth = new Date().getMonth() + 1;
+	const now = new Date();
+	const currentMonth = now.getMonth() + 1;
+	const currentYear = now.getFullYear();
+
+	// 予算データを取得
+	const fetchBudget = useCallback(async (year: number, month: number) => {
+		try {
+			const response = await getBudgets({
+				year: year.toString(),
+				month: month.toString(),
+			});
+			if (response.status === 200 && 'data' in response.data) {
+				// 全体予算 (categoryId: null) を探す
+				const overall = response.data.data.find((b: GetBudgets200DataItem) => b.categoryId === null);
+				setMonthlyBudget(overall || null);
+			}
+		} catch (_error) {
+			console.error('Failed to fetch budget');
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchBudget(currentYear, currentMonth);
+	}, [currentYear, currentMonth, fetchBudget]);
 
 	// 利用可能な年を取得
 	useEffect(() => {
@@ -121,6 +147,11 @@ export default function Dashboard() {
 						className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 						ルール
 					</Link>
+					<Link
+						href="/budgets"
+						className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+						予算
+					</Link>
 					<Link href="/upload" className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity">
 						<Upload className="h-4 w-4" />
 						<span className="hidden sm:inline">CSV アップロード</span>
@@ -153,7 +184,7 @@ export default function Dashboard() {
 				</div>
 
 				{/* KPI Cards */}
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 							<CardTitle className="text-sm font-medium">{currentMonth}月の支出</CardTitle>
@@ -185,6 +216,34 @@ export default function Dashboard() {
 								<>
 									<div className="text-2xl font-bold">{formatCurrency(yearlyTotal)}</div>
 									<p className="text-xs text-muted-foreground">{selectedYear}年度</p>
+								</>
+							)}
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+							<CardTitle className="text-sm font-medium">今月の予算進捗</CardTitle>
+							<TrendingUp className="h-4 w-4 text-muted-foreground" />
+						</CardHeader>
+						<CardContent>
+							{isLoading ? (
+								<div className="h-8 bg-muted animate-pulse rounded" />
+							) : (
+								<>
+									<div className="flex items-end justify-between mb-2">
+										<div className="text-2xl font-bold">{monthlyBudget ? Math.round((thisMonthExpense / monthlyBudget.amount) * 100) : 0}%</div>
+										<div className="text-xs text-muted-foreground">
+											{formatCurrency(thisMonthExpense)} / {monthlyBudget ? formatCurrency(monthlyBudget.amount) : '未設定'}
+										</div>
+									</div>
+									<div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+										<div
+											className={`h-full transition-all duration-500 ${monthlyBudget && thisMonthExpense > monthlyBudget.amount ? 'bg-red-500' : 'bg-indigo-500'}`}
+											style={{
+												width: `${Math.min(monthlyBudget ? (thisMonthExpense / monthlyBudget.amount) * 100 : 0, 100)}%`,
+											}}
+										/>
+									</div>
 								</>
 							)}
 						</CardContent>
