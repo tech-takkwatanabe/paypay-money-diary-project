@@ -75,21 +75,3 @@ export const expenses = pgTable(
 		merchantIdx: index('idx_expenses_merchant').on(table.userId, table.merchant),
 	})
 );
-export const budgets = pgTable(
-	'budgets',
-	{
-		id: pgUuid('id').defaultRandom().primaryKey(),
-		userId: char('user_id', { length: 36 })
-			.notNull()
-			.references(() => users.uuid, { onDelete: 'cascade' }),
-		categoryId: pgUuid('category_id').references(() => categories.id, { onDelete: 'cascade' }),
-		amount: integer('amount').notNull(),
-		year: integer('year').notNull(),
-		month: integer('month').notNull(),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
-		updatedAt: timestamp('updated_at').defaultNow().notNull(),
-	},
-	(table) => ({
-		uniqueBudget: unique('unique_budget').on(table.userId, table.categoryId, table.year, table.month),
-	})
-);

@@ -8,14 +8,9 @@ import { signupHandler, loginHandler, refreshHandler, logoutHandler, meHandler }
 import { uploadCsvHandler, getTransactionsHandler, getTransactionsSummaryHandler, getAvailableYearsHandler, reCategorizeHandler } from '@/interface/http/transaction';
 import { getCategoriesHandler, createCategoryHandler, updateCategoryHandler, deleteCategoryHandler } from '@/interface/http/category';
 import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandler } from '@/interface/http/rule';
-import { getBudgetsHandler } from '@/interface/http/budget/list';
-import { upsertBudgetHandler } from '@/interface/http/budget/upsert';
-
 // OpenAPI Route definitions
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from '@/routes/auth.routes';
 import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from '@/routes/rule.routes';
-import { getBudgetsRoute, upsertBudgetRoute } from '@/routes/budget.routes';
-
 const app = new OpenAPIHono();
 
 // CORS 設定 (Cookie 認証に必要)
@@ -63,10 +58,6 @@ api.openapi(getRulesRoute, getRulesHandler);
 api.openapi(createRuleRoute, createRuleHandler);
 api.openapi(updateRuleRoute, updateRuleHandler);
 api.openapi(deleteRuleRoute, deleteRuleHandler);
-
-// ===== 予算 API =====
-api.openapi(getBudgetsRoute, getBudgetsHandler);
-api.openapi(upsertBudgetRoute, upsertBudgetHandler);
 
 // ===== OpenAPI ドキュメント (開発環境のみ) =====
 if (process.env.NODE_ENV !== 'production') {

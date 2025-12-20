@@ -40,9 +40,6 @@ import {
 // Rule routes
 import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute, type GetRulesRoute, type CreateRuleRoute, type UpdateRuleRoute, type DeleteRuleRoute } from '@/routes/rule.routes';
 
-// Budget routes
-import { getBudgetsRoute, upsertBudgetRoute, type GetBudgetsRoute, type UpsertBudgetRoute } from '@/routes/budget.routes';
-
 const app = new OpenAPIHono();
 
 // ===== Auth dummy handlers =====
@@ -187,28 +184,6 @@ const deleteRuleDummy: RouteHandler<DeleteRuleRoute> = async (c) => {
 	return c.json({ message: '' }, 200);
 };
 
-// ===== Budget dummy handlers =====
-const getBudgetsDummy: RouteHandler<GetBudgetsRoute> = async (c) => {
-	return c.json({ data: [] }, 200);
-};
-
-const upsertBudgetDummy: RouteHandler<UpsertBudgetRoute> = async (c) => {
-	return c.json(
-		{
-			id: '',
-			userId: '',
-			categoryId: null,
-			categoryName: null,
-			amount: 0,
-			year: 2024,
-			month: 1,
-			createdAt: '',
-			updatedAt: '',
-		},
-		200
-	);
-};
-
 // Register all routes
 app.openapi(signupRoute, signupDummy);
 app.openapi(loginRoute, loginDummy);
@@ -230,9 +205,6 @@ app.openapi(getRulesRoute, getRulesDummy);
 app.openapi(createRuleRoute, createRuleDummy);
 app.openapi(updateRuleRoute, updateRuleDummy);
 app.openapi(deleteRuleRoute, deleteRuleDummy);
-
-app.openapi(getBudgetsRoute, getBudgetsDummy);
-app.openapi(upsertBudgetRoute, upsertBudgetDummy);
 
 // Register security scheme
 app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
@@ -265,4 +237,3 @@ console.log('📝 認証API: 5エンドポイント');
 console.log('📝 取引API: 4エンドポイント');
 console.log('📝 カテゴリAPI: 4エンドポイント');
 console.log('📝 ルールAPI: 4エンドポイント');
-console.log('📝 予算API: 2エンドポイント');
