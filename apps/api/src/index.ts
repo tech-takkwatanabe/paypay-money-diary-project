@@ -54,6 +54,8 @@ api.put('/categories/:id', authMiddleware, updateCategoryHandler);
 api.delete('/categories/:id', authMiddleware, deleteCategoryHandler);
 
 // ===== ルール API =====
+api.use('/rules', authMiddleware);
+api.use('/rules/*', authMiddleware);
 api.openapi(getRulesRoute, getRulesHandler);
 api.openapi(createRuleRoute, createRuleHandler);
 api.openapi(updateRuleRoute, updateRuleHandler);
