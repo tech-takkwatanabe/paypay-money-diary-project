@@ -10,6 +10,9 @@ const getBaseUrl = () => {
 // 401でリダイレクトしないパス（認証チェック用）
 const NO_REDIRECT_PATHS = ['/auth/me', '/auth/refresh'];
 
+// トークンリフレッシュの重複実行を防ぐためのプロミス
+let refreshPromise: Promise<boolean> | null = null;
+
 export const customFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
 	const baseUrl = getBaseUrl();
 	const fullUrl = `${baseUrl}${url}`;
@@ -27,13 +30,20 @@ export const customFetch = async <T>(url: string, options?: RequestInit): Promis
 			return { status: 401, data, headers: response.headers } as T;
 		}
 
-		// トークンリフレッシュを試行
-		const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
-			method: 'POST',
-			credentials: 'include',
-		});
+		// すでにリフレッシュ実行中の場合は、その完了を待つ
+		if (!refreshPromise) {
+			refreshPromise = fetch(`${baseUrl}/auth/refresh`, {
+				method: 'POST',
+				credentials: 'include',
+			}).then((res) => {
+				refreshPromise = null; // 完了したらリセット
+				return res.ok;
+			});
+		}
 
-		if (refreshResponse.ok) {
+		const isRefreshed = await refreshPromise;
+
+		if (isRefreshed) {
 			// リフレッシュ成功 → 元のリクエストを再試行
 			const retryResponse = await fetch(fullUrl, {
 				...options,

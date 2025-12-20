@@ -25,7 +25,12 @@ export const refreshHandler = async (c: Context) => {
 		// トークンはレスポンスボディに含めない
 		return c.json({ message: 'Token refreshed successfully' }, 200);
 	} catch (error) {
-		console.error(error);
+		if (error instanceof Error && error.message === 'Invalid refresh token') {
+			// 無効なトークンの場合は警告レベルでログ出力（または出力しない）
+			console.warn(`Refresh failed: ${error.message}`);
+		} else {
+			console.error('Unexpected error during refresh:', error);
+		}
 		return c.json({ error: 'Invalid refresh token' }, 401);
 	}
 };
