@@ -35,10 +35,7 @@ export const categories = pgTable(
 		isDefault: boolean('is_default').notNull().default(false),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 	},
-	(table) => ({
-		uniqueCategoryPerUser: unique('unique_category_per_user').on(table.userId, table.name),
-		uniqueSystemCategory: index('unique_system_category').on(table.name).where(isNull(table.userId)),
-	})
+	(table) => [unique('unique_category_per_user').on(table.userId, table.name), index('unique_system_category').on(table.name).where(isNull(table.userId))]
 );
 
 export const categoryRules = pgTable('category_rules', {
@@ -68,10 +65,10 @@ export const expenses = pgTable(
 		externalTransactionId: varchar('external_transaction_id', { length: 50 }),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 	},
-	(table) => ({
-		uniqueUserTransaction: unique('unique_user_transaction').on(table.userId, table.externalTransactionId),
-		userDateIdx: index('idx_expenses_user_date').on(table.userId, table.transactionDate),
-		categoryIdx: index('idx_expenses_category').on(table.userId, table.categoryId),
-		merchantIdx: index('idx_expenses_merchant').on(table.userId, table.merchant),
-	})
+	(table) => [
+		unique('unique_user_transaction').on(table.userId, table.externalTransactionId),
+		index('idx_expenses_user_date').on(table.userId, table.transactionDate),
+		index('idx_expenses_category').on(table.userId, table.categoryId),
+		index('idx_expenses_merchant').on(table.userId, table.merchant),
+	]
 );
