@@ -22,6 +22,13 @@
       "when": 1765203071368,
       "tag": "0002_flippant_wonder_man",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766127667488,
+      "tag": "0003_parallel_wallow",
+      "breakpoints": true
     }
   ]
 }
