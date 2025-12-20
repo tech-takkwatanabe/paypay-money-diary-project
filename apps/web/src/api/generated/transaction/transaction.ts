@@ -44,10 +44,9 @@ export type postTransactionsUploadResponse500 = {
   status: 500;
 };
 
-export type postTransactionsUploadResponseSuccess =
-  postTransactionsUploadResponse201 & {
-    headers: Headers;
-  };
+export type postTransactionsUploadResponseSuccess = postTransactionsUploadResponse201 & {
+  headers: Headers;
+};
 export type postTransactionsUploadResponseError = (
   | postTransactionsUploadResponse400
   | postTransactionsUploadResponse401
@@ -66,19 +65,16 @@ export const getPostTransactionsUploadUrl = () => {
 
 export const postTransactionsUpload = async (
   postTransactionsUploadBody: PostTransactionsUploadBody,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postTransactionsUploadResponse> => {
   const formData = new FormData();
   formData.append(`file`, postTransactionsUploadBody.file);
 
-  return customFetch<postTransactionsUploadResponse>(
-    getPostTransactionsUploadUrl(),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
+  return customFetch<postTransactionsUploadResponse>(getPostTransactionsUploadUrl(), {
+    ...options,
+    method: "POST",
+    body: formData,
+  });
 };
 
 /**
@@ -103,16 +99,11 @@ export type getTransactionsResponse500 = {
 export type getTransactionsResponseSuccess = getTransactionsResponse200 & {
   headers: Headers;
 };
-export type getTransactionsResponseError = (
-  | getTransactionsResponse401
-  | getTransactionsResponse500
-) & {
+export type getTransactionsResponseError = (getTransactionsResponse401 | getTransactionsResponse500) & {
   headers: Headers;
 };
 
-export type getTransactionsResponse =
-  | getTransactionsResponseSuccess
-  | getTransactionsResponseError;
+export type getTransactionsResponse = getTransactionsResponseSuccess | getTransactionsResponseError;
 
 export const getGetTransactionsUrl = (params?: GetTransactionsParams) => {
   const normalizedParams = new URLSearchParams();
@@ -125,14 +116,12 @@ export const getGetTransactionsUrl = (params?: GetTransactionsParams) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/transactions?${stringifiedParams}`
-    : `/transactions`;
+  return stringifiedParams.length > 0 ? `/transactions?${stringifiedParams}` : `/transactions`;
 };
 
 export const getTransactions = async (
   params?: GetTransactionsParams,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<getTransactionsResponse> => {
   return customFetch<getTransactionsResponse>(getGetTransactionsUrl(params), {
     ...options,
@@ -159,10 +148,9 @@ export type getTransactionsSummaryResponse500 = {
   status: 500;
 };
 
-export type getTransactionsSummaryResponseSuccess =
-  getTransactionsSummaryResponse200 & {
-    headers: Headers;
-  };
+export type getTransactionsSummaryResponseSuccess = getTransactionsSummaryResponse200 & {
+  headers: Headers;
+};
 export type getTransactionsSummaryResponseError = (
   | getTransactionsSummaryResponse401
   | getTransactionsSummaryResponse500
@@ -174,9 +162,7 @@ export type getTransactionsSummaryResponse =
   | getTransactionsSummaryResponseSuccess
   | getTransactionsSummaryResponseError;
 
-export const getGetTransactionsSummaryUrl = (
-  params?: GetTransactionsSummaryParams,
-) => {
+export const getGetTransactionsSummaryUrl = (params?: GetTransactionsSummaryParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -187,22 +173,17 @@ export const getGetTransactionsSummaryUrl = (
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/transactions/summary?${stringifiedParams}`
-    : `/transactions/summary`;
+  return stringifiedParams.length > 0 ? `/transactions/summary?${stringifiedParams}` : `/transactions/summary`;
 };
 
 export const getTransactionsSummary = async (
   params?: GetTransactionsSummaryParams,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<getTransactionsSummaryResponse> => {
-  return customFetch<getTransactionsSummaryResponse>(
-    getGetTransactionsSummaryUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
+  return customFetch<getTransactionsSummaryResponse>(getGetTransactionsSummaryUrl(params), {
+    ...options,
+    method: "GET",
+  });
 };
 
 /**
@@ -224,10 +205,9 @@ export type postTransactionsReCategorizeResponse500 = {
   status: 500;
 };
 
-export type postTransactionsReCategorizeResponseSuccess =
-  postTransactionsReCategorizeResponse200 & {
-    headers: Headers;
-  };
+export type postTransactionsReCategorizeResponseSuccess = postTransactionsReCategorizeResponse200 & {
+  headers: Headers;
+};
 export type postTransactionsReCategorizeResponseError = (
   | postTransactionsReCategorizeResponse401
   | postTransactionsReCategorizeResponse500
@@ -244,13 +224,10 @@ export const getPostTransactionsReCategorizeUrl = () => {
 };
 
 export const postTransactionsReCategorize = async (
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postTransactionsReCategorizeResponse> => {
-  return customFetch<postTransactionsReCategorizeResponse>(
-    getPostTransactionsReCategorizeUrl(),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
+  return customFetch<postTransactionsReCategorizeResponse>(getPostTransactionsReCategorizeUrl(), {
+    ...options,
+    method: "POST",
+  });
 };

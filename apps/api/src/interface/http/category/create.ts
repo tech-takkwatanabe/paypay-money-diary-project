@@ -26,10 +26,7 @@ export const createCategoryHandler = async (c: Context) => {
     const result = CreateCategorySchema.safeParse(body);
 
     if (!result.success) {
-      return c.json(
-        { error: "Invalid request body", details: result.error.issues },
-        400,
-      );
+      return c.json({ error: "Invalid request body", details: result.error.issues }, 400);
     }
 
     const { name, color, icon, displayOrder } = result.data;
@@ -55,7 +52,7 @@ export const createCategoryHandler = async (c: Context) => {
         displayOrder: category.displayOrder,
         isDefault: category.isDefault,
       },
-      201,
+      201
     );
   } catch (error) {
     if (error instanceof Error && error.message.includes("unique")) {

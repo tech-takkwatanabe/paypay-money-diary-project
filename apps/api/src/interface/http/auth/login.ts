@@ -25,7 +25,7 @@ export const loginHandler = async (c: Context) => {
       {
         user: result.user,
       },
-      200,
+      200
     );
   } catch (error) {
     if (error instanceof Error && error.message === "Invalid credentials") {

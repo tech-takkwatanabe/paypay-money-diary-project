@@ -74,7 +74,7 @@ const loginDummy: RouteHandler<LoginRoute> = async (c) => {
       refreshToken: "",
       user: { id: "", name: "", email: "" },
     },
-    200,
+    200
   );
 };
 
@@ -101,7 +101,7 @@ const uploadCsvDummy: RouteHandler<UploadCsvRoute> = async (c) => {
       skippedRows: 0,
       duplicateRows: 0,
     },
-    201,
+    201
   );
 };
 
@@ -111,7 +111,7 @@ const getTransactionsDummy: RouteHandler<GetTransactionsRoute> = async (c) => {
       data: [],
       pagination: { page: 1, limit: 50, totalCount: 0, totalPages: 0 },
     },
-    200,
+    200
   );
 };
 
@@ -122,7 +122,7 @@ const getSummaryDummy: RouteHandler<GetSummaryRoute> = async (c) => {
       categoryBreakdown: [],
       monthlyBreakdown: [],
     },
-    200,
+    200
   );
 };
 
@@ -145,7 +145,7 @@ const createCategoryDummy: RouteHandler<CreateCategoryRoute> = async (c) => {
       displayOrder: 0,
       isDefault: false,
     },
-    201,
+    201
   );
 };
 
@@ -159,7 +159,7 @@ const updateCategoryDummy: RouteHandler<UpdateCategoryRoute> = async (c) => {
       displayOrder: 0,
       isDefault: false,
     },
-    200,
+    200
   );
 };
 
@@ -182,7 +182,7 @@ const createRuleDummy: RouteHandler<CreateRuleRoute> = async (c) => {
       priority: 0,
       isSystem: false,
     },
-    201,
+    201
   );
 };
 
@@ -196,7 +196,7 @@ const updateRuleDummy: RouteHandler<UpdateRuleRoute> = async (c) => {
       priority: 0,
       isSystem: false,
     },
-    200,
+    200
   );
 };
 

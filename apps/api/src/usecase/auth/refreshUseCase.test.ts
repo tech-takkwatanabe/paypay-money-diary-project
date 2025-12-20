@@ -37,24 +37,17 @@ const mockFindOldRefreshToken = mock();
 const mockDeleteRefreshToken = mock();
 
 const mockTokenRepository: ITokenRepository = {
-  saveRefreshToken:
-    mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
-  findRefreshToken:
-    mockFindRefreshToken as ITokenRepository["findRefreshToken"],
-  findOldRefreshToken:
-    mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
-  deleteRefreshToken:
-    mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
+  saveRefreshToken: mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
+  findRefreshToken: mockFindRefreshToken as ITokenRepository["findRefreshToken"],
+  findOldRefreshToken: mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
+  deleteRefreshToken: mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
 };
 
 describe("RefreshUseCase", () => {
   let refreshUseCase: RefreshUseCase;
 
   beforeEach(() => {
-    refreshUseCase = new RefreshUseCase(
-      mockUserRepository,
-      mockTokenRepository,
-    );
+    refreshUseCase = new RefreshUseCase(mockUserRepository, mockTokenRepository);
     mockVerifyRefreshToken.mockClear();
     mockGenerateAccessToken.mockClear();
     mockGenerateRefreshToken.mockClear();
@@ -79,15 +72,10 @@ describe("RefreshUseCase", () => {
 
     // Assert
     expect(mockVerifyRefreshToken).toHaveBeenCalledWith(currentRefreshToken);
-    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith(
-      "uuid-123",
-    );
+    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith("uuid-123");
     expect(mockGenerateAccessToken).toHaveBeenCalled();
     expect(mockGenerateRefreshToken).toHaveBeenCalled();
-    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith(
-      "uuid-123",
-      "new_refresh_token",
-    );
+    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith("uuid-123", "new_refresh_token");
     expect(result).toEqual({
       accessToken: "new_access_token",
       refreshToken: "new_refresh_token",
@@ -102,9 +90,7 @@ describe("RefreshUseCase", () => {
     mockFindOldRefreshToken.mockResolvedValue(null);
 
     // Act & Assert
-    expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow(
-      "Invalid refresh token",
-    );
+    expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow("Invalid refresh token");
     // Note: In the new implementation, we don't delete the token on mismatch to avoid accidental logout
     expect(mockTokenRepository.deleteRefreshToken).not.toHaveBeenCalled();
   });
@@ -121,12 +107,8 @@ describe("RefreshUseCase", () => {
 
     // Assert
     expect(mockVerifyRefreshToken).toHaveBeenCalledWith(oldRefreshToken);
-    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith(
-      "uuid-123",
-    );
-    expect(mockTokenRepository.findOldRefreshToken).toHaveBeenCalledWith(
-      "uuid-123",
-    );
+    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith("uuid-123");
+    expect(mockTokenRepository.findOldRefreshToken).toHaveBeenCalledWith("uuid-123");
     expect(mockGenerateAccessToken).toHaveBeenCalled();
     // Should NOT generate new refresh token or save it
     expect(mockGenerateRefreshToken).not.toHaveBeenCalled();

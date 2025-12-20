@@ -1,8 +1,4 @@
-import {
-  verifyRefreshToken,
-  generateAccessToken,
-  generateRefreshToken,
-} from "@/infrastructure/auth/jwt";
+import { verifyRefreshToken, generateAccessToken, generateRefreshToken } from "@/infrastructure/auth/jwt";
 import { IUserRepository } from "@/domain/repository/userRepository";
 import { ITokenRepository } from "@/domain/repository/tokenRepository";
 
@@ -14,7 +10,7 @@ interface RefreshResponse {
 export class RefreshUseCase {
   constructor(
     private userRepository: IUserRepository,
-    private tokenRepository: ITokenRepository,
+    private tokenRepository: ITokenRepository
   ) {}
 
   async execute(currentRefreshToken: string): Promise<RefreshResponse> {
@@ -41,10 +37,7 @@ export class RefreshUseCase {
       });
 
       // 4. Update repository with new refresh token (rotate)
-      await this.tokenRepository.saveRefreshToken(
-        payload.userId,
-        newRefreshToken,
-      );
+      await this.tokenRepository.saveRefreshToken(payload.userId, newRefreshToken);
 
       return {
         accessToken: newAccessToken,
@@ -53,11 +46,7 @@ export class RefreshUseCase {
     }
 
     // ケース2: 猶予期間中の古いトークンと一致する場合 -> 現在の有効なトークンを返す（再ローテーションしない）
-    if (
-      oldStoredToken &&
-      oldStoredToken === currentRefreshToken &&
-      storedToken
-    ) {
+    if (oldStoredToken && oldStoredToken === currentRefreshToken && storedToken) {
       const newAccessToken = generateAccessToken({
         userId: payload.userId,
         email: payload.email,

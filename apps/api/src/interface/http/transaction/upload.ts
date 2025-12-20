@@ -45,7 +45,7 @@ export const uploadCsvHandler = async (c: Context) => {
         skippedRows: result.skippedRows,
         duplicateRows: result.duplicateRows,
       },
-      201,
+      201
     );
   } catch (error) {
     console.error("CSV upload error:", error);

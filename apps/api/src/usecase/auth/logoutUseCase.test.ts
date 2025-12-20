@@ -9,14 +9,10 @@ const mockFindOldRefreshToken = mock();
 const mockDeleteRefreshToken = mock();
 
 const mockTokenRepository: ITokenRepository = {
-  saveRefreshToken:
-    mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
-  findRefreshToken:
-    mockFindRefreshToken as ITokenRepository["findRefreshToken"],
-  findOldRefreshToken:
-    mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
-  deleteRefreshToken:
-    mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
+  saveRefreshToken: mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
+  findRefreshToken: mockFindRefreshToken as ITokenRepository["findRefreshToken"],
+  findOldRefreshToken: mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
+  deleteRefreshToken: mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
 };
 
 describe("LogoutUseCase", () => {

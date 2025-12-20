@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getCategories,
-  postCategories,
-  putCategoriesId,
-  deleteCategoriesId,
-} from "@/api/generated/category/category";
+import { getCategories, postCategories, putCategoriesId, deleteCategoriesId } from "@/api/generated/category/category";
 import type { CategoryWithSystem } from "@/api/models";
 
 // プリセットカラー
@@ -196,12 +191,8 @@ export default function CategoriesPage() {
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            カテゴリ管理
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            支出のカテゴリを管理します
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリ管理</h1>
+          <p className="text-gray-500 dark:text-gray-400">支出のカテゴリを管理します</p>
         </div>
 
         {/* 新規作成フォーム */}
@@ -213,15 +204,11 @@ export default function CategoriesPage() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    カテゴリ名
-                  </label>
+                  <label className="block text-sm font-medium mb-2">カテゴリ名</label>
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                     placeholder="例: 趣味"
                   />
@@ -274,9 +261,7 @@ export default function CategoriesPage() {
                 <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : userCategories.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">
-                カスタムカテゴリはありません
-              </p>
+              <p className="text-center text-gray-500 py-8">カスタムカテゴリはありません</p>
             ) : (
               <div className="divide-y dark:divide-gray-700">
                 {userCategories.map((category) => (
@@ -287,9 +272,7 @@ export default function CategoriesPage() {
                           <input
                             type="text"
                             value={formData.name}
-                            onChange={(e) =>
-                              setFormData({ ...formData, name: e.target.value })
-                            }
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                           />
                         </div>
@@ -297,17 +280,13 @@ export default function CategoriesPage() {
                           {PRESET_COLORS.map((color) => (
                             <button
                               key={color}
-                              onClick={() =>
-                                setFormData({ ...formData, color })
-                              }
+                              onClick={() => setFormData({ ...formData, color })}
                               className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                               style={{ backgroundColor: color }}
                             />
                           ))}
                         </div>
-                        {error && (
-                          <p className="text-sm text-red-500">{error}</p>
-                        )}
+                        {error && <p className="text-sm text-red-500">{error}</p>}
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleUpdate(category.id)}
@@ -327,10 +306,7 @@ export default function CategoriesPage() {
                     ) : (
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div
-                            className="w-4 h-4 rounded-full"
-                            style={{ backgroundColor: category.color }}
-                          />
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
                           <span className="font-medium">{category.name}</span>
                         </div>
                         <div className="flex gap-1">
@@ -341,9 +317,7 @@ export default function CategoriesPage() {
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() =>
-                              handleDelete(category.id, category.name)
-                            }
+                            onClick={() => handleDelete(category.id, category.name)}
                             className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -370,10 +344,7 @@ export default function CategoriesPage() {
             <div className="divide-y dark:divide-gray-700">
               {systemCategories.map((category) => (
                 <div key={category.id} className="py-4 flex items-center gap-3">
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: category.color }}
-                  />
+                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
                   <span className="font-medium">{category.name}</span>
                   <span className="text-xs text-gray-400">(編集不可)</span>
                 </div>

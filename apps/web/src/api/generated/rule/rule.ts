@@ -38,10 +38,7 @@ export type getRulesResponse500 = {
 export type getRulesResponseSuccess = getRulesResponse200 & {
   headers: Headers;
 };
-export type getRulesResponseError = (
-  | getRulesResponse401
-  | getRulesResponse500
-) & {
+export type getRulesResponseError = (getRulesResponse401 | getRulesResponse500) & {
   headers: Headers;
 };
 
@@ -51,9 +48,7 @@ export const getGetRulesUrl = () => {
   return `/rules`;
 };
 
-export const getRules = async (
-  options?: RequestInit,
-): Promise<getRulesResponse> => {
+export const getRules = async (options?: RequestInit): Promise<getRulesResponse> => {
   return customFetch<getRulesResponse>(getGetRulesUrl(), {
     ...options,
     method: "GET",
@@ -87,17 +82,11 @@ export type postRulesResponse500 = {
 export type postRulesResponseSuccess = postRulesResponse201 & {
   headers: Headers;
 };
-export type postRulesResponseError = (
-  | postRulesResponse400
-  | postRulesResponse401
-  | postRulesResponse500
-) & {
+export type postRulesResponseError = (postRulesResponse400 | postRulesResponse401 | postRulesResponse500) & {
   headers: Headers;
 };
 
-export type postRulesResponse =
-  | postRulesResponseSuccess
-  | postRulesResponseError;
+export type postRulesResponse = postRulesResponseSuccess | postRulesResponseError;
 
 export const getPostRulesUrl = () => {
   return `/rules`;
@@ -105,7 +94,7 @@ export const getPostRulesUrl = () => {
 
 export const postRules = async (
   createRuleRequest: CreateRuleRequest,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postRulesResponse> => {
   return customFetch<postRulesResponse>(getPostRulesUrl(), {
     ...options,
@@ -162,9 +151,7 @@ export type putRulesIdResponseError = (
   headers: Headers;
 };
 
-export type putRulesIdResponse =
-  | putRulesIdResponseSuccess
-  | putRulesIdResponseError;
+export type putRulesIdResponse = putRulesIdResponseSuccess | putRulesIdResponseError;
 
 export const getPutRulesIdUrl = (id: string) => {
   return `/rules/${id}`;
@@ -173,7 +160,7 @@ export const getPutRulesIdUrl = (id: string) => {
 export const putRulesId = async (
   id: string,
   updateRuleRequest: UpdateRuleRequest,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<putRulesIdResponse> => {
   return customFetch<putRulesIdResponse>(getPutRulesIdUrl(id), {
     ...options,
@@ -224,18 +211,13 @@ export type deleteRulesIdResponseError = (
   headers: Headers;
 };
 
-export type deleteRulesIdResponse =
-  | deleteRulesIdResponseSuccess
-  | deleteRulesIdResponseError;
+export type deleteRulesIdResponse = deleteRulesIdResponseSuccess | deleteRulesIdResponseError;
 
 export const getDeleteRulesIdUrl = (id: string) => {
   return `/rules/${id}`;
 };
 
-export const deleteRulesId = async (
-  id: string,
-  options?: RequestInit,
-): Promise<deleteRulesIdResponse> => {
+export const deleteRulesId = async (id: string, options?: RequestInit): Promise<deleteRulesIdResponse> => {
   return customFetch<deleteRulesIdResponse>(getDeleteRulesIdUrl(id), {
     ...options,
     method: "DELETE",

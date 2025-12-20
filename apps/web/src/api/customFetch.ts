@@ -13,10 +13,7 @@ const NO_REDIRECT_PATHS = ["/auth/me", "/auth/refresh"];
 // トークンリフレッシュの重複実行を防ぐためのプロミス
 let refreshPromise: Promise<boolean> | null = null;
 
-export const customFetch = async <T>(
-  url: string,
-  options?: RequestInit,
-): Promise<T> => {
+export const customFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
   const baseUrl = getBaseUrl();
   const fullUrl = `${baseUrl}${url}`;
 
@@ -29,9 +26,7 @@ export const customFetch = async <T>(
   if (response.status === 401) {
     // 認証チェック系のAPIは、401でも例外を投げるだけでリダイレクトしない
     if (NO_REDIRECT_PATHS.some((path) => url.startsWith(path))) {
-      const data = await response
-        .json()
-        .catch(() => ({ error: "Unauthorized" }));
+      const data = await response.json().catch(() => ({ error: "Unauthorized" }));
       return { status: 401, data, headers: response.headers } as T;
     }
 

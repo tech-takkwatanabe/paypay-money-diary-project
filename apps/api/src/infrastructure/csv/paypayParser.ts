@@ -137,10 +137,7 @@ export function parsePayPayCsv(csvContent: string): CsvParseResult {
     rawData.push(row);
 
     // 「支払い」のみを抽出（ポイント獲得などは除外）
-    if (
-      row.transactionType === "支払い" &&
-      parseAmount(row.withdrawalAmount) > 0
-    ) {
+    if (row.transactionType === "支払い" && parseAmount(row.withdrawalAmount) > 0) {
       expenses.push({
         transactionDate: parseDate(row.transactionDate),
         amount: parseAmount(row.withdrawalAmount),

@@ -2,10 +2,7 @@ import { compare } from "bcryptjs";
 import { IUserRepository } from "@/domain/repository/userRepository";
 import { ITokenRepository } from "@/domain/repository/tokenRepository";
 import { LoginInput } from "@paypay-money-diary/shared";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "@/infrastructure/auth/jwt";
+import { generateAccessToken, generateRefreshToken } from "@/infrastructure/auth/jwt";
 
 interface LoginResponse {
   accessToken: string;
@@ -20,7 +17,7 @@ interface LoginResponse {
 export class LoginUseCase {
   constructor(
     private userRepository: IUserRepository,
-    private tokenRepository: ITokenRepository,
+    private tokenRepository: ITokenRepository
   ) {}
 
   async execute(input: LoginInput): Promise<LoginResponse> {

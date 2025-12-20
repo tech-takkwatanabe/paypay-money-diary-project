@@ -27,12 +27,7 @@ export const getCategoriesHandler = async (c: Context) => {
         isSystem: isNull(categories.userId),
       })
       .from(categories)
-      .where(
-        or(
-          isNull(categories.userId),
-          eq(categories.userId, userPayload.userId),
-        ),
-      )
+      .where(or(isNull(categories.userId), eq(categories.userId, userPayload.userId)))
       .orderBy(asc(categories.displayOrder));
 
     return c.json({ data: result });

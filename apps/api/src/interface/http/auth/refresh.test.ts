@@ -70,9 +70,7 @@ describe("refreshHandler", () => {
 
   it("should return 401 on invalid refresh token", async () => {
     // Arrange
-    mockRefreshExecute.mockImplementation(() =>
-      Promise.reject(new Error("Invalid refresh token")),
-    );
+    mockRefreshExecute.mockImplementation(() => Promise.reject(new Error("Invalid refresh token")));
 
     // Act
     const res = await app.request("/refresh", {

@@ -38,24 +38,17 @@ export type getCategoriesResponse500 = {
 export type getCategoriesResponseSuccess = getCategoriesResponse200 & {
   headers: Headers;
 };
-export type getCategoriesResponseError = (
-  | getCategoriesResponse401
-  | getCategoriesResponse500
-) & {
+export type getCategoriesResponseError = (getCategoriesResponse401 | getCategoriesResponse500) & {
   headers: Headers;
 };
 
-export type getCategoriesResponse =
-  | getCategoriesResponseSuccess
-  | getCategoriesResponseError;
+export type getCategoriesResponse = getCategoriesResponseSuccess | getCategoriesResponseError;
 
 export const getGetCategoriesUrl = () => {
   return `/categories`;
 };
 
-export const getCategories = async (
-  options?: RequestInit,
-): Promise<getCategoriesResponse> => {
+export const getCategories = async (options?: RequestInit): Promise<getCategoriesResponse> => {
   return customFetch<getCategoriesResponse>(getGetCategoriesUrl(), {
     ...options,
     method: "GET",
@@ -103,9 +96,7 @@ export type postCategoriesResponseError = (
   headers: Headers;
 };
 
-export type postCategoriesResponse =
-  | postCategoriesResponseSuccess
-  | postCategoriesResponseError;
+export type postCategoriesResponse = postCategoriesResponseSuccess | postCategoriesResponseError;
 
 export const getPostCategoriesUrl = () => {
   return `/categories`;
@@ -113,7 +104,7 @@ export const getPostCategoriesUrl = () => {
 
 export const postCategories = async (
   createCategoryRequest: CreateCategoryRequest,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postCategoriesResponse> => {
   return customFetch<postCategoriesResponse>(getPostCategoriesUrl(), {
     ...options,
@@ -176,9 +167,7 @@ export type putCategoriesIdResponseError = (
   headers: Headers;
 };
 
-export type putCategoriesIdResponse =
-  | putCategoriesIdResponseSuccess
-  | putCategoriesIdResponseError;
+export type putCategoriesIdResponse = putCategoriesIdResponseSuccess | putCategoriesIdResponseError;
 
 export const getPutCategoriesIdUrl = (id: string) => {
   return `/categories/${id}`;
@@ -187,7 +176,7 @@ export const getPutCategoriesIdUrl = (id: string) => {
 export const putCategoriesId = async (
   id: string,
   updateCategoryRequest: UpdateCategoryRequest,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<putCategoriesIdResponse> => {
   return customFetch<putCategoriesIdResponse>(getPutCategoriesIdUrl(id), {
     ...options,
@@ -226,10 +215,9 @@ export type deleteCategoriesIdResponse500 = {
   status: 500;
 };
 
-export type deleteCategoriesIdResponseSuccess =
-  deleteCategoriesIdResponse200 & {
-    headers: Headers;
-  };
+export type deleteCategoriesIdResponseSuccess = deleteCategoriesIdResponse200 & {
+  headers: Headers;
+};
 export type deleteCategoriesIdResponseError = (
   | deleteCategoriesIdResponse401
   | deleteCategoriesIdResponse403
@@ -239,18 +227,13 @@ export type deleteCategoriesIdResponseError = (
   headers: Headers;
 };
 
-export type deleteCategoriesIdResponse =
-  | deleteCategoriesIdResponseSuccess
-  | deleteCategoriesIdResponseError;
+export type deleteCategoriesIdResponse = deleteCategoriesIdResponseSuccess | deleteCategoriesIdResponseError;
 
 export const getDeleteCategoriesIdUrl = (id: string) => {
   return `/categories/${id}`;
 };
 
-export const deleteCategoriesId = async (
-  id: string,
-  options?: RequestInit,
-): Promise<deleteCategoriesIdResponse> => {
+export const deleteCategoriesId = async (id: string, options?: RequestInit): Promise<deleteCategoriesIdResponse> => {
   return customFetch<deleteCategoriesIdResponse>(getDeleteCategoriesIdUrl(id), {
     ...options,
     method: "DELETE",

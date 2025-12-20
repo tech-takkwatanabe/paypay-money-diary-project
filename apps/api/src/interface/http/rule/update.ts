@@ -22,10 +22,7 @@ export const updateRuleHandler = async (c: Context) => {
 
     // ルールの存在と所有権の確認
     const existingRule = await db.query.categoryRules.findFirst({
-      where: and(
-        eq(categoryRules.id, id),
-        eq(categoryRules.userId, userPayload.userId),
-      ),
+      where: and(eq(categoryRules.id, id), eq(categoryRules.userId, userPayload.userId)),
     });
 
     if (!existingRule) {
@@ -66,7 +63,7 @@ export const updateRuleHandler = async (c: Context) => {
         categoryName,
         isSystem: false,
       },
-      200,
+      200
     );
   } catch (error) {
     console.error("Update rule error:", error);

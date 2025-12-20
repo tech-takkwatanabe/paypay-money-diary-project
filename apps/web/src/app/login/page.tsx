@@ -65,12 +65,7 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -83,12 +78,7 @@ export default function LoginPage() {
             </div>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -101,12 +91,7 @@ export default function LoginPage() {
             </div>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -130,36 +115,25 @@ export default function LoginPage() {
               <div className="w-10 h-10 bg-linear-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">¥</span>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                PayPay 家計簿
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayPay 家計簿</h1>
             </div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                おかえりなさい
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400">
-                アカウントにログインしてください
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">おかえりなさい</h2>
+              <p className="text-gray-500 dark:text-gray-400">アカウントにログインしてください</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
                 <div className="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl">
-                  <p className="text-sm text-red-600 dark:text-red-400">
-                    {error}
-                  </p>
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                 </div>
               )}
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   メールアドレス
                 </label>
                 <input
@@ -174,10 +148,7 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   パスワード
                 </label>
                 <input
@@ -225,10 +196,7 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-gray-500 dark:text-gray-400">
                 アカウントをお持ちでないですか？{" "}
-                <Link
-                  href="/signup"
-                  className="text-red-500 hover:text-red-600 font-medium"
-                >
+                <Link href="/signup" className="text-red-500 hover:text-red-600 font-medium">
                   新規登録
                 </Link>
               </p>

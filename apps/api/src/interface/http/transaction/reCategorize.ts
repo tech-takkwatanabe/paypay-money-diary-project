@@ -22,12 +22,7 @@ export const reCategorizeHandler = async (c: Context) => {
         categoryId: categoryRules.categoryId,
       })
       .from(categoryRules)
-      .where(
-        or(
-          eq(categoryRules.userId, userPayload.userId),
-          isNull(categoryRules.userId),
-        ),
-      )
+      .where(or(eq(categoryRules.userId, userPayload.userId), isNull(categoryRules.userId)))
       .orderBy(categoryRules.priority, categoryRules.keyword);
 
     if (rules.length === 0) {
@@ -53,7 +48,7 @@ export const reCategorizeHandler = async (c: Context) => {
         .where(
           sql`${expenses.userId} = ${userPayload.userId} AND 
               (${expenses.categoryId} = ${otherCategory.id} OR ${expenses.categoryId} IS NULL) AND 
-              ${expenses.merchant} LIKE ${"%" + rule.keyword + "%"}`,
+              ${expenses.merchant} LIKE ${"%" + rule.keyword + "%"}`
         );
 
       // Drizzleのupdateは戻り値がドライバに依存するが、postgresドライバなら結果が返る

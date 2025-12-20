@@ -34,14 +34,10 @@ const mockFindOldRefreshToken = mock();
 const mockDeleteRefreshToken = mock();
 
 const mockTokenRepository: ITokenRepository = {
-  saveRefreshToken:
-    mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
-  findRefreshToken:
-    mockFindRefreshToken as ITokenRepository["findRefreshToken"],
-  findOldRefreshToken:
-    mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
-  deleteRefreshToken:
-    mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
+  saveRefreshToken: mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
+  findRefreshToken: mockFindRefreshToken as ITokenRepository["findRefreshToken"],
+  findOldRefreshToken: mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
+  deleteRefreshToken: mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
 };
 
 describe("LoginUseCase", () => {
@@ -84,10 +80,7 @@ describe("LoginUseCase", () => {
     expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(input.email);
     expect(mockGenerateAccessToken).toHaveBeenCalled();
     expect(mockGenerateRefreshToken).toHaveBeenCalled();
-    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith(
-      mockUser.id!,
-      "mock_refresh_token",
-    );
+    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith(mockUser.id!, "mock_refresh_token");
     expect(result).toEqual({
       accessToken: "mock_access_token",
       refreshToken: "mock_refresh_token",

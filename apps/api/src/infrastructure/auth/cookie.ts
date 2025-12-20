@@ -42,23 +42,15 @@ const parseExpiresIn = (expiresIn: string): number => {
 };
 
 // Access Token 有効期限 (環境変数から取得)
-const ACCESS_TOKEN_MAX_AGE = parseExpiresIn(
-  process.env.JWT_ACCESS_EXPIRES_IN || "15m",
-);
+const ACCESS_TOKEN_MAX_AGE = parseExpiresIn(process.env.JWT_ACCESS_EXPIRES_IN || "15m");
 
 // Refresh Token 有効期限 (環境変数から取得)
-const REFRESH_TOKEN_MAX_AGE = parseExpiresIn(
-  process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-);
+const REFRESH_TOKEN_MAX_AGE = parseExpiresIn(process.env.JWT_REFRESH_EXPIRES_IN || "7d");
 
 /**
  * 認証 Cookie を設定
  */
-export const setAuthCookies = (
-  c: Context,
-  accessToken: string,
-  refreshToken: string,
-) => {
+export const setAuthCookies = (c: Context, accessToken: string, refreshToken: string) => {
   // Access Token Cookie
   setCookie(c, "accessToken", accessToken, {
     ...COOKIE_OPTIONS,

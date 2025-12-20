@@ -23,9 +23,7 @@ export interface Category {
 /**
  * ユーザーのカテゴリルールを取得（システム共通 + ユーザー固有）
  */
-export async function getCategoryRules(
-  userId: string,
-): Promise<CategoryRule[]> {
+export async function getCategoryRules(userId: string): Promise<CategoryRule[]> {
   const rules = await db
     .select({
       keyword: categoryRules.keyword,
@@ -43,11 +41,7 @@ export async function getCategoryRules(
  * 「その他」カテゴリのIDを取得
  */
 export async function getDefaultCategoryId(): Promise<string | null> {
-  const result = await db
-    .select({ id: categories.id })
-    .from(categories)
-    .where(eq(categories.name, "その他"))
-    .limit(1);
+  const result = await db.select({ id: categories.id }).from(categories).where(eq(categories.name, "その他")).limit(1);
 
   return result[0]?.id ?? null;
 }
@@ -55,10 +49,7 @@ export async function getDefaultCategoryId(): Promise<string | null> {
 /**
  * 取引先名からカテゴリを推定
  */
-export function matchCategory(
-  merchant: string,
-  rules: CategoryRule[],
-): string | null {
+export function matchCategory(merchant: string, rules: CategoryRule[]): string | null {
   const lowerMerchant = merchant.toLowerCase();
 
   for (const rule of rules) {
@@ -75,7 +66,7 @@ export function matchCategory(
  */
 export async function assignCategories(
   expenses: Array<{ merchant: string }>,
-  userId: string,
+  userId: string
 ): Promise<Map<string, string | null>> {
   const rules = await getCategoryRules(userId);
   const defaultCategoryId = await getDefaultCategoryId();

@@ -27,12 +27,7 @@ export const getRulesHandler = async (c: Context) => {
       })
       .from(categoryRules)
       .innerJoin(categories, eq(categoryRules.categoryId, categories.id))
-      .where(
-        or(
-          eq(categoryRules.userId, userPayload.userId),
-          isNull(categoryRules.userId),
-        ),
-      )
+      .where(or(eq(categoryRules.userId, userPayload.userId), isNull(categoryRules.userId)))
       .orderBy(categoryRules.priority, categoryRules.keyword);
 
     const result = rules.map((rule) => ({

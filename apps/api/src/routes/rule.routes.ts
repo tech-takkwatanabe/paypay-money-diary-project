@@ -66,12 +66,7 @@ const CreateRuleRequestSchema = z
   .object({
     keyword: z.string().min(1).max(100).openapi({ description: "キーワード" }),
     categoryId: z.string().openapi({ description: "カテゴリID" }),
-    priority: z
-      .number()
-      .int()
-      .min(0)
-      .optional()
-      .openapi({ description: "優先度" }),
+    priority: z.number().int().min(0).optional().openapi({ description: "優先度" }),
   })
   .openapi("CreateRuleRequest");
 
@@ -121,19 +116,9 @@ export const createRuleRoute = createRoute({
 
 const UpdateRuleRequestSchema = z
   .object({
-    keyword: z
-      .string()
-      .min(1)
-      .max(100)
-      .optional()
-      .openapi({ description: "キーワード" }),
+    keyword: z.string().min(1).max(100).optional().openapi({ description: "キーワード" }),
     categoryId: z.string().optional().openapi({ description: "カテゴリID" }),
-    priority: z
-      .number()
-      .int()
-      .min(0)
-      .optional()
-      .openapi({ description: "優先度" }),
+    priority: z.number().int().min(0).optional().openapi({ description: "優先度" }),
   })
   .openapi("UpdateRuleRequest");
 

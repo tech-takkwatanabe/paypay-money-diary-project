@@ -102,8 +102,7 @@ export const loginRoute = createRoute({
   path: "/auth/login",
   tags: ["Auth"],
   summary: "ログイン",
-  description:
-    "メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。",
+  description: "メールアドレスとパスワードでログインします。認証トークンはHttpOnly Cookieで設定されます。",
   request: {
     body: {
       content: {
@@ -148,8 +147,7 @@ export const refreshRoute = createRoute({
   path: "/auth/refresh",
   tags: ["Auth"],
   summary: "トークン更新",
-  description:
-    "Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します",
+  description: "Cookieに設定されたリフレッシュトークンを使用して新しいアクセストークンを取得します",
   responses: {
     200: {
       description: "更新成功（新しいトークンはCookieに設定）",

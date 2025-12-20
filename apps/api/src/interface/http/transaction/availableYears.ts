@@ -53,8 +53,7 @@ export const getAvailableYearsHandler = async (c: Context) => {
     const filteredYears = availableYears.filter((y) => y >= 2023);
 
     return c.json({
-      years:
-        filteredYears.length > 0 ? filteredYears : [new Date().getFullYear()],
+      years: filteredYears.length > 0 ? filteredYears : [new Date().getFullYear()],
     });
   } catch (error) {
     console.error("Get available years error:", error);

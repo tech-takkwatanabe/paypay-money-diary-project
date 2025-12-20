@@ -4,13 +4,7 @@ import { cors } from "hono/cors";
 import { authMiddleware } from "@/interface/http/middleware/auth";
 
 // Handlers
-import {
-  signupHandler,
-  loginHandler,
-  refreshHandler,
-  logoutHandler,
-  meHandler,
-} from "@/interface/http/auth";
+import { signupHandler, loginHandler, refreshHandler, logoutHandler, meHandler } from "@/interface/http/auth";
 import {
   uploadCsvHandler,
   getTransactionsHandler,
@@ -24,26 +18,10 @@ import {
   updateCategoryHandler,
   deleteCategoryHandler,
 } from "@/interface/http/category";
-import {
-  getRulesHandler,
-  createRuleHandler,
-  updateRuleHandler,
-  deleteRuleHandler,
-} from "@/interface/http/rule";
+import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandler } from "@/interface/http/rule";
 // OpenAPI Route definitions
-import {
-  signupRoute,
-  loginRoute,
-  refreshRoute,
-  logoutRoute,
-  meRoute,
-} from "@/routes/auth.routes";
-import {
-  getRulesRoute,
-  createRuleRoute,
-  updateRuleRoute,
-  deleteRuleRoute,
-} from "@/routes/rule.routes";
+import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from "@/routes/auth.routes";
+import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from "@/routes/rule.routes";
 const app = new OpenAPIHono();
 
 // CORS 設定 (Cookie 認証に必要)
@@ -52,7 +30,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "https://localhost:3000",
     credentials: true, // Cookie 送信を許可
-  }),
+  })
 );
 
 app.get("/", (c) => {

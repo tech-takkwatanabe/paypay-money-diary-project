@@ -57,36 +57,25 @@ export default function SignupPage() {
               <div className="w-10 h-10 bg-linear-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">¥</span>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                PayPay 家計簿
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayPay 家計簿</h1>
             </div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                アカウント作成
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400">
-                無料で始められます
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">アカウント作成</h2>
+              <p className="text-gray-500 dark:text-gray-400">無料で始められます</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
                 <div className="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl">
-                  <p className="text-sm text-red-600 dark:text-red-400">
-                    {error}
-                  </p>
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                 </div>
               )}
 
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   お名前
                 </label>
                 <input
@@ -101,10 +90,7 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   メールアドレス
                 </label>
                 <input
@@ -119,10 +105,7 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   パスワード
                 </label>
                 <input
@@ -189,10 +172,7 @@ export default function SignupPage() {
             <div className="mt-6 text-center">
               <p className="text-gray-500 dark:text-gray-400">
                 すでにアカウントをお持ちですか？{" "}
-                <Link
-                  href="/login"
-                  className="text-red-500 hover:text-red-600 font-medium"
-                >
+                <Link href="/login" className="text-red-500 hover:text-red-600 font-medium">
                   ログイン
                 </Link>
               </p>
@@ -235,12 +215,7 @@ export default function SignupPage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -251,9 +226,7 @@ export default function SignupPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold">完全無料</h3>
-                  <p className="text-sm text-white/70">
-                    すべての機能が無料で使えます
-                  </p>
+                  <p className="text-sm text-white/70">すべての機能が無料で使えます</p>
                 </div>
               </div>
             </div>
@@ -261,12 +234,7 @@ export default function SignupPage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -277,9 +245,7 @@ export default function SignupPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold">安全・安心</h3>
-                  <p className="text-sm text-white/70">
-                    データは暗号化して保護
-                  </p>
+                  <p className="text-sm text-white/70">データは暗号化して保護</p>
                 </div>
               </div>
             </div>
@@ -287,25 +253,13 @@ export default function SignupPage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <div>
                   <h3 className="font-semibold">かんたん操作</h3>
-                  <p className="text-sm text-white/70">
-                    CSVをドラッグ&ドロップするだけ
-                  </p>
+                  <p className="text-sm text-white/70">CSVをドラッグ&ドロップするだけ</p>
                 </div>
               </div>
             </div>

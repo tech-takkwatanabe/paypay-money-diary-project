@@ -44,7 +44,7 @@ export const createRuleHandler = async (c: Context) => {
         categoryName: category.name,
         isSystem: false,
       },
-      201,
+      201
     );
   } catch (error) {
     console.error("Create rule error:", error);

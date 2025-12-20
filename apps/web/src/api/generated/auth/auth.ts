@@ -53,9 +53,7 @@ export type postAuthSignupResponseError = (
   headers: Headers;
 };
 
-export type postAuthSignupResponse =
-  | postAuthSignupResponseSuccess
-  | postAuthSignupResponseError;
+export type postAuthSignupResponse = postAuthSignupResponseSuccess | postAuthSignupResponseError;
 
 export const getPostAuthSignupUrl = () => {
   return `/auth/signup`;
@@ -63,7 +61,7 @@ export const getPostAuthSignupUrl = () => {
 
 export const postAuthSignup = async (
   postAuthSignupBody: PostAuthSignupBody,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postAuthSignupResponse> => {
   return customFetch<postAuthSignupResponse>(getPostAuthSignupUrl(), {
     ...options,
@@ -108,9 +106,7 @@ export type postAuthLoginResponseError = (
   headers: Headers;
 };
 
-export type postAuthLoginResponse =
-  | postAuthLoginResponseSuccess
-  | postAuthLoginResponseError;
+export type postAuthLoginResponse = postAuthLoginResponseSuccess | postAuthLoginResponseError;
 
 export const getPostAuthLoginUrl = () => {
   return `/auth/login`;
@@ -118,7 +114,7 @@ export const getPostAuthLoginUrl = () => {
 
 export const postAuthLogin = async (
   postAuthLoginBody: PostAuthLoginBody,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<postAuthLoginResponse> => {
   return customFetch<postAuthLoginResponse>(getPostAuthLoginUrl(), {
     ...options,
@@ -163,17 +159,13 @@ export type postAuthRefreshResponseError = (
   headers: Headers;
 };
 
-export type postAuthRefreshResponse =
-  | postAuthRefreshResponseSuccess
-  | postAuthRefreshResponseError;
+export type postAuthRefreshResponse = postAuthRefreshResponseSuccess | postAuthRefreshResponseError;
 
 export const getPostAuthRefreshUrl = () => {
   return `/auth/refresh`;
 };
 
-export const postAuthRefresh = async (
-  options?: RequestInit,
-): Promise<postAuthRefreshResponse> => {
+export const postAuthRefresh = async (options?: RequestInit): Promise<postAuthRefreshResponse> => {
   return customFetch<postAuthRefreshResponse>(getPostAuthRefreshUrl(), {
     ...options,
     method: "POST",
@@ -202,24 +194,17 @@ export type postAuthLogoutResponse500 = {
 export type postAuthLogoutResponseSuccess = postAuthLogoutResponse200 & {
   headers: Headers;
 };
-export type postAuthLogoutResponseError = (
-  | postAuthLogoutResponse401
-  | postAuthLogoutResponse500
-) & {
+export type postAuthLogoutResponseError = (postAuthLogoutResponse401 | postAuthLogoutResponse500) & {
   headers: Headers;
 };
 
-export type postAuthLogoutResponse =
-  | postAuthLogoutResponseSuccess
-  | postAuthLogoutResponseError;
+export type postAuthLogoutResponse = postAuthLogoutResponseSuccess | postAuthLogoutResponseError;
 
 export const getPostAuthLogoutUrl = () => {
   return `/auth/logout`;
 };
 
-export const postAuthLogout = async (
-  options?: RequestInit,
-): Promise<postAuthLogoutResponse> => {
+export const postAuthLogout = async (options?: RequestInit): Promise<postAuthLogoutResponse> => {
   return customFetch<postAuthLogoutResponse>(getPostAuthLogoutUrl(), {
     ...options,
     method: "POST",
@@ -248,24 +233,17 @@ export type getAuthMeResponse500 = {
 export type getAuthMeResponseSuccess = getAuthMeResponse200 & {
   headers: Headers;
 };
-export type getAuthMeResponseError = (
-  | getAuthMeResponse401
-  | getAuthMeResponse500
-) & {
+export type getAuthMeResponseError = (getAuthMeResponse401 | getAuthMeResponse500) & {
   headers: Headers;
 };
 
-export type getAuthMeResponse =
-  | getAuthMeResponseSuccess
-  | getAuthMeResponseError;
+export type getAuthMeResponse = getAuthMeResponseSuccess | getAuthMeResponseError;
 
 export const getGetAuthMeUrl = () => {
   return `/auth/me`;
 };
 
-export const getAuthMe = async (
-  options?: RequestInit,
-): Promise<getAuthMeResponse> => {
+export const getAuthMe = async (options?: RequestInit): Promise<getAuthMeResponse> => {
   return customFetch<getAuthMeResponse>(getGetAuthMeUrl(), {
     ...options,
     method: "GET",

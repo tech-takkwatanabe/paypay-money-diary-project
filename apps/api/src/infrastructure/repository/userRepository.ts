@@ -2,20 +2,11 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { IUserRepository } from "@/domain/repository/userRepository";
-import {
-  User,
-  CreateUserInput,
-  Email,
-  Password,
-} from "@paypay-money-diary/shared";
+import { User, CreateUserInput, Email, Password } from "@paypay-money-diary/shared";
 
 export class UserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (result.length === 0) {
       return null;
@@ -48,11 +39,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.uuid, id))
-      .limit(1);
+    const result = await db.select().from(users).where(eq(users.uuid, id)).limit(1);
 
     if (result.length === 0) {
       return null;
@@ -68,9 +55,7 @@ export class UserRepository implements IUserRepository {
     };
   }
 
-  async create(
-    input: CreateUserInput & { passwordHash: string; uuid: string },
-  ): Promise<User> {
+  async create(input: CreateUserInput & { passwordHash: string; uuid: string }): Promise<User> {
     const result = await db
       .insert(users)
       .values({

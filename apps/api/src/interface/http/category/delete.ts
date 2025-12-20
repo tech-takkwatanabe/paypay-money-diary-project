@@ -22,11 +22,7 @@ export const deleteCategoryHandler = async (c: Context) => {
 
   try {
     // カテゴリの存在確認と権限チェック
-    const existing = await db
-      .select()
-      .from(categories)
-      .where(eq(categories.id, categoryId))
-      .limit(1);
+    const existing = await db.select().from(categories).where(eq(categories.id, categoryId)).limit(1);
 
     if (existing.length === 0) {
       return c.json({ error: "Category not found" }, 404);

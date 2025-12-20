@@ -25,17 +25,13 @@ const defaultColors = [
   "#6b7280",
 ];
 
-export function MonthlyExpensePieChart({
-  data,
-  isLoading,
-}: MonthlyExpensePieChartProps) {
+export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieChartProps) {
   const chartData =
     data.length > 0
       ? data.map((item, index) => ({
           name: item.categoryName,
           value: item.totalAmount,
-          color:
-            item.categoryColor || defaultColors[index % defaultColors.length],
+          color: item.categoryColor || defaultColors[index % defaultColors.length],
         }))
       : [{ name: "データなし", value: 1, color: "#e5e7eb" }];
 
@@ -84,12 +80,7 @@ export function MonthlyExpensePieChart({
           </div>
         ) : (
           <div className="w-full h-[300px]">
-            <Chart
-              options={options}
-              series={series}
-              type="donut"
-              height="100%"
-            />
+            <Chart options={options} series={series} type="donut" height="100%" />
           </div>
         )}
       </CardContent>

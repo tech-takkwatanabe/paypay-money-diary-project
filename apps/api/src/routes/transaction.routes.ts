@@ -30,8 +30,7 @@ export const uploadCsvRoute = createRoute({
   path: "/transactions/upload",
   tags: ["Transaction"],
   summary: "CSV アップロード",
-  description:
-    "PayPay CSV ファイルをアップロードして取引データをインポートします",
+  description: "PayPay CSV ファイルをアップロードして取引データをインポートします",
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -116,18 +115,9 @@ export const getTransactionsRoute = createRoute({
   request: {
     query: z.object({
       page: z.string().optional().openapi({ description: "ページ番号" }),
-      limit: z
-        .string()
-        .optional()
-        .openapi({ description: "1ページあたりの件数" }),
-      startDate: z
-        .string()
-        .optional()
-        .openapi({ description: "開始日 (YYYY-MM-DD)" }),
-      endDate: z
-        .string()
-        .optional()
-        .openapi({ description: "終了日 (YYYY-MM-DD)" }),
+      limit: z.string().optional().openapi({ description: "1ページあたりの件数" }),
+      startDate: z.string().optional().openapi({ description: "開始日 (YYYY-MM-DD)" }),
+      endDate: z.string().optional().openapi({ description: "終了日 (YYYY-MM-DD)" }),
       categoryId: z.string().optional().openapi({ description: "カテゴリID" }),
     }),
   },
@@ -160,10 +150,7 @@ const CategoryBreakdownSchema = z
     categoryId: z.string().nullable().openapi({ description: "カテゴリID" }),
     categoryName: z.string().openapi({ description: "カテゴリ名" }),
     categoryColor: z.string().openapi({ description: "カテゴリ色" }),
-    categoryIcon: z
-      .string()
-      .nullable()
-      .openapi({ description: "カテゴリアイコン" }),
+    categoryIcon: z.string().nullable().openapi({ description: "カテゴリアイコン" }),
     totalAmount: z.number().openapi({ description: "合計金額" }),
     transactionCount: z.number().openapi({ description: "取引数" }),
   })
@@ -182,12 +169,8 @@ const SummaryResponseSchema = z
       totalAmount: z.number().openapi({ description: "合計金額" }),
       transactionCount: z.number().openapi({ description: "取引数" }),
     }),
-    categoryBreakdown: z
-      .array(CategoryBreakdownSchema)
-      .openapi({ description: "カテゴリ別内訳" }),
-    monthlyBreakdown: z
-      .array(MonthlyBreakdownSchema)
-      .openapi({ description: "月別内訳" }),
+    categoryBreakdown: z.array(CategoryBreakdownSchema).openapi({ description: "カテゴリ別内訳" }),
+    monthlyBreakdown: z.array(MonthlyBreakdownSchema).openapi({ description: "月別内訳" }),
   })
   .openapi("SummaryResponse");
 
@@ -231,8 +214,7 @@ export const reCategorizeRoute = createRoute({
   path: "/transactions/re-categorize",
   tags: ["Transaction"],
   summary: "取引再カテゴリ分類",
-  description:
-    "現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します",
+  description: "現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します",
   security: [{ Cookie: [] }],
   responses: {
     200: {

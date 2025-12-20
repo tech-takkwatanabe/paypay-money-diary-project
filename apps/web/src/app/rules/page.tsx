@@ -2,23 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Plus,
-  Pencil,
-  Trash2,
-  X,
-  Check,
-  Lock,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getRules,
-  postRules,
-  putRulesId,
-  deleteRulesId,
-} from "@/api/generated/rule/rule";
+import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rule/rule";
 import { getCategories } from "@/api/generated/category/category";
 import { postTransactionsReCategorize } from "@/api/generated/transaction/transaction";
 import type { Rule, CategoryWithSystem } from "@/api/models";
@@ -46,10 +32,7 @@ export default function RulesPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [rulesRes, categoriesRes] = await Promise.all([
-        getRules(),
-        getCategories(),
-      ]);
+      const [rulesRes, categoriesRes] = await Promise.all([getRules(), getCategories()]);
 
       if (rulesRes.status === 200 && "data" in rulesRes) {
         setRules(rulesRes.data.data);
@@ -154,8 +137,7 @@ export default function RulesPage() {
   };
 
   const handleReCategorize = async () => {
-    if (!confirm("現在のルールに基づいて「その他」の取引を再分類しますか？"))
-      return;
+    if (!confirm("現在のルールに基づいて「その他」の取引を再分類しますか？")) return;
 
     setIsReCategorizing(true);
     try {
@@ -218,9 +200,7 @@ export default function RulesPage() {
             disabled={isReCategorizing}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
           >
-            <RefreshCw
-              className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`}
-            />
+            <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
             一括再分類
           </button>
           <button
@@ -235,12 +215,8 @@ export default function RulesPage() {
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            カテゴリルール管理
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            店名などのキーワードに基づいて自動でカテゴリを振り分けます
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリルール管理</h1>
+          <p className="text-gray-500 dark:text-gray-400">店名などのキーワードに基づいて自動でカテゴリを振り分けます</p>
         </div>
 
         {/* 新規作成フォーム */}
@@ -253,28 +229,20 @@ export default function RulesPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      キーワード
-                    </label>
+                    <label className="block text-sm font-medium mb-2">キーワード</label>
                     <input
                       type="text"
                       value={formData.keyword}
-                      onChange={(e) =>
-                        setFormData({ ...formData, keyword: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
                       className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                       placeholder="例: セブンイレブン"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      カテゴリ
-                    </label>
+                    <label className="block text-sm font-medium mb-2">カテゴリ</label>
                     <select
                       value={formData.categoryId}
-                      onChange={(e) =>
-                        setFormData({ ...formData, categoryId: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                       className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white dark:bg-gray-800"
                     >
                       {categories.map((cat) => (
@@ -319,9 +287,7 @@ export default function RulesPage() {
                 <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : userRules.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">
-                カスタムルールはありません
-              </p>
+              <p className="text-center text-gray-500 py-8">カスタムルールはありません</p>
             ) : (
               <div className="divide-y dark:divide-gray-700">
                 {userRules.map((rule) => (
@@ -357,9 +323,7 @@ export default function RulesPage() {
                             ))}
                           </select>
                         </div>
-                        {error && (
-                          <p className="text-sm text-red-500">{error}</p>
-                        )}
+                        {error && <p className="text-sm text-red-500">{error}</p>}
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleUpdate(rule.id)}
@@ -380,15 +344,11 @@ export default function RulesPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-8">
                           <div className="min-w-[120px]">
-                            <span className="text-sm text-gray-400 block">
-                              キーワード
-                            </span>
+                            <span className="text-sm text-gray-400 block">キーワード</span>
                             <span className="font-medium">{rule.keyword}</span>
                           </div>
                           <div>
-                            <span className="text-sm text-gray-400 block">
-                              カテゴリ
-                            </span>
+                            <span className="text-sm text-gray-400 block">カテゴリ</span>
                             <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">
                               {rule.categoryName}
                             </span>
@@ -428,21 +388,14 @@ export default function RulesPage() {
           <CardContent>
             <div className="divide-y dark:divide-gray-700">
               {systemRules.map((rule) => (
-                <div
-                  key={rule.id}
-                  className="py-4 flex items-center justify-between"
-                >
+                <div key={rule.id} className="py-4 flex items-center justify-between">
                   <div className="flex items-center gap-8">
                     <div className="min-w-[120px]">
-                      <span className="text-sm text-gray-400 block">
-                        キーワード
-                      </span>
+                      <span className="text-sm text-gray-400 block">キーワード</span>
                       <span className="font-medium">{rule.keyword}</span>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-400 block">
-                        カテゴリ
-                      </span>
+                      <span className="text-sm text-gray-400 block">カテゴリ</span>
                       <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">
                         {rule.categoryName}
                       </span>

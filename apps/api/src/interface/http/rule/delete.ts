@@ -19,10 +19,7 @@ export const deleteRuleHandler = async (c: Context) => {
   try {
     // ルールの存在と所有権の確認
     const existingRule = await db.query.categoryRules.findFirst({
-      where: and(
-        eq(categoryRules.id, id),
-        eq(categoryRules.userId, userPayload.userId),
-      ),
+      where: and(eq(categoryRules.id, id), eq(categoryRules.userId, userPayload.userId)),
     });
 
     if (!existingRule) {

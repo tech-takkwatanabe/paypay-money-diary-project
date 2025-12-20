@@ -33,11 +33,7 @@ export const updateCategoryHandler = async (c: Context) => {
 
   try {
     // カテゴリの存在確認と権限チェック
-    const existing = await db
-      .select()
-      .from(categories)
-      .where(eq(categories.id, categoryId))
-      .limit(1);
+    const existing = await db.select().from(categories).where(eq(categories.id, categoryId)).limit(1);
 
     if (existing.length === 0) {
       return c.json({ error: "Category not found" }, 404);
@@ -59,10 +55,7 @@ export const updateCategoryHandler = async (c: Context) => {
     const result = UpdateCategorySchema.safeParse(body);
 
     if (!result.success) {
-      return c.json(
-        { error: "Invalid request body", details: result.error.issues },
-        400,
-      );
+      return c.json({ error: "Invalid request body", details: result.error.issues }, 400);
     }
 
     const updates = result.data;
@@ -72,11 +65,7 @@ export const updateCategoryHandler = async (c: Context) => {
       return c.json({ error: "No fields to update" }, 400);
     }
 
-    const [updated] = await db
-      .update(categories)
-      .set(updates)
-      .where(eq(categories.id, categoryId))
-      .returning();
+    const [updated] = await db.update(categories).set(updates).where(eq(categories.id, categoryId)).returning();
 
     return c.json({
       id: updated.id,

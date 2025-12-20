@@ -4,22 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { MonthlyExpensePieChart } from "@/components/charts/MonthlyExpensePieChart";
 import { AnnualExpenseBarChart } from "@/components/charts/AnnualExpenseBarChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DollarSign,
-  TrendingUp,
-  Wallet,
-  LogOut,
-  Upload,
-  ChevronDown,
-} from "lucide-react";
+import { DollarSign, TrendingUp, Wallet, LogOut, Upload, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTransactionsSummary } from "@/api/generated/transaction/transaction";
 import { customFetch } from "@/api/customFetch";
-import type {
-  SummaryResponse,
-  CategoryBreakdown,
-  MonthlyBreakdown,
-} from "@/api/models";
+import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from "@/api/models";
 import Link from "next/link";
 
 interface AvailableYearsResponse {
@@ -41,9 +30,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchYears = async () => {
       try {
-        const response = await customFetch<AvailableYearsResponse>(
-          "/transactions/years",
-        );
+        const response = await customFetch<AvailableYearsResponse>("/transactions/years");
         if (response.status === 200 && response.data.years) {
           setAvailableYears(response.data.years);
           // 最新の年をデフォルト選択
@@ -85,21 +72,14 @@ export default function Dashboard() {
 
   // 今月の支出を計算
   const thisMonthExpense =
-    summary?.monthlyBreakdown?.find(
-      (m: MonthlyBreakdown) => m.month === currentMonth,
-    )?.totalAmount ?? 0;
+    summary?.monthlyBreakdown?.find((m: MonthlyBreakdown) => m.month === currentMonth)?.totalAmount ?? 0;
 
   // 先月の支出を計算
   const lastMonthExpense =
-    summary?.monthlyBreakdown?.find(
-      (m: MonthlyBreakdown) => m.month === currentMonth - 1,
-    )?.totalAmount ?? 0;
+    summary?.monthlyBreakdown?.find((m: MonthlyBreakdown) => m.month === currentMonth - 1)?.totalAmount ?? 0;
 
   // 先月比のパーセンテージ
-  const monthlyChange =
-    lastMonthExpense > 0
-      ? ((thisMonthExpense - lastMonthExpense) / lastMonthExpense) * 100
-      : 0;
+  const monthlyChange = lastMonthExpense > 0 ? ((thisMonthExpense - lastMonthExpense) / lastMonthExpense) * 100 : 0;
 
   // 年間合計
   const yearlyTotal = summary?.summary?.totalAmount ?? 0;
@@ -108,13 +88,10 @@ export default function Dashboard() {
   const topCategory = summary?.categoryBreakdown?.reduce(
     (max: CategoryBreakdown | null, current: CategoryBreakdown) =>
       max === null || current.totalAmount > max.totalAmount ? current : max,
-    null as CategoryBreakdown | null,
+    null as CategoryBreakdown | null
   );
 
-  const topCategoryRatio =
-    yearlyTotal > 0 && topCategory
-      ? (topCategory.totalAmount / yearlyTotal) * 100
-      : 0;
+  const topCategoryRatio = yearlyTotal > 0 && topCategory ? (topCategory.totalAmount / yearlyTotal) * 100 : 0;
 
   const handleLogout = async () => {
     await logout();
@@ -157,9 +134,7 @@ export default function Dashboard() {
             <Upload className="h-4 w-4" />
             <span className="hidden sm:inline">CSV アップロード</span>
           </Link>
-          <span className="text-sm text-muted-foreground hidden sm:block">
-            {user?.name}
-          </span>
+          <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -194,9 +169,7 @@ export default function Dashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {currentMonth}月の支出
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">{currentMonth}月の支出</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -204,9 +177,7 @@ export default function Dashboard() {
                 <div className="h-8 bg-muted animate-pulse rounded" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(thisMonthExpense)}
-                  </div>
+                  <div className="text-2xl font-bold">{formatCurrency(thisMonthExpense)}</div>
                   <p className="text-xs text-muted-foreground">
                     先月比 {monthlyChange >= 0 ? "+" : ""}
                     {monthlyChange.toFixed(1)}%
@@ -217,9 +188,7 @@ export default function Dashboard() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                年間支出累計
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">年間支出累計</CardTitle>
               <Wallet className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -227,21 +196,15 @@ export default function Dashboard() {
                 <div className="h-8 bg-muted animate-pulse rounded" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(yearlyTotal)}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedYear}年度
-                  </p>
+                  <div className="text-2xl font-bold">{formatCurrency(yearlyTotal)}</div>
+                  <p className="text-xs text-muted-foreground">{selectedYear}年度</p>
                 </>
               )}
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                最多カテゴリ
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">最多カテゴリ</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -249,12 +212,8 @@ export default function Dashboard() {
                 <div className="h-8 bg-muted animate-pulse rounded" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">
-                    {topCategory?.categoryName ?? "---"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    全体の {topCategoryRatio.toFixed(1)}%
-                  </p>
+                  <div className="text-2xl font-bold">{topCategory?.categoryName ?? "---"}</div>
+                  <p className="text-xs text-muted-foreground">全体の {topCategoryRatio.toFixed(1)}%</p>
                 </>
               )}
             </CardContent>
@@ -264,16 +223,10 @@ export default function Dashboard() {
         {/* Charts */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
           <div className="col-span-4">
-            <AnnualExpenseBarChart
-              data={summary?.monthlyBreakdown ?? []}
-              isLoading={isLoading}
-            />
+            <AnnualExpenseBarChart data={summary?.monthlyBreakdown ?? []} isLoading={isLoading} />
           </div>
           <div className="col-span-3">
-            <MonthlyExpensePieChart
-              data={summary?.categoryBreakdown ?? []}
-              isLoading={isLoading}
-            />
+            <MonthlyExpensePieChart data={summary?.categoryBreakdown ?? []} isLoading={isLoading} />
           </div>
         </div>
       </main>

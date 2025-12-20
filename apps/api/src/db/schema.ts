@@ -52,7 +52,7 @@ export const categories = pgTable(
   (table) => [
     unique("unique_category_per_user").on(table.userId, table.name),
     index("unique_system_category").on(table.name).where(isNull(table.userId)),
-  ],
+  ]
 );
 
 export const categoryRules = pgTable("category_rules", {
@@ -89,12 +89,9 @@ export const expenses = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    unique("unique_user_transaction").on(
-      table.userId,
-      table.externalTransactionId,
-    ),
+    unique("unique_user_transaction").on(table.userId, table.externalTransactionId),
     index("idx_expenses_user_date").on(table.userId, table.transactionDate),
     index("idx_expenses_category").on(table.userId, table.categoryId),
     index("idx_expenses_merchant").on(table.userId, table.merchant),
-  ],
+  ]
 );

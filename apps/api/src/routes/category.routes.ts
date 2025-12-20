@@ -31,9 +31,7 @@ const CategoryWithSystemSchema = CategorySchema.extend({
 
 const CategoryListResponseSchema = z
   .object({
-    data: z
-      .array(CategoryWithSystemSchema)
-      .openapi({ description: "カテゴリ一覧" }),
+    data: z.array(CategoryWithSystemSchema).openapi({ description: "カテゴリ一覧" }),
   })
   .openapi("CategoryListResponse");
 
@@ -76,12 +74,7 @@ const CreateCategoryRequestSchema = z
       .regex(/^#[0-9A-Fa-f]{6}$/)
       .openapi({ description: "色コード (#RRGGBB)" }),
     icon: z.string().max(50).optional().openapi({ description: "アイコン" }),
-    displayOrder: z
-      .number()
-      .int()
-      .min(0)
-      .optional()
-      .openapi({ description: "表示順" }),
+    displayOrder: z.number().int().min(0).optional().openapi({ description: "表示順" }),
   })
   .openapi("CreateCategoryRequest");
 
@@ -137,29 +130,14 @@ export const createCategoryRoute = createRoute({
 
 const UpdateCategoryRequestSchema = z
   .object({
-    name: z
-      .string()
-      .min(1)
-      .max(50)
-      .optional()
-      .openapi({ description: "カテゴリ名" }),
+    name: z.string().min(1).max(50).optional().openapi({ description: "カテゴリ名" }),
     color: z
       .string()
       .regex(/^#[0-9A-Fa-f]{6}$/)
       .optional()
       .openapi({ description: "色コード" }),
-    icon: z
-      .string()
-      .max(50)
-      .nullable()
-      .optional()
-      .openapi({ description: "アイコン" }),
-    displayOrder: z
-      .number()
-      .int()
-      .min(0)
-      .optional()
-      .openapi({ description: "表示順" }),
+    icon: z.string().max(50).nullable().optional().openapi({ description: "アイコン" }),
+    displayOrder: z.number().int().min(0).optional().openapi({ description: "表示順" }),
   })
   .openapi("UpdateCategoryRequest");
 

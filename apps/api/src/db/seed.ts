@@ -80,10 +80,7 @@ async function seed() {
   console.log("🔍 Checking for duplicate system categories...");
 
   // 1. 重複データのクリーンアップ
-  const systemCategories = await db
-    .select()
-    .from(categories)
-    .where(isNull(categories.userId));
+  const systemCategories = await db.select().from(categories).where(isNull(categories.userId));
   const nameToIds = new Map<string, string[]>();
 
   for (const cat of systemCategories) {
@@ -99,14 +96,8 @@ async function seed() {
 
       // 関連データの移行 (expenses)
       for (const deleteId of deleteIds) {
-        await db
-          .update(expenses)
-          .set({ categoryId: keepId })
-          .where(eq(expenses.categoryId, deleteId));
-        await db
-          .update(categoryRules)
-          .set({ categoryId: keepId })
-          .where(eq(categoryRules.categoryId, deleteId));
+        await db.update(expenses).set({ categoryId: keepId }).where(eq(expenses.categoryId, deleteId));
+        await db.update(categoryRules).set({ categoryId: keepId }).where(eq(categoryRules.categoryId, deleteId));
         await db.delete(categories).where(eq(categories.id, deleteId));
       }
     }
@@ -129,20 +120,14 @@ async function seed() {
       });
     } else {
       // 既存データの更新 (色やアイコンが変わっている場合)
-      await db
-        .update(categories)
-        .set(category)
-        .where(eq(categories.id, existing[0].id));
+      await db.update(categories).set(category).where(eq(categories.id, existing[0].id));
     }
   }
 
   console.log("🌱 Seeding default category rules...");
 
   // カテゴリ名からIDへのマップを作成
-  const allCategories = await db
-    .select()
-    .from(categories)
-    .where(isNull(categories.userId));
+  const allCategories = await db.select().from(categories).where(isNull(categories.userId));
   const categoryMap = new Map(allCategories.map((c) => [c.name, c.id]));
 
   for (const rule of defaultRules) {
@@ -151,12 +136,7 @@ async function seed() {
       const existingRule = await db
         .select()
         .from(categoryRules)
-        .where(
-          and(
-            isNull(categoryRules.userId),
-            eq(categoryRules.keyword, rule.keyword),
-          ),
-        )
+        .where(and(isNull(categoryRules.userId), eq(categoryRules.keyword, rule.keyword)))
         .limit(1);
 
       if (existingRule.length === 0) {

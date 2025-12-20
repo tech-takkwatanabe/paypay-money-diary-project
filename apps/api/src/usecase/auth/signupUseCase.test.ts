@@ -1,12 +1,7 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
 import { SignupUseCase } from "./signupUseCase";
 import { IUserRepository } from "@/domain/repository/userRepository";
-import {
-  CreateUserInput,
-  User,
-  Email,
-  Password,
-} from "@paypay-money-diary/shared";
+import { CreateUserInput, User, Email, Password } from "@paypay-money-diary/shared";
 
 // Mock IUserRepository
 const mockFindByEmail = mock();

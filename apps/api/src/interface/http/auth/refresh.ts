@@ -2,10 +2,7 @@ import { Context } from "hono";
 import { RefreshUseCase } from "@/usecase/auth/refreshUseCase";
 import { UserRepository } from "@/infrastructure/repository/userRepository";
 import { RedisTokenRepository } from "@/infrastructure/repository/tokenRepository";
-import {
-  getRefreshTokenFromCookie,
-  setAuthCookies,
-} from "@/infrastructure/auth/cookie";
+import { getRefreshTokenFromCookie, setAuthCookies } from "@/infrastructure/auth/cookie";
 
 export const refreshHandler = async (c: Context) => {
   // Cookie から refreshToken を取得

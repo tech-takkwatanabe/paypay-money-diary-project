@@ -47,12 +47,7 @@ export const getTransactionsSummaryHandler = async (c: Context) => {
       .from(expenses)
       .leftJoin(categories, eq(expenses.categoryId, categories.id))
       .where(and(...conditions))
-      .groupBy(
-        expenses.categoryId,
-        categories.name,
-        categories.color,
-        categories.icon,
-      );
+      .groupBy(expenses.categoryId, categories.name, categories.color, categories.icon);
 
     // 月別集計（年を指定した場合）
     let monthlyBreakdown: Array<{ month: number; totalAmount: number }> = [];

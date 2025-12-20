@@ -55,12 +55,7 @@ export class UploadCsvUseCase {
         const existing = await db
           .select({ id: expenses.id })
           .from(expenses)
-          .where(
-            and(
-              eq(expenses.userId, userId),
-              eq(expenses.externalTransactionId, expense.externalTransactionId),
-            ),
-          )
+          .where(and(eq(expenses.userId, userId), eq(expenses.externalTransactionId, expense.externalTransactionId)))
           .limit(1);
 
         if (existing.length > 0) {
@@ -92,10 +87,7 @@ export class UploadCsvUseCase {
     }
 
     // 5. アップロードステータスを更新
-    await db
-      .update(csvUploads)
-      .set({ status: "processed" })
-      .where(eq(csvUploads.id, upload.id));
+    await db.update(csvUploads).set({ status: "processed" }).where(eq(csvUploads.id, upload.id));
 
     return {
       uploadId: upload.id,

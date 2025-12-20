@@ -15,13 +15,7 @@ export const getTransactionsHandler = async (c: Context) => {
   }
 
   try {
-    const {
-      page = "1",
-      limit = "50",
-      startDate,
-      endDate,
-      categoryId,
-    } = c.req.query();
+    const { page = "1", limit = "50", startDate, endDate, categoryId } = c.req.query();
 
     const pageNum = Math.max(1, parseInt(page, 10));
     const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
