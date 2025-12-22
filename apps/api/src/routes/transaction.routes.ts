@@ -160,6 +160,16 @@ const MonthlyBreakdownSchema = z
   .object({
     month: z.number().openapi({ description: "月" }),
     totalAmount: z.number().openapi({ description: "合計金額" }),
+    categories: z
+      .array(
+        z.object({
+          categoryId: z.string().nullable().openapi({ description: "カテゴリID" }),
+          categoryName: z.string().openapi({ description: "カテゴリ名" }),
+          categoryColor: z.string().openapi({ description: "カテゴリ色" }),
+          amount: z.number().openapi({ description: "金額" }),
+        })
+      )
+      .openapi({ description: "カテゴリー別内訳" }),
   })
   .openapi("MonthlyBreakdown");
 
