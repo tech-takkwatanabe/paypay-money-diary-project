@@ -23,6 +23,7 @@ export * from "./loginResponse";
 export * from "./logoutResponse";
 export * from "./meResponse";
 export * from "./monthlyBreakdown";
+export * from "./monthlyBreakdownCategoriesItem";
 export * from "./pagination";
 export * from "./postAuthLoginBody";
 export * from "./postAuthSignupBody";
