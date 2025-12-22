@@ -5,10 +5,13 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
+import type { MonthlyBreakdownCategoriesItem } from "./monthlyBreakdownCategoriesItem";
 
 export interface MonthlyBreakdown {
   /** 月 */
   month: number;
   /** 合計金額 */
   totalAmount: number;
+  /** カテゴリー別内訳 */
+  categories: MonthlyBreakdownCategoriesItem[];
 }
