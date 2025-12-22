@@ -50,22 +50,61 @@ export const getTransactionsSummaryHandler = async (c: Context) => {
       .groupBy(expenses.categoryId, categories.name, categories.color, categories.icon);
 
     // 月別集計（年を指定した場合）
-    let monthlyBreakdown: Array<{ month: number; totalAmount: number }> = [];
+    let monthlyBreakdown: Array<{
+      month: number;
+      totalAmount: number;
+      categories: Array<{
+        categoryId: string | null;
+        categoryName: string;
+        categoryColor: string;
+        amount: number;
+      }>;
+    }> = [];
 
     if (year && !month) {
       const monthlyResult = await db
         .select({
           month: sql<number>`extract(month from ${expenses.transactionDate})`,
-          totalAmount: sql<number>`sum(${expenses.amount})`,
+          categoryId: expenses.categoryId,
+          categoryName: categories.name,
+          categoryColor: categories.color,
+          amount: sql<number>`sum(${expenses.amount})`,
         })
         .from(expenses)
+        .leftJoin(categories, eq(expenses.categoryId, categories.id))
         .where(and(...conditions))
-        .groupBy(sql`extract(month from ${expenses.transactionDate})`);
+        .groupBy(
+          sql`extract(month from ${expenses.transactionDate})`,
+          expenses.categoryId,
+          categories.name,
+          categories.color
+        );
 
-      monthlyBreakdown = monthlyResult.map((r) => ({
-        month: Number(r.month),
-        totalAmount: Number(r.totalAmount),
-      }));
+      // 月ごとにデータをまとめる
+      const monthlyMap = new Map<number, (typeof monthlyBreakdown)[0]>();
+
+      monthlyResult.forEach((r) => {
+        const monthNum = Number(r.month);
+        if (!monthlyMap.has(monthNum)) {
+          monthlyMap.set(monthNum, {
+            month: monthNum,
+            totalAmount: 0,
+            categories: [],
+          });
+        }
+
+        const monthData = monthlyMap.get(monthNum)!;
+        const amount = Number(r.amount);
+        monthData.totalAmount += amount;
+        monthData.categories.push({
+          categoryId: r.categoryId,
+          categoryName: r.categoryName ?? "その他",
+          categoryColor: r.categoryColor ?? "#B8B8B8",
+          amount: amount,
+        });
+      });
+
+      monthlyBreakdown = Array.from(monthlyMap.values()).sort((a, b) => a.month - b.month);
     }
 
     // 合計
