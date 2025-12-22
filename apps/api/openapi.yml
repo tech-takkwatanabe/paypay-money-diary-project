@@ -243,9 +243,34 @@ components:
         totalAmount:
           type: number
           description: 合計金額
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+                nullable: true
+                description: カテゴリID
+              categoryName:
+                type: string
+                description: カテゴリ名
+              categoryColor:
+                type: string
+                description: カテゴリ色
+              amount:
+                type: number
+                description: 金額
+            required:
+              - categoryId
+              - categoryName
+              - categoryColor
+              - amount
+          description: カテゴリー別内訳
       required:
         - month
         - totalAmount
+        - categories
     SummaryResponse:
       type: object
       properties:
