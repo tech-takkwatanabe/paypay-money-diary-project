@@ -14,18 +14,28 @@ interface AnnualExpenseBarChartProps {
 const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
 
 export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChartProps) {
+  // 全てのカテゴリーを抽出（ユニークなリストを作成）
+  const allCategories = Array.from(
+    new Map(
+      data
+        .flatMap((d) => d.categories)
+        .map((c) => [c.categoryId || "others", { name: c.categoryName, color: c.categoryColor }])
+    ).entries()
+  );
+
   // 月別データを整形（1月〜12月）
   const monthlyData = monthNames.map((name, index) => {
     const monthData = data.find((d) => d.month === index + 1);
     return {
       name,
-      amount: monthData?.totalAmount ?? 0,
+      categories: monthData?.categories ?? [],
     };
   });
 
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "bar",
+      stacked: true,
       fontFamily: "inherit",
       toolbar: {
         show: false,
@@ -39,7 +49,7 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
       },
     },
     xaxis: {
-      categories: monthlyData.map((item) => item.name),
+      categories: monthNames,
     },
     yaxis: {
       labels: {
@@ -52,7 +62,9 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
       },
     },
     legend: {
-      show: false,
+      position: "bottom",
+      horizontalAlign: "center",
+      offsetY: 8,
     },
     dataLabels: {
       enabled: false,
@@ -62,25 +74,16 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
         formatter: (val: number) => `¥${val.toLocaleString()}`,
       },
     },
-    colors: ["#ef4444"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        type: "vertical",
-        shadeIntensity: 0.2,
-        opacityFrom: 1,
-        opacityTo: 0.8,
-      },
-    },
+    colors: allCategories.map(([_, info]) => info.color),
   };
 
-  const series = [
-    {
-      name: "支出",
-      data: monthlyData.map((item) => item.amount),
-    },
-  ];
+  const series = allCategories.map(([id, info]) => ({
+    name: info.name,
+    data: monthlyData.map((m) => {
+      const cat = m.categories.find((c) => (c.categoryId || "others") === id);
+      return cat?.amount ?? 0;
+    }),
+  }));
 
   return (
     <Card className="w-full h-full min-h-[400px]">
