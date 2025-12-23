@@ -124,7 +124,7 @@ export const getTransactionsSummaryHandler = async (c: Context) => {
       categoryBreakdown: categoryBreakdown.map((c) => ({
         categoryId: c.categoryId,
         categoryName: c.categoryName ?? "その他",
-        categoryColor: c.categoryColor ?? "#B8B8B8",
+        categoryColor: c.categoryColor ?? "#9c9c9c",
         categoryIcon: c.categoryIcon,
         totalAmount: Number(c.totalAmount),
         transactionCount: Number(c.transactionCount),

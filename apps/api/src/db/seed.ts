@@ -54,7 +54,7 @@ const defaultCategories = [
   },
   {
     name: "その他",
-    color: "#B8B8B8",
+    color: "#9c9c9c",
     icon: "circle-dot",
     displayOrder: 99,
     isDefault: true,
