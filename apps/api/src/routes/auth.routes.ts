@@ -11,9 +11,9 @@ import { CreateUserSchema, LoginSchema } from "@paypay-money-diary/shared";
 // ユーザー情報スキーマ
 const UserSchema = z
   .object({
-    id: z.string().openapi({ description: "ユーザーID" }),
+    id: z.uuid().openapi({ description: "ユーザーID" }),
     name: z.string().openapi({ description: "ユーザー名" }),
-    email: z.string().email().openapi({ description: "メールアドレス" }),
+    email: z.email().openapi({ description: "メールアドレス" }),
   })
   .openapi("User");
 

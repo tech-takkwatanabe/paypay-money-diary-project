@@ -171,7 +171,7 @@ import { z } from 'zod';
 import { EmailSchema, EmailType } from './vo/email'; // Email関連をインポート
 
 export const UserSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.uuid().optional(),
   name: z.string().min(3, { message: "名前は3文字以上である必要があります。" }),
   email: EmailSchema, // Email Value Objectのスキーマを使用
   age: z.number().int().positive({ message: "年齢は正の整数である必要があります。" }).optional(),
@@ -215,7 +215,7 @@ export class Email {
 }
 
 // Zodスキーマの定義とValue Objectへの変換
-export const EmailSchema = z.string().email({ message: "無効なメールアドレス形式です。" }).transform((email) => {
+export const EmailSchema = z.email({ message: "無効なメールアドレス形式です。" }).transform((email) => {
   return Email.create(email); // バリデーション済みの文字列からEmail Value Objectを生成
 });
 
