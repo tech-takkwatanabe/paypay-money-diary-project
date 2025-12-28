@@ -26,14 +26,14 @@ importers:
   apps/api:
     dependencies:
       '@hono/swagger-ui':
-        specifier: ^0.5.2
-        version: 0.5.2(hono@4.11.1)
+        specifier: ^0.5.3
+        version: 0.5.3(hono@4.11.3)
       '@hono/zod-openapi':
         specifier: ^1.2.0
-        version: 1.2.0(hono@4.11.1)(zod@4.1.13)
+        version: 1.2.0(hono@4.11.3)(zod@4.1.13)
       '@hono/zod-validator':
         specifier: 0.7.6
-        version: 0.7.6(hono@4.11.1)(zod@4.1.13)
+        version: 0.7.6(hono@4.11.3)(zod@4.1.13)
       '@paypay-money-diary/shared':
         specifier: workspace:^
         version: link:../../packages/shared
@@ -47,8 +47,8 @@ importers:
         specifier: 0.45.1
         version: 0.45.1(@types/pg@8.16.0)(bun-types@1.3.5)(postgres@3.4.7)
       hono:
-        specifier: 4.11.1
-        version: 4.11.1
+        specifier: 4.11.3
+        version: 4.11.3
       ioredis:
         specifier: 5.8.2
         version: 5.8.2
@@ -651,10 +651,10 @@ packages:
   '@gerrit0/mini-shiki@3.19.0':
     resolution: {integrity: sha512-ZSlWfLvr8Nl0T4iA3FF/8VH8HivYF82xQts2DY0tJxZd4wtXJ8AA0nmdW9lmO4hlrh3f9xNwEPtOgqETPqKwDA==}
 
-  '@hono/swagger-ui@0.5.2':
-    resolution: {integrity: sha512-7wxLKdb8h7JTdZ+K8DJNE3KXQMIpJejkBTQjrYlUWF28Z1PGOKw6kUykARe5NTfueIN37jbyG/sBYsbzXzG53A==}
+  '@hono/swagger-ui@0.5.3':
+    resolution: {integrity: sha512-Hn90DOOJ62ICJQplQvCDVpi9Jcn6EhtRaiffyJIS53wA5RmRLtMCDQGVc0bor8vQD7JIwpkweWjs+3cycp+IvA==}
     peerDependencies:
-      hono: '*'
+      hono: '>=4.0.0'
 
   '@hono/zod-openapi@1.2.0':
     resolution: {integrity: sha512-KDfHqv/Wy4elVseZXgokbHxeWuqBL+AZfqsOMpEihBMUsk/fJ+bLIi3Sf70JFVpt1Ihui8RasYrInozt7ZBDIA==}
@@ -2492,8 +2492,8 @@ packages:
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
 
-  hono@4.11.1:
-    resolution: {integrity: sha512-KsFcH0xxHes0J4zaQgWbYwmz3UPOOskdqZmItstUG93+Wk1ePBLkLGwbP9zlmh1BFUiL8Qp+Xfu9P7feJWpGNg==}
+  hono@4.11.3:
+    resolution: {integrity: sha512-PmQi306+M/ct/m5s66Hrg+adPnkD5jiO6IjA7WhWw0gSBSo1EcRegwuI1deZ+wd5pzCGynCcn2DprnE4/yEV4w==}
     engines: {node: '>=16.9.0'}
 
   http2-client@1.3.5:
@@ -4120,21 +4120,21 @@ snapshots:
       '@shikijs/types': 3.19.0
       '@shikijs/vscode-textmate': 10.0.2
 
-  '@hono/swagger-ui@0.5.2(hono@4.11.1)':
+  '@hono/swagger-ui@0.5.3(hono@4.11.3)':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.3
 
-  '@hono/zod-openapi@1.2.0(hono@4.11.1)(zod@4.1.13)':
+  '@hono/zod-openapi@1.2.0(hono@4.11.3)(zod@4.1.13)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.2.0(zod@4.1.13)
-      '@hono/zod-validator': 0.7.6(hono@4.11.1)(zod@4.1.13)
-      hono: 4.11.1
+      '@hono/zod-validator': 0.7.6(hono@4.11.3)(zod@4.1.13)
+      hono: 4.11.3
       openapi3-ts: 4.5.0
       zod: 4.1.13
 
-  '@hono/zod-validator@0.7.6(hono@4.11.1)(zod@4.1.13)':
+  '@hono/zod-validator@0.7.6(hono@4.11.3)(zod@4.1.13)':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.3
       zod: 4.1.13
 
   '@humanfs/core@0.19.1': {}
@@ -6191,7 +6191,7 @@ snapshots:
     dependencies:
       hermes-estree: 0.25.1
 
-  hono@4.11.1: {}
+  hono@4.11.3: {}
 
   http2-client@1.3.5: {}
 
