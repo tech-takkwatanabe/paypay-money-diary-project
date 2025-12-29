@@ -1,23 +1,7 @@
-import { describe, it, expect, beforeEach, mock } from "bun:test";
+import { describe, it, expect, beforeEach, mock, spyOn, afterEach } from "bun:test";
 import { Hono } from "hono";
 import { refreshHandler } from "./refresh";
-
-// Mock dependencies
-const mockRefreshExecute = mock();
-
-mock.module("@/usecase/auth/refreshUseCase", () => ({
-  RefreshUseCase: class {
-    execute = mockRefreshExecute;
-  },
-}));
-
-mock.module("@/infrastructure/repository/userRepository", () => ({
-  UserRepository: class {},
-}));
-
-mock.module("@/infrastructure/repository/tokenRepository", () => ({
-  RedisTokenRepository: class {},
-}));
+import { RefreshUseCase } from "@/usecase/auth/refreshUseCase";
 
 describe("refreshHandler", () => {
   let app: Hono;
@@ -25,7 +9,10 @@ describe("refreshHandler", () => {
   beforeEach(() => {
     app = new Hono();
     app.post("/refresh", refreshHandler);
-    mockRefreshExecute.mockReset();
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it("should return 200 with message and set cookies on successful refresh", async () => {
@@ -34,7 +21,7 @@ describe("refreshHandler", () => {
       accessToken: "new_access_token",
       refreshToken: "new_refresh_token",
     };
-    mockRefreshExecute.mockResolvedValue(mockResponse);
+    const spy = spyOn(RefreshUseCase.prototype, "execute").mockResolvedValue(mockResponse);
 
     // Act - Cookie で refreshToken を送信
     const res = await app.request("/refresh", {
@@ -53,6 +40,7 @@ describe("refreshHandler", () => {
     // 新しいトークンが Cookie に設定されていることを確認
     const cookies = res.headers.get("set-cookie");
     expect(cookies).toContain("accessToken=");
+    expect(spy).toHaveBeenCalled();
   });
 
   it("should return 400 on missing refresh token cookie", async () => {
@@ -70,7 +58,9 @@ describe("refreshHandler", () => {
 
   it("should return 401 on invalid refresh token", async () => {
     // Arrange
-    mockRefreshExecute.mockImplementation(() => Promise.reject(new Error("Invalid refresh token")));
+    spyOn(RefreshUseCase.prototype, "execute").mockImplementation(() =>
+      Promise.reject(new Error("Invalid refresh token"))
+    );
 
     // Act
     const res = await app.request("/refresh", {
