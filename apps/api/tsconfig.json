@@ -5,7 +5,9 @@
     "jsxImportSource": "hono/jsx",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "module": "esnext",
     "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "target": "esnext",
     "baseUrl": ".",
     "paths": {
