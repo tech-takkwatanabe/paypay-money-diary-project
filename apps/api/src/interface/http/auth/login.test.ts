@@ -1,25 +1,9 @@
-import { describe, it, expect, beforeEach, mock } from "bun:test";
+import { describe, it, expect, beforeEach, mock, spyOn, afterEach } from "bun:test";
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { LoginSchema } from "@paypay-money-diary/shared";
 import { loginHandler } from "./login";
-
-// Mock dependencies
-const mockLoginExecute = mock();
-
-mock.module("@/usecase/auth/loginUseCase", () => ({
-  LoginUseCase: class {
-    execute = mockLoginExecute;
-  },
-}));
-
-mock.module("@/infrastructure/repository/userRepository", () => ({
-  UserRepository: class {},
-}));
-
-mock.module("@/infrastructure/repository/tokenRepository", () => ({
-  RedisTokenRepository: class {},
-}));
+import { LoginUseCase } from "@/usecase/auth/loginUseCase";
 
 describe("loginHandler", () => {
   let app: Hono;
@@ -27,7 +11,10 @@ describe("loginHandler", () => {
   beforeEach(() => {
     app = new Hono();
     app.post("/login", zValidator("json", LoginSchema), loginHandler);
-    mockLoginExecute.mockReset();
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it("should return 200 with user data and set cookies on successful login", async () => {
@@ -41,7 +28,7 @@ describe("loginHandler", () => {
         email: "test@example.com",
       },
     };
-    mockLoginExecute.mockResolvedValue(mockResponse);
+    const spy = spyOn(LoginUseCase.prototype, "execute").mockResolvedValue(mockResponse);
 
     // Act
     const res = await app.request("/login", {
@@ -65,6 +52,7 @@ describe("loginHandler", () => {
     // Cookie が設定されていることを確認
     const cookies = res.headers.get("set-cookie");
     expect(cookies).toContain("accessToken=");
+    expect(spy).toHaveBeenCalled();
   });
 
   it("should return 400 on validation error", async () => {
@@ -84,7 +72,7 @@ describe("loginHandler", () => {
 
   it("should return 401 on invalid credentials", async () => {
     // Arrange
-    mockLoginExecute.mockRejectedValue(new Error("Invalid credentials"));
+    spyOn(LoginUseCase.prototype, "execute").mockRejectedValue(new Error("Invalid credentials"));
 
     // Act
     const res = await app.request("/login", {
