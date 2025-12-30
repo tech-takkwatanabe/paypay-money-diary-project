@@ -194,22 +194,30 @@ export default function RulesPage() {
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
-        <div className="flex gap-2">
-          <button
-            onClick={handleReCategorize}
-            disabled={isReCategorizing}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+        <div className="flex items-center gap-4">
+          <Link
+            href="/expenses"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
           >
-            <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
-            一括再分類
-          </button>
-          <button
-            onClick={startCreate}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-          >
-            <Plus className="h-4 w-4" />
-            新規作成
-          </button>
+            支出一覧
+          </Link>
+          <div className="flex gap-2">
+            <button
+              onClick={handleReCategorize}
+              disabled={isReCategorizing}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            >
+              <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
+              一括再分類
+            </button>
+            <button
+              onClick={startCreate}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              <Plus className="h-4 w-4" />
+              新規作成
+            </button>
+          </div>
         </div>
       </header>
 

@@ -116,6 +116,12 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           <Link
+            href="/expenses"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            支出一覧
+          </Link>
+          <Link
             href="/categories"
             className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >

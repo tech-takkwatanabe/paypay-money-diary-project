@@ -180,13 +180,21 @@ export default function CategoriesPage() {
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
-        <button
-          onClick={startCreate}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-        >
-          <Plus className="h-4 w-4" />
-          新規作成
-        </button>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/expenses"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
+          >
+            支出一覧
+          </Link>
+          <button
+            onClick={startCreate}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            <Plus className="h-4 w-4" />
+            新規作成
+          </button>
+        </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-6">

@@ -103,6 +103,12 @@ export default function UploadPage() {
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
+        <Link
+          href="/expenses"
+          className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
+        >
+          支出一覧
+        </Link>
       </header>
 
       <main className="max-w-2xl mx-auto p-6">
