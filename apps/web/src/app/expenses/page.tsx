@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SelectNative } from "@/components/ui/select-native";
+import { Link } from "@/components/ui/link";
 import { Search, ChevronDown, ChevronUp, LogOut, Upload, Filter, Pencil, Check, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTransactions, getTransactionsYears, patchTransactionsId } from "@/api/generated/transaction/transaction";
 import { getCategories } from "@/api/generated/category/category";
 import type { Transaction, CategoryWithSystem } from "@/api/models";
-import Link from "next/link";
 
 export default function ExpensesPage() {
   const { user, logout } = useAuth();
@@ -143,39 +146,24 @@ export default function ExpensesPage() {
           </Link>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link
-            href="/expenses"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg transition-colors"
-          >
+          <Link href="/expenses" variant="outline" className="text-red-600 bg-red-50 dark:bg-red-900/20">
             支出一覧
           </Link>
-          <Link
-            href="/categories"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
+          <Link href="/categories" variant="outline">
             カテゴリ
           </Link>
-          <Link
-            href="/rules"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
+          <Link href="/rules" variant="outline">
             ルール
           </Link>
-          <Link
-            href="/upload"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-          >
+          <Link href="/upload" variant="brand">
             <Upload className="h-4 w-4" />
             <span className="hidden sm:inline">CSV アップロード</span>
           </Link>
           <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:block">ログアウト</span>
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -191,27 +179,29 @@ export default function ExpensesPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
+                <Input
                   type="text"
+                  variant="filter"
                   placeholder="店名で検索..."
                   value={merchantSearch}
                   onChange={(e) => {
                     setMerchantSearch(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                  className="pl-10"
                 />
               </div>
 
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-400" />
-                <select
+                <SelectNative
+                  variant="filter"
                   value={selectedYear}
                   onChange={(e) => {
                     setSelectedYear(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="flex-1 bg-white dark:bg-gray-800 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-red-500"
+                  className="flex-1"
                 >
                   <option value="">すべての年</option>
                   {availableYears.map((year) => (
@@ -219,17 +209,18 @@ export default function ExpensesPage() {
                       {year}年
                     </option>
                   ))}
-                </select>
+                </SelectNative>
               </div>
 
               <div className="flex items-center gap-2">
-                <select
+                <SelectNative
+                  variant="filter"
                   value={selectedCategory}
                   onChange={(e) => {
                     setSelectedCategory(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full bg-white dark:bg-gray-800 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full"
                 >
                   <option value="">すべてのカテゴリ</option>
                   {categories.map((cat) => (
@@ -237,21 +228,22 @@ export default function ExpensesPage() {
                       {cat.name}
                     </option>
                   ))}
-                </select>
+                </SelectNative>
               </div>
 
               <div className="flex items-center justify-end gap-2">
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setMerchantSearch("");
                     setSelectedYear(availableYears[0]?.toString() || "");
                     setSelectedCategory("");
                     setCurrentPage(1);
                   }}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   リセット
-                </button>
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -309,17 +301,18 @@ export default function ExpensesPage() {
                       <td className="px-4 py-3 text-sm">
                         {editingId === t.id ? (
                           <div className="flex items-center gap-2">
-                            <select
+                            <SelectNative
+                              variant="filter"
                               value={editCategoryId}
                               onChange={(e) => setEditCategoryId(e.target.value)}
-                              className="bg-white dark:bg-gray-800 border rounded px-2 py-1 outline-none focus:ring-2 focus:ring-red-500"
+                              className="w-fit"
                             >
                               {categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>
                                   {cat.name}
                                 </option>
                               ))}
-                            </select>
+                            </SelectNative>
                             <button
                               onClick={() => handleUpdateCategory(t.id)}
                               className="p-1 text-green-600 hover:bg-green-50 rounded"
