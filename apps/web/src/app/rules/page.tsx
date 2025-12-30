@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SelectNative } from "@/components/ui/select-native";
+import { Link } from "@/components/ui/link";
 import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rule/rule";
 import { getCategories } from "@/api/generated/category/category";
 import { postTransactionsReCategorize } from "@/api/generated/transaction/transaction";
@@ -187,36 +190,23 @@ export default function RulesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link href="/" variant="ghost">
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
         <div className="flex items-center gap-4">
-          <Link
-            href="/expenses"
-            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
-          >
+          <Link href="/expenses" variant="outline">
             支出一覧
           </Link>
           <div className="flex gap-2">
-            <button
-              onClick={handleReCategorize}
-              disabled={isReCategorizing}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
-            >
+            <Button variant="outline" onClick={handleReCategorize} disabled={isReCategorizing}>
               <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
               一括再分類
-            </button>
-            <button
-              onClick={startCreate}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-            >
+            </Button>
+            <Button variant="brand" onClick={startCreate}>
               <Plus className="h-4 w-4" />
               新規作成
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -238,46 +228,39 @@ export default function RulesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">キーワード</label>
-                    <input
+                    <Input
                       type="text"
+                      variant="filter"
                       value={formData.keyword}
                       onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                       placeholder="例: セブンイレブン"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">カテゴリ</label>
-                    <select
+                    <SelectNative
+                      variant="filter"
                       value={formData.categoryId}
                       onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white dark:bg-gray-800"
                     >
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
                           {cat.name}
                         </option>
                       ))}
-                    </select>
+                    </SelectNative>
                   </div>
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
 
                 <div className="flex gap-2">
-                  <button
-                    onClick={handleCreate}
-                    disabled={isSubmitting}
-                    className="px-4 py-2 bg-linear-to-r from-red-500 to-pink-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
-                  >
+                  <Button onClick={handleCreate} variant="brand" disabled={isSubmitting}>
                     {isSubmitting ? "作成中..." : "作成"}
-                  </button>
-                  <button
-                    onClick={() => setShowForm(false)}
-                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
+                  </Button>
+                  <Button onClick={() => setShowForm(false)} variant="outline">
                     キャンセル
-                  </button>
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -303,8 +286,9 @@ export default function RulesPage() {
                     {editingId === rule.id ? (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <input
+                          <Input
                             type="text"
+                            variant="filter"
                             value={formData.keyword}
                             onChange={(e) =>
                               setFormData({
@@ -312,9 +296,9 @@ export default function RulesPage() {
                                 keyword: e.target.value,
                               })
                             }
-                            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                           />
-                          <select
+                          <SelectNative
+                            variant="filter"
                             value={formData.categoryId}
                             onChange={(e) =>
                               setFormData({
@@ -322,14 +306,13 @@ export default function RulesPage() {
                                 categoryId: e.target.value,
                               })
                             }
-                            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white dark:bg-gray-800"
                           >
                             {categories.map((cat) => (
                               <option key={cat.id} value={cat.id}>
                                 {cat.name}
                               </option>
                             ))}
-                          </select>
+                          </SelectNative>
                         </div>
                         {error && <p className="text-sm text-red-500">{error}</p>}
                         <div className="flex gap-2">
