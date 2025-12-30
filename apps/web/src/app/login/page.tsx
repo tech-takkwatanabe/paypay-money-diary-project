@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { postAuthLogin } from "@/api/generated/auth/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Link } from "@/components/ui/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -83,7 +85,7 @@ export default function LoginPage() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                   />
                 </svg>
               </div>
@@ -136,12 +138,11 @@ export default function LoginPage() {
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   メールアドレス
                 </label>
-                <input
+                <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder-gray-400"
                   placeholder="you@example.com"
                   required
                 />
@@ -151,22 +152,17 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   パスワード
                 </label>
-                <input
+                <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder-gray-400"
                   placeholder="••••••••"
                   required
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 px-4 bg-linear-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
+              <Button type="submit" variant="brand" size="xl" disabled={isLoading} className="w-full">
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -190,15 +186,12 @@ export default function LoginPage() {
                 ) : (
                   "ログイン"
                 )}
-              </button>
+              </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-gray-500 dark:text-gray-400">
-                アカウントをお持ちでないですか？{" "}
-                <Link href="/signup" className="text-red-500 hover:text-red-600 font-medium">
-                  新規登録
-                </Link>
+                アカウントをお持ちでないですか？ <Link href="/signup">新規登録</Link>
               </p>
             </div>
           </div>
