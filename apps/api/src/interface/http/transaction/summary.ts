@@ -116,21 +116,24 @@ export const getTransactionsSummaryHandler = async (c: Context) => {
       .from(expenses)
       .where(and(...conditions));
 
-    return c.json({
-      summary: {
-        totalAmount: Number(totalResult[0]?.totalAmount ?? 0),
-        transactionCount: Number(totalResult[0]?.transactionCount ?? 0),
+    return c.json(
+      {
+        summary: {
+          totalAmount: Number(totalResult[0]?.totalAmount ?? 0),
+          transactionCount: Number(totalResult[0]?.transactionCount ?? 0),
+        },
+        categoryBreakdown: categoryBreakdown.map((c) => ({
+          categoryId: c.categoryId,
+          categoryName: c.categoryName ?? "その他",
+          categoryColor: c.categoryColor ?? "#9c9c9c",
+          categoryIcon: c.categoryIcon,
+          totalAmount: Number(c.totalAmount),
+          transactionCount: Number(c.transactionCount),
+        })),
+        monthlyBreakdown,
       },
-      categoryBreakdown: categoryBreakdown.map((c) => ({
-        categoryId: c.categoryId,
-        categoryName: c.categoryName ?? "その他",
-        categoryColor: c.categoryColor ?? "#9c9c9c",
-        categoryIcon: c.categoryIcon,
-        totalAmount: Number(c.totalAmount),
-        transactionCount: Number(c.transactionCount),
-      })),
-      monthlyBreakdown,
-    });
+      200
+    );
   } catch (error) {
     console.error("Get summary error:", error);
     return c.json({ error: "Internal Server Error" }, 500);

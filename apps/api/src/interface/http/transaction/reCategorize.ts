@@ -26,7 +26,7 @@ export const reCategorizeHandler = async (c: Context) => {
       .orderBy(categoryRules.priority, categoryRules.keyword);
 
     if (rules.length === 0) {
-      return c.json({ message: "No rules found", updatedCount: 0 });
+      return c.json({ message: "No rules found" }, 200);
     }
 
     // 2. 「その他」カテゴリのIDを取得
