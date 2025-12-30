@@ -52,9 +52,12 @@ export const getAvailableYearsHandler = async (c: Context) => {
     // 最小年は2023 (PayPayの仕様)
     const filteredYears = availableYears.filter((y) => y >= 2023);
 
-    return c.json({
-      years: filteredYears.length > 0 ? filteredYears : [new Date().getFullYear()],
-    });
+    return c.json(
+      {
+        years: filteredYears.length > 0 ? filteredYears : [new Date().getFullYear()],
+      },
+      200
+    );
   } catch (error) {
     console.error("Get available years error:", error);
     return c.json({ error: "Internal Server Error" }, 500);
