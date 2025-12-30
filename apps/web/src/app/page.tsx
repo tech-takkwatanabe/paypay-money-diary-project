@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 import { MonthlyExpensePieChart } from "@/components/charts/MonthlyExpensePieChart";
 import { AnnualExpenseBarChart } from "@/components/charts/AnnualExpenseBarChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, TrendingUp, Wallet, LogOut, Upload, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SelectNative } from "@/components/ui/select-native";
+import { Link } from "@/components/ui/link";
+import { DollarSign, TrendingUp, Wallet, LogOut, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTransactionsSummary } from "@/api/generated/transaction/transaction";
 import { customFetch } from "@/api/customFetch";
 import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from "@/api/models";
-import Link from "next/link";
 
 interface AvailableYearsResponse {
   status: number;
@@ -115,59 +117,41 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link
-            href="/expenses"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
+          <Link href="/expenses" variant="outline">
             支出一覧
           </Link>
-          <Link
-            href="/categories"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
+          <Link href="/categories" variant="outline">
             カテゴリ
           </Link>
-          <Link
-            href="/rules"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
+          <Link href="/rules" variant="outline">
             ルール
           </Link>
-          <Link
-            href="/upload"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-          >
+          <Link href="/upload" variant="brand">
             <Upload className="h-4 w-4" />
             <span className="hidden sm:inline">CSV アップロード</span>
           </Link>
           <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:block">ログアウト</span>
-          </button>
+          </Button>
         </div>
       </header>
 
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-6 md:gap-8">
         {/* 年選択ドロップダウン */}
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <select
-              value={selectedYear ?? ""}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="appearance-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 pr-10 text-lg font-semibold focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none cursor-pointer"
-            >
-              {availableYears.map((year) => (
-                <option key={year} value={year}>
-                  {year}年
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-          </div>
+          <SelectNative
+            value={selectedYear ?? ""}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="w-fit"
+          >
+            {availableYears.map((year) => (
+              <option key={year} value={year}>
+                {year}年
+              </option>
+            ))}
+          </SelectNative>
           <span className="text-muted-foreground">の支出データ</span>
         </div>
 
