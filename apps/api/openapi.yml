@@ -18,6 +18,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           description: ユーザーID
         name:
           type: string
@@ -43,6 +44,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           description: ユーザーID
         name:
           type: string
@@ -83,6 +85,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           description: ユーザーID
         name:
           type: string
@@ -694,11 +697,9 @@ paths:
               type: object
               properties:
                 file:
-                  type: string
-                  format: binary
+                  nullable: true
                   description: CSV ファイル
-              required:
-                - file
+                  format: binary
       responses:
         "201":
           description: アップロード成功
@@ -763,10 +764,46 @@ paths:
           in: query
         - schema:
             type: string
+            description: 年 (YYYY)
+          required: false
+          description: 年 (YYYY)
+          name: year
+          in: query
+        - schema:
+            type: string
             description: カテゴリID
           required: false
           description: カテゴリID
           name: categoryId
+          in: query
+        - schema:
+            type: string
+            description: 取引先 (部分一致)
+          required: false
+          description: 取引先 (部分一致)
+          name: merchant
+          in: query
+        - schema:
+            type: string
+            enum:
+              - transactionDate
+              - amount
+            default: transactionDate
+            description: ソート項目
+          required: false
+          description: ソート項目
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+            description: ソート順
+          required: false
+          description: ソート順
+          name: sortOrder
           in: query
       responses:
         "200":
@@ -829,6 +866,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TransactionErrorResponse"
+  /transactions/years:
+    get:
+      tags:
+        - Transaction
+      summary: 利用可能な年リスト取得
+      description: CSV アップロード履歴から利用可能な年のリストを取得します
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  years:
+                    type: array
+                    items:
+                      type: number
+                    description: 利用可能な年リスト
+                required:
+                  - years
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
   /transactions/re-categorize:
     post:
       tags:
@@ -871,6 +943,64 @@ paths:
                     type: string
                 required:
                   - error
+  /transactions/{id}:
+    patch:
+      tags:
+        - Transaction
+      summary: 取引更新
+      description: 取引のカテゴリなどを更新します
+      security:
+        - Bearer: []
+      parameters:
+        - schema:
+            type: string
+            description: 取引ID
+          required: true
+          description: 取引ID
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: string
+                  description: カテゴリID
+              required:
+                - categoryId
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "404":
+          description: 取引が見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorResponse"
   /categories:
     get:
       tags:

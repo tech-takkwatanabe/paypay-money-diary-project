@@ -29,11 +29,15 @@ import {
   uploadCsvRoute,
   getTransactionsRoute,
   getSummaryRoute,
+  getAvailableYearsRoute,
   reCategorizeRoute,
+  updateTransactionRoute,
   type UploadCsvRoute,
   type GetTransactionsRoute,
   type GetSummaryRoute,
+  type GetAvailableYearsRoute,
   type ReCategorizeRoute,
+  type UpdateTransactionRoute,
 } from "@/routes/transaction.routes";
 
 // Category routes (スキーマ定義のみ)
@@ -126,8 +130,28 @@ const getSummaryDummy: RouteHandler<GetSummaryRoute> = async (c) => {
   );
 };
 
+const getAvailableYearsDummy: RouteHandler<GetAvailableYearsRoute> = async (c) => {
+  return c.json({ years: [] }, 200);
+};
+
 const reCategorizeDummy: RouteHandler<ReCategorizeRoute> = async (c) => {
   return c.json({ message: "" }, 200);
+};
+
+const updateTransactionDummy: RouteHandler<UpdateTransactionRoute> = async (c) => {
+  return c.json(
+    {
+      id: "",
+      transactionDate: "",
+      amount: 0,
+      merchant: "",
+      paymentMethod: null,
+      categoryId: null,
+      categoryName: null,
+      categoryColor: null,
+    },
+    200
+  );
 };
 
 // ===== Category dummy handlers =====
@@ -214,7 +238,9 @@ app.openapi(meRoute, meDummy);
 app.openapi(uploadCsvRoute, uploadCsvDummy);
 app.openapi(getTransactionsRoute, getTransactionsDummy);
 app.openapi(getSummaryRoute, getSummaryDummy);
+app.openapi(getAvailableYearsRoute, getAvailableYearsDummy);
 app.openapi(reCategorizeRoute, reCategorizeDummy);
+app.openapi(updateTransactionRoute, updateTransactionDummy);
 
 app.openapi(getCategoriesRoute, getCategoriesDummy);
 app.openapi(createCategoryRoute, createCategoryDummy);
