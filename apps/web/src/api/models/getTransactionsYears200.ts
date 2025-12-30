@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface RefreshResponse {
-  /** メッセージ */
-  message: string;
-}
+export type GetTransactionsYears200 = {
+  /** 利用可能な年リスト */
+  years: number[];
+};

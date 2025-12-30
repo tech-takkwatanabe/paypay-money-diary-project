@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface RefreshResponse {
-  /** メッセージ */
-  message: string;
-}
+/**
+ * CSV ファイル
+ * @nullable
+ */
+export type PostTransactionsUploadBodyFile = unknown | null;

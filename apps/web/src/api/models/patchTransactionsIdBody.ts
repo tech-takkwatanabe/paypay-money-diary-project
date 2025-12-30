@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface RefreshResponse {
-  /** メッセージ */
-  message: string;
-}
+export type PatchTransactionsIdBody = {
+  /** カテゴリID */
+  categoryId: string;
+};
