@@ -78,13 +78,13 @@
 
 ### 2.4 認証 API 実装
 
-- [ ] **JWT** ユーティリティ実装 (Sign, Verify)
-- [ ] **API エンドポイント実装**
+- [x] **JWT** ユーティリティ実装 (Sign, Verify)
+- [x] **API エンドポイント実装**
   - [x] `POST /api/auth/signup` (登録) ✅
-  - [ ] `POST /api/auth/login` (ログイン)
-    - bcrypt でパスワード検証
-    - JWT トークン生成 (access + refresh)
-    - Redis にリフレッシュトークン保存
+  - [x] `POST /api/auth/login` (ログイン)
+    - [x] bcrypt でパスワード検証
+    - [x] JWT トークン生成 (access + refresh)
+    - [x] Redis にリフレッシュトークン保存
   - [x] `POST /api/auth/refresh` (トークン更新)
     - [x] リフレッシュトークン検証
     - [x] 新しいアクセストークン発行
@@ -94,25 +94,25 @@
   - [x] `GET /api/auth/me` (ユーザー情報取得)
     - [x] JWT 認証ミドルウェア実装
     - [x] 認証済みユーザー情報返却
-- [ ] **OpenAPI (Swagger)** 定義 & 自動生成
+- [x] **OpenAPI (Swagger)** 定義 & 自動生成
 
 ### 2.5 単体テスト再構築 (Bun Test)
 
 - [x] **テスト環境整備**
-  - `bun:test` のセットアップ
-  - Mock ライブラリの選定 (Bun 標準 or その他)
+  - [x] `bun:test` のセットアップ
+  - [x] Mock ライブラリの選定 (Bun 標準 or その他)
 - [x] **UseCase テスト実装**
-  - `SignupUseCase` (Mock Repository)
-  - `LoginUseCase` (Mock Repository, Mock JWT)
-  - `GetMeUseCase` (Mock Repository)
-  - `RefreshUseCase` (Mock Repository, Mock JWT)
-  - `LogoutUseCase` (Mock Repository)
+  - [x] `SignupUseCase` (Mock Repository)
+  - [x] `LoginUseCase` (Mock Repository, Mock JWT)
+  - [x] `GetMeUseCase` (Mock Repository)
+  - [x] `RefreshUseCase` (Mock Repository, Mock JWT)
+  - [x] `LogoutUseCase` (Mock Repository)
 - [x] **Handler テスト実装**
-  - `signupHandler` (Mock UseCase)
-  - `loginHandler` (Mock UseCase)
-  - `meHandler` (Mock UseCase)
-  - `refreshHandler` (Mock UseCase)
-  - `logoutHandler` (Mock UseCase)
+  - [x] `signupHandler` (Mock UseCase)
+  - [x] `loginHandler` (Mock UseCase)
+  - [x] `meHandler` (Mock UseCase)
+  - [x] `refreshHandler` (Mock UseCase)
+  - [x] `logoutHandler` (Mock UseCase)
 
 ---
 
@@ -133,37 +133,61 @@
 
 ### 3.2 CSV 解析ロジック実装
 
-- [ ] CSV パーサー実装 (PayPay フォーマット対応)
-- [ ] カテゴリ自動分類ロジック (keyword マッチング)
-- [ ] 重複排除処理 (external_transaction_id)
+- [x] CSV パーサー実装 (PayPay フォーマット対応)
+- [x] カテゴリ自動分類ロジック (keyword マッチング)
+- [x] 重複排除処理 (external_transaction_id)
 
 ### 3.3 取引データ API (Backend)
 
-- [ ] `POST /api/transactions/upload` - CSV アップロード
-- [ ] `GET /api/transactions` - 取引履歴取得 (ページネーション)
-- [ ] `GET /api/transactions/summary` - 月別・カテゴリ別集計
+- [x] `POST /api/transactions/upload` - CSV アップロード
+- [x] `GET /api/transactions` - 取引履歴取得 (ページネーション)
+- [x] `GET /api/transactions/summary` - 月別・カテゴリ別集計
 
 ### 3.4 カテゴリ管理 API
 
-- [ ] `GET /api/categories` - カテゴリ一覧
-- [ ] `POST /api/categories` - カテゴリ作成
-- [ ] `PUT /api/categories/:id` - カテゴリ更新
-- [ ] `DELETE /api/categories/:id` - カテゴリ削除
+- [x] `GET /api/categories` - カテゴリ一覧
+- [x] `POST /api/categories` - カテゴリ作成
+- [x] `PUT /api/categories/:id` - カテゴリ更新
+- [x] `DELETE /api/categories/:id` - カテゴリ削除
 
 ### 3.2 フロントエンド認証連携 (apps/web)
 
-- [ ] 認証ページ作成 (`/login`, `/signup`)
-- [ ] 認証状態管理 (Jotai + Middleware)
-- [ ] API クライアント生成 (Orval from OpenAPI)
+- [x] 認証ページ作成 (`/login`, `/signup`)
+- [x] 認証状態管理 (Jotai + Middleware)
+- [x] API クライアント生成 (Orval from OpenAPI)
 
 ### 3.3 ダッシュボード連携
 
-- [ ] モックデータを API データに置き換え
-- [ ] ユーザーごとのデータ表示
+- [x] モックデータを API データに置き換え
+- [x] ユーザーごとのデータ表示
 
 ---
 
-## Phase 4: 認証 & 公開準備
+## Phase 7: 支出一覧機能の実装 (New)
 
-- [ ] 認証機能 (Auth.js or Firebase or Custom)
-- [ ] デプロイ設定 (Vercel / Cloudflare Workers 等)
+**目的**: 取引データを詳細に確認・編集できる一覧画面を提供し、家計簿の正確性を向上させる。
+
+### 7.1 バックエンド API 拡張
+
+- [ ] `GET /api/transactions` の拡張
+  - [ ] 検索パラメータ (`merchant`) 対応
+  - [ ] 年別フィルタ (`year`) 対応
+  - [ ] ソートパラメータ (`sortBy`, `sortOrder`) 対応
+- [ ] `PATCH /api/transactions/:id` の新設
+  - [ ] カテゴリ更新機能の実装
+- [ ] OpenAPI スキーマ更新 & クライアント生成
+
+### 7.2 支出一覧ページ作成 (apps/web)
+
+- [ ] **ページレイアウト実装**
+  - [ ] `/expenses` ページの作成
+  - [ ] テーブル形式での取引一覧表示
+- [ ] **フィルタ・検索機能**
+  - [ ] 年別セレクターの実装（ダッシュボードと共通化）
+  - [ ] 取引先名での検索バー実装
+- [ ] **ソート機能**
+  - [ ] 取引日、金額のヘッダーによるソート切り替え
+- [ ] **カテゴリ編集機能**
+  - [ ] インラインまたはモーダルによるカテゴリ変更UIの実装
+- [ ] **ナビゲーション**
+  - [ ] ヘッダーに「支出一覧」リンクを追加
