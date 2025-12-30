@@ -2,9 +2,10 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/components/ui/link";
 import { postTransactionsUpload } from "@/api/generated/transaction/transaction";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
@@ -96,17 +97,11 @@ export default function UploadPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link href="/" variant="ghost">
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
-        <Link
-          href="/expenses"
-          className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
-        >
+        <Link href="/expenses" variant="outline">
           支出一覧
         </Link>
       </header>
@@ -149,18 +144,12 @@ export default function UploadPage() {
                 </div>
 
                 <div className="flex gap-4 justify-center">
-                  <button
-                    onClick={handleReset}
-                    className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  >
+                  <Button onClick={handleReset} variant="outline">
                     別のファイルをアップロード
-                  </button>
-                  <button
-                    onClick={() => router.push("/")}
-                    className="px-6 py-2 bg-linear-to-r from-red-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition-opacity"
-                  >
+                  </Button>
+                  <Button onClick={() => router.push("/")} variant="brand">
                     ダッシュボードを見る
-                  </button>
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -210,10 +199,12 @@ export default function UploadPage() {
               )}
 
               {/* アップロードボタン */}
-              <button
+              <Button
                 onClick={handleUpload}
                 disabled={!file || status === "uploading"}
-                className="w-full mt-6 py-3 px-4 bg-linear-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                variant="brand"
+                size="xl"
+                className="w-full mt-6"
               >
                 {status === "uploading" ? (
                   <span className="flex items-center justify-center gap-2">
@@ -238,7 +229,7 @@ export default function UploadPage() {
                 ) : (
                   "アップロード"
                 )}
-              </button>
+              </Button>
 
               {/* 注意事項 */}
               <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
