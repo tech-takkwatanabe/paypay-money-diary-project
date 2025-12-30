@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Link } from "@/components/ui/link";
 import { getCategories, postCategories, putCategoriesId, deleteCategoriesId } from "@/api/generated/category/category";
 import type { CategoryWithSystem } from "@/api/models";
 
@@ -173,27 +175,18 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link href="/" variant="ghost">
           <ArrowLeft className="h-5 w-5" />
           <span>ダッシュボードに戻る</span>
         </Link>
         <div className="flex items-center gap-4">
-          <Link
-            href="/expenses"
-            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-foreground transition-colors"
-          >
+          <Link href="/expenses" variant="outline">
             支出一覧
           </Link>
-          <button
-            onClick={startCreate}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-red-500 to-pink-600 rounded-lg hover:opacity-90 transition-opacity"
-          >
+          <Button variant="brand" onClick={startCreate}>
             <Plus className="h-4 w-4" />
             新規作成
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -213,11 +206,11 @@ export default function CategoriesPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">カテゴリ名</label>
-                  <input
+                  <Input
                     type="text"
+                    variant="filter"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                     placeholder="例: 趣味"
                   />
                 </div>
@@ -239,19 +232,12 @@ export default function CategoriesPage() {
                 {error && <p className="text-sm text-red-500">{error}</p>}
 
                 <div className="flex gap-2">
-                  <button
-                    onClick={handleCreate}
-                    disabled={isSubmitting}
-                    className="px-4 py-2 bg-linear-to-r from-red-500 to-pink-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
-                  >
+                  <Button onClick={handleCreate} variant="brand" disabled={isSubmitting}>
                     {isSubmitting ? "作成中..." : "作成"}
-                  </button>
-                  <button
-                    onClick={() => setShowForm(false)}
-                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
+                  </Button>
+                  <Button onClick={() => setShowForm(false)} variant="outline">
                     キャンセル
-                  </button>
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -277,11 +263,11 @@ export default function CategoriesPage() {
                     {editingId === category.id ? (
                       <div className="space-y-4">
                         <div className="flex gap-4">
-                          <input
+                          <Input
                             type="text"
+                            variant="filter"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
                           />
                         </div>
                         <div className="flex flex-wrap gap-2">
