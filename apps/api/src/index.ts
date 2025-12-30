@@ -11,6 +11,7 @@ import {
   getTransactionsSummaryHandler,
   getAvailableYearsHandler,
   reCategorizeHandler,
+  updateTransactionHandler,
 } from "@/interface/http/transaction";
 import {
   getCategoriesHandler,
@@ -22,6 +23,14 @@ import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandle
 // OpenAPI Route definitions
 import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from "@/routes/auth.routes";
 import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from "@/routes/rule.routes";
+import {
+  uploadCsvRoute,
+  getTransactionsRoute,
+  getSummaryRoute,
+  getAvailableYearsRoute,
+  reCategorizeRoute,
+  updateTransactionRoute,
+} from "@/routes/transaction.routes";
 const app = new OpenAPIHono();
 
 // CORS 設定 (Cookie 認証に必要)
@@ -52,11 +61,13 @@ api.use("/auth/me", authMiddleware);
 api.openapi(meRoute, meHandler);
 
 // ===== 取引 API =====
-api.post("/transactions/upload", authMiddleware, uploadCsvHandler);
-api.get("/transactions", authMiddleware, getTransactionsHandler);
-api.get("/transactions/summary", authMiddleware, getTransactionsSummaryHandler);
-api.get("/transactions/years", authMiddleware, getAvailableYearsHandler);
-api.post("/transactions/re-categorize", authMiddleware, reCategorizeHandler);
+api.use("/transactions/*", authMiddleware);
+api.openapi(uploadCsvRoute, uploadCsvHandler);
+api.openapi(getTransactionsRoute, getTransactionsHandler);
+api.openapi(getSummaryRoute, getTransactionsSummaryHandler);
+api.openapi(getAvailableYearsRoute, getAvailableYearsHandler);
+api.openapi(reCategorizeRoute, reCategorizeHandler);
+api.openapi(updateTransactionRoute, updateTransactionHandler);
 
 // ===== カテゴリ API =====
 api.get("/categories", authMiddleware, getCategoriesHandler);
