@@ -37,7 +37,7 @@ export const uploadCsvRoute = createRoute({
       content: {
         "multipart/form-data": {
           schema: z.object({
-            file: z.string().openapi({
+            file: z.any().openapi({
               description: "CSV ファイル",
               format: "binary",
             }),
@@ -118,7 +118,14 @@ export const getTransactionsRoute = createRoute({
       limit: z.string().optional().openapi({ description: "1ページあたりの件数" }),
       startDate: z.string().optional().openapi({ description: "開始日 (YYYY-MM-DD)" }),
       endDate: z.string().optional().openapi({ description: "終了日 (YYYY-MM-DD)" }),
+      year: z.string().optional().openapi({ description: "年 (YYYY)" }),
       categoryId: z.string().optional().openapi({ description: "カテゴリID" }),
+      merchant: z.string().optional().openapi({ description: "取引先 (部分一致)" }),
+      sortBy: z
+        .enum(["transactionDate", "amount"])
+        .optional()
+        .openapi({ description: "ソート項目", default: "transactionDate" }),
+      sortOrder: z.enum(["asc", "desc"]).optional().openapi({ description: "ソート順", default: "desc" }),
     }),
   },
   responses: {
@@ -130,6 +137,63 @@ export const getTransactionsRoute = createRoute({
     },
     401: {
       description: "認証エラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    500: {
+      description: "サーバーエラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+  },
+});
+
+// ===== 取引更新 =====
+
+export const updateTransactionRoute = createRoute({
+  method: "patch",
+  path: "/transactions/{id}",
+  tags: ["Transaction"],
+  summary: "取引更新",
+  description: "取引のカテゴリなどを更新します",
+  security: [{ Bearer: [] }],
+  request: {
+    params: z.object({
+      id: z.string().openapi({ description: "取引ID" }),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            categoryId: z.string().openapi({ description: "カテゴリID" }),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "更新成功",
+      content: {
+        "application/json": { schema: TransactionSchema },
+      },
+    },
+    400: {
+      description: "バリデーションエラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    401: {
+      description: "認証エラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    404: {
+      description: "取引が見つかりません",
       content: {
         "application/json": { schema: ErrorResponseSchema },
       },
@@ -183,6 +247,39 @@ const SummaryResponseSchema = z
     monthlyBreakdown: z.array(MonthlyBreakdownSchema).openapi({ description: "月別内訳" }),
   })
   .openapi("SummaryResponse");
+
+export const getAvailableYearsRoute = createRoute({
+  method: "get",
+  path: "/transactions/years",
+  tags: ["Transaction"],
+  summary: "利用可能な年リスト取得",
+  description: "CSV アップロード履歴から利用可能な年のリストを取得します",
+  security: [{ Bearer: [] }],
+  responses: {
+    200: {
+      description: "取得成功",
+      content: {
+        "application/json": {
+          schema: z.object({
+            years: z.array(z.number()).openapi({ description: "利用可能な年リスト" }),
+          }),
+        },
+      },
+    },
+    401: {
+      description: "認証エラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    500: {
+      description: "サーバーエラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+  },
+});
 
 export const getSummaryRoute = createRoute({
   method: "get",
@@ -260,4 +357,6 @@ export const reCategorizeRoute = createRoute({
 export type UploadCsvRoute = typeof uploadCsvRoute;
 export type GetTransactionsRoute = typeof getTransactionsRoute;
 export type GetSummaryRoute = typeof getSummaryRoute;
+export type GetAvailableYearsRoute = typeof getAvailableYearsRoute;
 export type ReCategorizeRoute = typeof reCategorizeRoute;
+export type UpdateTransactionRoute = typeof updateTransactionRoute;
