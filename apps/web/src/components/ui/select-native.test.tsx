@@ -22,7 +22,8 @@ describe("SelectNative", () => {
         </SelectNative>
       );
       const select = screen.getByRole("combobox");
-      expect(select).toHaveClass("px-3");
+      expect(select).toHaveClass("pl-3");
+      expect(select).toHaveClass("pr-10");
       expect(select).toHaveClass("py-2");
     });
   });
