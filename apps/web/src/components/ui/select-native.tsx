@@ -11,7 +11,7 @@ const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
       default:
         "appearance-none w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 pr-10 text-lg font-semibold focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none cursor-pointer",
       filter:
-        "w-full bg-white dark:bg-gray-800 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-red-500",
+        "appearance-none w-full bg-white dark:bg-gray-800 border rounded-lg pl-3 pr-10 py-2 outline-none focus:ring-2 focus:ring-red-500",
     };
 
     return (
