@@ -11,7 +11,7 @@ import { DollarSign, TrendingUp, Wallet, LogOut, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTransactionsSummary } from "@/api/generated/transaction/transaction";
 import { customFetch } from "@/api/customFetch";
-import type { SummaryResponse, CategoryBreakdown, MonthlyBreakdown } from "@/api/models";
+import type { SummaryResponse, CategoryBreakdown } from "@/api/models";
 
 interface AvailableYearsResponse {
   status: number;
@@ -24,9 +24,6 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
-
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1;
 
   // 利用可能な年を取得
   useEffect(() => {
@@ -72,16 +69,11 @@ export default function Dashboard() {
     }
   }, [selectedYear, fetchSummary]);
 
-  // 今月の支出を計算
-  const thisMonthExpense =
-    summary?.monthlyBreakdown?.find((m: MonthlyBreakdown) => m.month === currentMonth)?.totalAmount ?? 0;
-
-  // 先月の支出を計算
-  const lastMonthExpense =
-    summary?.monthlyBreakdown?.find((m: MonthlyBreakdown) => m.month === currentMonth - 1)?.totalAmount ?? 0;
-
-  // 先月比のパーセンテージ
-  const monthlyChange = lastMonthExpense > 0 ? ((thisMonthExpense - lastMonthExpense) / lastMonthExpense) * 100 : 0;
+  // 月平均
+  const monthlyAverage =
+    summary?.monthlyBreakdown && summary.monthlyBreakdown.length > 0
+      ? summary.monthlyBreakdown.reduce((total, m) => total + m.totalAmount, 0) / 12
+      : 0;
 
   // 年間合計
   const yearlyTotal = summary?.summary?.totalAmount ?? 0;
@@ -157,25 +149,7 @@ export default function Dashboard() {
 
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{currentMonth}月の支出</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="h-8 bg-muted animate-pulse rounded" />
-              ) : (
-                <>
-                  <div className="text-2xl font-bold">{formatCurrency(thisMonthExpense)}</div>
-                  <p className="text-xs text-muted-foreground">
-                    先月比 {monthlyChange >= 0 ? "+" : ""}
-                    {monthlyChange.toFixed(1)}%
-                  </p>
-                </>
-              )}
-            </CardContent>
-          </Card>
+          {/* 年間支出累計 */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">年間支出累計</CardTitle>
@@ -192,6 +166,23 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
+          {/* 月の平均支出 */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">月の平均支出</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="h-8 bg-muted animate-pulse rounded" />
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">{formatCurrency(monthlyAverage)}</div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+          {/* 最多カテゴリ */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">最多カテゴリ</CardTitle>
