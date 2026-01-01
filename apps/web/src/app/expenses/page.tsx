@@ -182,7 +182,7 @@ export default function ExpensesPage() {
                 <Input
                   type="text"
                   variant="filter"
-                  placeholder="店名で検索..."
+                  placeholder="店名・内容 で検索..."
                   value={merchantSearch}
                   onChange={(e) => {
                     setMerchantSearch(e.target.value);
