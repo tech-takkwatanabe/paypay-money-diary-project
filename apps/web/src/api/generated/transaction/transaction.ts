@@ -71,7 +71,7 @@ export const postTransactionsUpload = async (
   options?: RequestInit
 ): Promise<postTransactionsUploadResponse> => {
   const formData = new FormData();
-  if (postTransactionsUploadBody.file !== undefined && postTransactionsUploadBody.file !== null) {
+  if (postTransactionsUploadBody.file !== undefined) {
     formData.append(`file`, postTransactionsUploadBody.file);
   }
 
