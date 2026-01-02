@@ -31,6 +31,9 @@ export default [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // Generated API files (orval) - allow lint warnings
+      "src/api/generated/**",
+      "src/api/models/**",
     ],
   },
 ] as Linter.Config[];
