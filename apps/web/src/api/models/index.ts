@@ -35,7 +35,6 @@ export * from "./postTransactionsReCategorize200";
 export * from "./postTransactionsReCategorize401";
 export * from "./postTransactionsReCategorize500";
 export * from "./postTransactionsUploadBody";
-export * from "./postTransactionsUploadBodyFile";
 export * from "./refreshResponse";
 export * from "./rule";
 export * from "./ruleErrorResponse";
