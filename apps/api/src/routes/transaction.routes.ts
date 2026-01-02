@@ -37,11 +37,15 @@ export const uploadCsvRoute = createRoute({
       content: {
         "multipart/form-data": {
           schema: z.object({
-            file: z.any().openapi({
-              description: "CSV ファイル",
-              type: "string",
-              format: "binary",
-            }),
+            file: z
+              .custom<File | Blob>((val) => val instanceof File || val instanceof Blob, {
+                message: "ファイル形式が正しくありません",
+              })
+              .openapi({
+                description: "CSV ファイル",
+                type: "string",
+                format: "binary",
+              }),
           }),
         },
       },
