@@ -39,6 +39,7 @@ export const uploadCsvRoute = createRoute({
           schema: z.object({
             file: z.any().openapi({
               description: "CSV ファイル",
+              type: "string",
               format: "binary",
             }),
           }),
