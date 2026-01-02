@@ -8,5 +8,5 @@
 
 export type PostTransactionsUploadBody = {
   /** CSV ファイル */
-  file?: Blob;
+  file: Blob;
 };
