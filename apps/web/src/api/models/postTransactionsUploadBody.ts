@@ -5,12 +5,8 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
-import type { PostTransactionsUploadBodyFile } from "./postTransactionsUploadBodyFile";
 
 export type PostTransactionsUploadBody = {
-  /**
-   * CSV ファイル
-   * @nullable
-   */
-  file?: PostTransactionsUploadBodyFile;
+  /** CSV ファイル */
+  file?: Blob;
 };
