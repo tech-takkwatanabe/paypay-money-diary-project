@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "api:generate": "orval"
+    "ovl": "orval"
   },
   "dependencies": {
     "@radix-ui/react-select": "2.2.6",
