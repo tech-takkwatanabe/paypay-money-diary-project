@@ -697,7 +697,7 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: CSV ファイル
                   format: binary
       responses:
