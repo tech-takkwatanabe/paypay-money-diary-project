@@ -700,6 +700,8 @@ paths:
                   type: string
                   description: CSV ファイル
                   format: binary
+              required:
+                - file
       responses:
         "201":
           description: アップロード成功
