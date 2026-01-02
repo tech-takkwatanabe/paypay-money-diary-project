@@ -71,7 +71,7 @@ export default function UploadPage() {
 
     try {
       const response = await postTransactionsUpload({
-        file: file as unknown as Blob,
+        file: file,
       });
 
       if (response.status === 201 && "data" in response) {
