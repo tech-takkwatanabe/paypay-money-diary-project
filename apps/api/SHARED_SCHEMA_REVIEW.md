@@ -128,17 +128,27 @@ const handleSubmit = async (e: React.FormEvent) => {
 - エラーメッセージが統一されていない
 - リアルタイムバリデーション（入力中の検証）が実装されていない
 
-### 4. ValueObjectの変換がバックエンドでのみ使用されている（中程度）
+### 4. ValueObject、Entity、DTOの区別が不明確（重大）
 
 #### 問題の詳細
-`EmailSchema` と `PasswordSchema` は `.transform()` を使用してValueObjectに変換していますが、この変換は主にバックエンド（usecase層、repository層）で使用されています。
+現在、`packages/shared` には以下のものが定義されています：
+- **ValueObject**: `Email`, `Password` - 不変の値オブジェクト
+- **スキーマ型**: `User`, `UserResponse` - Zodスキーマから生成された型
 
-フロントエンドでは、ValueObjectではなく生の文字列として扱われています（これは正しい設計ですが、スキーマの使い分けが不明確）。
+しかし、以下の区別が不明確です：
+- **Entity**: ドメイン層で定義されるべき識別子を持つオブジェクト。現在、`apps/api/src/domain/` にEntityが定義されていない
+- **DTO**: API層で使用されるデータ転送オブジェクト。`UserResponse` はDTOとして使用できるが、Entityとの関係が不明確
+
+現在の問題：
+- `packages/shared` の `UserSchema` はValueObject（Email, Password）を含んでいるが、これはEntityなのかDTOなのか不明確
+- Domain層の `IUserRepository` が `User` 型を返しているが、これはEntityとして適切ではない
+- Usecase層が直接DTO（`UserResponse`）を返しているが、本来はEntityを返すべき
 
 #### 影響
 - ValueObjectの存在意義が不明確
-- フロントエンドとバックエンドで異なるデータ型が使用される
-- 型安全性が損なわれる可能性
+- EntityとDTOの責務が混在している
+- ドメイン層が外部パッケージ（packages/shared）に依存している
+- ドメインロジックがDTOに漏れる可能性がある
 
 ### 5. OpenAPI生成時のスキーマ拡張の問題（中程度）
 
@@ -178,9 +188,26 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 `@hono/zod-openapi` では、OpenAPI仕様を生成するために `.openapi()` メソッドでメタデータを付与する必要があります。しかし、`packages/shared` のスキーマに `.openapi()` を付与すると、フロントエンドで使用する際に不要なメタデータが含まれることになります。
 
-### 2. ValueObjectの変換タイミング
+### 2. ValueObject、Entity、DTOの関係
 
-`EmailSchema` と `PasswordSchema` は `.transform()` を使用してValueObjectに変換していますが、フロントエンドでは生の文字列として扱う必要があります。このため、フロントエンド用とバックエンド用で異なるスキーマが必要になる可能性があります。
+**ValueObject**（`packages/shared`）:
+- `Email`, `Password` - 不変の値オブジェクト
+- ドメイン層のEntityで使用される
+
+**Entity**（`apps/api/src/domain/entity/`）:
+- 識別子を持ち、ビジネスロジックを含む
+- ValueObjectを使用する
+- Domain層、Usecase層で使用される
+
+**DTO**（`packages/shared` または `apps/api/src/interface/dto/`）:
+- API層で使用されるデータ転送オブジェクト
+- Entityから変換される
+- フロントエンドとバックエンドで共有される
+
+現在の問題：
+- Entityが定義されていない
+- `packages/shared` の `UserSchema` がEntityなのかDTOなのか不明確
+- Usecase層がEntityではなくDTOを返している
 
 ### 3. フロントエンドでのZod使用
 
@@ -260,12 +287,92 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 ```
 
-#### 4. バックエンドで UserResponseSchema を使用
+#### 4. Domain層にEntityを定義し、DTOとの区別を明確化
 
-`apps/api/src/routes/auth.routes.ts` で再定義されている `UserSchema` を、`packages/shared` の `UserResponseSchema` に置き換えます。
+**Entityの定義**:
+```typescript
+// apps/api/src/domain/entity/user.ts
+import { Email, Password } from "@paypay-money-diary/shared";
 
-ただし、`.openapi()` メソッドが必要な場合は、拡張する方法を検討します：
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly email: Email,
+    public readonly password: Password,
+  ) {}
 
+  // ビジネスロジックの例
+  canChangePassword(): boolean {
+    // パスワード変更可能かどうかのロジック
+    return true;
+  }
+}
+```
+
+**Repositoryの修正**:
+```typescript
+// apps/api/src/domain/repository/userRepository.ts
+import { User } from "@/domain/entity/user";
+
+export interface IUserRepository {
+  findByEmail(email: string): Promise<User | null>;
+  findById(id: string): Promise<User | null>;
+  create(input: CreateUserInput & { passwordHash: string; uuid: string }): Promise<User>;
+}
+```
+
+**Usecaseの修正**:
+```typescript
+// apps/api/src/usecase/auth/getMeUseCase.ts
+import { User } from "@/domain/entity/user";
+
+export class GetMeUseCase {
+  constructor(private userRepository: IUserRepository) {}
+
+  async execute(userId: string): Promise<User> {
+    // Entityを返す（DTOではない）
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  }
+}
+```
+
+**Interface層（Controller層）でEntityをDTOに変換**:
+```typescript
+// apps/api/src/interface/http/auth/me.ts
+import { GetMeUseCase } from "@/usecase/auth/getMeUseCase";
+import { UserResponseSchema } from "@paypay-money-diary/shared";
+import { User } from "@/domain/entity/user";
+
+export const meHandler = async (c: Context) => {
+  const userPayload = c.get("user");
+  const userRepository = new UserRepository();
+  const getMeUseCase = new GetMeUseCase(userRepository);
+
+  try {
+    // UsecaseはEntityを返す
+    const user: User = await getMeUseCase.execute(userPayload.userId);
+
+    // EntityをDTOに変換
+    const userDto = UserResponseSchema.parse({
+      id: user.id,
+      name: user.name,
+      email: user.email.toString(), // ValueObjectを文字列に変換
+    });
+
+    return c.json(userDto, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: "Internal Server Error" }, 500);
+  }
+};
+```
+
+**Routes層でのDTO使用**:
 ```typescript
 // apps/api/src/routes/auth.routes.ts
 import { UserResponseSchema } from "@paypay-money-diary/shared";
@@ -294,24 +401,46 @@ import { UserResponseSchema } from "@paypay-money-diary/shared";
 const UserSchema = UserResponseSchema.openapi("User");
 ```
 
-#### 6. フロントエンド用とバックエンド用のスキーマを分離
+#### 6. ValueObject、Entity、DTOの役割を明確化
 
-ValueObjectへの変換が必要な場合は、バックエンド用のスキーマを別途定義します：
+**ValueObject**（`packages/shared/src/vo/`）:
+- 不変の値オブジェクト（Email, Password）
+- Entityで使用される
 
+**Entity**（`apps/api/src/domain/entity/`）:
+- 識別子を持ち、ビジネスロジックを含む
+- ValueObjectを使用する
+- Domain層、Usecase層で使用される
+
+**DTO**（`packages/shared/src/schema/`）:
+- API層で使用されるデータ転送オブジェクト
+- フロントエンドとバックエンドで共有される
+- Entityから変換される
+
+**スキーマの使い分け**:
 ```typescript
 // packages/shared/src/schema/user.ts
-// フロントエンド用（生の文字列）
+
+// フロントエンド用（生の文字列）- リクエストDTO
 export const CreateUserInputSchema = z.object({
   name: z.string().min(1),
   email: z.email(),
   password: z.string().min(8),
 });
 
-// バックエンド用（ValueObjectに変換）
+// バックエンド用（ValueObjectに変換）- リクエストDTO
+// 注意: 実際には、Interface層でValueObjectに変換する
 export const CreateUserSchema = z.object({
   name: z.string().min(1),
-  email: EmailSchema, // ValueObjectに変換
-  password: PasswordSchema, // ValueObjectに変換
+  email: z.email(), // 文字列のまま（EntityでValueObjectに変換）
+  password: z.string().min(8), // 文字列のまま（EntityでValueObjectに変換）
+});
+
+// レスポンスDTO
+export const UserResponseSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  email: z.email(),
 });
 ```
 
@@ -421,9 +550,85 @@ export default function SignupPage() {
 }
 ```
 
-### 例2: バックエンドでのスキーマ再利用
+### 例2: バックエンドでのEntityとDTOの使用
 
 ```typescript
+// apps/api/src/domain/entity/user.ts
+import { Email, Password } from "@paypay-money-diary/shared";
+
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly email: Email,
+    public readonly password: Password,
+  ) {}
+}
+
+// apps/api/src/usecase/auth/signupUseCase.ts
+import { User } from "@/domain/entity/user";
+import { IUserRepository } from "@/domain/repository/userRepository";
+import { CreateUserInput } from "@paypay-money-diary/shared";
+import { Email, Password } from "@paypay-money-diary/shared";
+
+export class SignupUseCase {
+  constructor(private userRepository: IUserRepository) {}
+
+  async execute(input: CreateUserInput): Promise<User> {
+    // ビジネスロジック
+    const existingUser = await this.userRepository.findByEmail(input.email);
+    if (existingUser) {
+      throw new Error("User already exists");
+    }
+
+    // ValueObjectに変換
+    const email = Email.create(input.email);
+    const password = Password.create(input.password);
+
+    // Entityを作成
+    const user = await this.userRepository.create({
+      ...input,
+      passwordHash: password.value, // ハッシュ化は別途
+      uuid: randomUUID(),
+    });
+
+    return user; // Entityを返す
+  }
+}
+
+// apps/api/src/interface/http/auth/signup.ts
+import { SignupUseCase } from "@/usecase/auth/signupUseCase";
+import { UserRepository } from "@/infrastructure/repository/userRepository";
+import { UserResponseSchema } from "@paypay-money-diary/shared";
+import { User } from "@/domain/entity/user";
+
+export const signupHandler = async (c: Context) => {
+  const userRepository = new UserRepository();
+  const signupUseCase = new SignupUseCase(userRepository);
+
+  const input = c.req.valid("json" as never) as CreateUserInput;
+
+  try {
+    // UsecaseはEntityを返す
+    const user: User = await signupUseCase.execute(input);
+
+    // EntityをDTOに変換
+    const userDto = UserResponseSchema.parse({
+      id: user.id,
+      name: user.name,
+      email: user.email.toString(), // ValueObjectを文字列に変換
+    });
+
+    return c.json(userDto, 201);
+  } catch (error) {
+    if (error instanceof Error && error.message === "User already exists") {
+      return c.json({ error: "User already exists" }, 409);
+    }
+    console.error(error);
+    return c.json({ error: "Internal Server Error" }, 500);
+  }
+};
+
 // apps/api/src/routes/auth.routes.ts
 import { createRoute, z } from "@hono/zod-openapi";
 import { 
@@ -445,7 +650,7 @@ export const signupRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: CreateUserSchema, // そのまま使用可能
+          schema: CreateUserSchema, // リクエストDTO
         },
       },
     },
@@ -455,7 +660,7 @@ export const signupRoute = createRoute({
       description: "登録成功",
       content: {
         "application/json": {
-          schema: SignupResponseSchema,
+          schema: SignupResponseSchema, // レスポンスDTO
         },
       },
     },
@@ -472,12 +677,21 @@ export const signupRoute = createRoute({
 2. **バックエンドでスキーマが再定義されている**（UserSchema）
 3. **フロントエンドでZodスキーマを使ったバリデーションが行われていない**
 4. **フロントエンドで @paypay-money-diary/shared が使用されていない**
+5. **EntityとDTOの区別が不明確** - Domain層にEntityが定義されていない
+6. **Usecase層がEntityではなくDTOを返している** - 本来はEntityを返し、Interface層でDTOに変換すべき
 
 **推奨事項**: 
 1. `packages/shared` に `zod` を依存関係として追加
 2. フロントエンドで `@paypay-money-diary/shared` を使用し、Zodスキーマでバリデーションを実装
-3. バックエンドで `UserResponseSchema` を再利用（`.openapi()` で拡張）
-4. リアルタイムバリデーションの実装を検討（React Hook Form等）
+3. **Domain層にEntityを定義** - ValueObject（Email, Password）を使用するEntityを作成
+4. **Usecase層はEntityを返す** - DTOではなくEntityを返すように修正
+5. **Interface層（Controller層）でEntityをDTOに変換** - `packages/shared` のDTOスキーマを使用
+6. バックエンドで `UserResponseSchema` を再利用（`.openapi()` で拡張）
+7. リアルタイムバリデーションの実装を検討（React Hook Form等）
 
-これらの修正により、フロントエンドとバックエンドで型定義とバリデーションロジックが完全に共有され、保守性と型安全性が大幅に向上します。
+これらの修正により、以下のメリットが得られます：
+- フロントエンドとバックエンドで型定義とバリデーションロジックが完全に共有される
+- EntityとDTOの責務が明確になり、ドメインロジックがDTOに漏れることを防げる
+- ドメイン層が外部パッケージに依存せず、独立性が保たれる
+- 保守性と型安全性が大幅に向上する
 
