@@ -92,10 +92,14 @@ apps/api/src/
 - `ITransactionRepository` - 取引のCRUD操作、集計、検索
 - `IUploadRepository` - CSVアップロード履歴の管理（必要に応じて）
 
+さらに、**Domain層にEntityが定義されていません**。現在、`IUserRepository` は `@paypay-money-diary/shared` の `User` 型を返していますが、これはValueObject（Email, Password）を含むスキーマ型であり、ドメイン層のEntityとしては不適切です。
+
 #### 影響
 - ドメインロジックが明確に定義されていない
 - リポジトリの責務が不明確
 - テスト時にモックが作成できない
+- EntityとDTOの区別がつかない
+- ドメイン層が外部パッケージ（packages/shared）に依存している
 
 ### 3. Infrastructure層の不足（重大）
 
@@ -142,11 +146,14 @@ apps/api/src/
 - `transaction/reCategorizeTransactionsUseCase.ts`
 - `transaction/getAvailableYearsUseCase.ts`
 
+さらに、**Usecase層がEntityではなくDTOを返している**問題があります。例えば、`GetMeUseCase` は `UserResponse`（DTO）を返していますが、本来はEntityを返し、Interface層（Controller層）でDTOに変換すべきです。
+
 #### 影響
 - ビジネスロジックがinterface層に散在
 - ビジネスロジックの再利用が困難
 - テストが困難（HTTPコンテキストに依存）
 - ビジネスルールの変更時に影響範囲が広い
+- EntityとDTOの責務が混在している
 
 ### 5. 依存関係の方向違反（重大）
 
@@ -208,6 +215,26 @@ const result = await db
 - テストの安定性が低い（DBの状態に依存）
 - CI/CDパイプラインでのテスト実行が複雑
 
+### 8. EntityとDTOの区別がない（重大）
+
+#### 問題の詳細
+現在の実装では、EntityとDTOの区別が明確ではありません：
+
+- **Domain層**: Entityが定義されていない。`IUserRepository` は `@paypay-money-diary/shared` の `User` 型を返しているが、これはValueObjectを含むスキーマ型であり、Entityとしては不適切
+- **Usecase層**: EntityではなくDTO（`UserResponse`）を返している
+- **Interface層（Controller層）**: EntityからDTOへの変換が行われていない
+
+DDD（ドメイン駆動設計）の観点から：
+- **Entity**: 識別子を持ち、ドメイン層で定義される。ビジネスロジックを含む
+- **ValueObject**: 不変の値オブジェクト（Email, Passwordなど）。`packages/shared` に定義されている
+- **DTO**: データ転送オブジェクト。API層（Interface層）で使用され、外部に公開されるデータ構造
+
+#### 影響
+- ドメイン層が外部パッケージ（packages/shared）に依存している
+- EntityとDTOの責務が混在している
+- ドメインロジックがDTOに漏れる可能性がある
+- テスト時にEntityとDTOを区別できない
+
 ## 推奨される修正方針
 
 ### 優先度: 高
@@ -217,6 +244,14 @@ const result = await db
 - `domain/repository/categoryRepository.ts` - `ICategoryRepository`
 - `domain/repository/ruleRepository.ts` - `IRuleRepository`
 - `domain/repository/transactionRepository.ts` - `ITransactionRepository`
+
+さらに、**Domain層にEntityを定義**します：
+- `domain/entity/user.ts` - `User` Entity（識別子、名前、Email ValueObject、Password ValueObjectを含む）
+- `domain/entity/category.ts` - `Category` Entity
+- `domain/entity/rule.ts` - `Rule` Entity
+- `domain/entity/transaction.ts` - `Transaction` Entity
+
+Entityは `packages/shared` のValueObject（Email, Password）を使用しますが、Entity自体は `apps/api` のdomain層に定義します。
 
 #### 2. Infrastructure層の拡充
 以下のリポジトリ実装を追加：
@@ -230,11 +265,16 @@ const result = await db
 - `usecase/rule/` 配下に4つのusecase
 - `usecase/transaction/` 配下に5つのusecase
 
+**重要な変更**: Usecase層は**Entityを返す**ようにします。DTOへの変換はInterface層（Controller層）で行います。
+
 #### 4. Interface層のリファクタリング
 すべてのinterface層のハンドラーを、usecaseを呼び出す構造に変更：
 - `db` への直接インポートを削除
 - usecaseをインスタンス化して呼び出す
+- **EntityをDTOに変換**する処理を追加
 - エラーハンドリングはinterface層で行う（HTTPステータスコードの決定）
+
+**DTOの定義場所**: DTOは `packages/shared` に定義するか、`apps/api/src/interface/dto/` に定義します。`packages/shared` の `UserResponseSchema` はDTOとして使用できます。
 
 ### 優先度: 中
 
@@ -249,6 +289,11 @@ const result = await db
 ```
 apps/api/src/
 ├── domain/
+│   ├── entity/            ← 追加（Entity定義）
+│   │   ├── user.ts
+│   │   ├── category.ts
+│   │   ├── rule.ts
+│   │   └── transaction.ts
 │   └── repository/
 │       ├── userRepository.ts
 │       ├── tokenRepository.ts
@@ -263,17 +308,19 @@ apps/api/src/
 │       ├── ruleRepository.ts          ← 追加
 │       └── transactionRepository.ts   ← 追加
 ├── interface/
+│   ├── dto/               ← 追加（DTO定義、またはpackages/sharedを使用）
+│   │   └── user.dto.ts
 │   └── http/
-│       ├── auth/          (usecaseを使用)
-│       ├── category/      (usecaseを使用) ← 修正
-│       ├── rule/          (usecaseを使用) ← 修正
-│       └── transaction/   (usecaseを使用) ← 修正
+│       ├── auth/          (usecaseを使用、Entity→DTO変換)
+│       ├── category/      (usecaseを使用、Entity→DTO変換) ← 修正
+│       ├── rule/          (usecaseを使用、Entity→DTO変換) ← 修正
+│       └── transaction/   (usecaseを使用、Entity→DTO変換) ← 修正
 ├── routes/
 └── usecase/
-    ├── auth/
-    ├── category/          ← 追加
-    ├── rule/              ← 追加
-    └── transaction/       ← 拡充
+    ├── auth/              (Entityを返す)
+    ├── category/          (Entityを返す) ← 追加
+    ├── rule/              (Entityを返す) ← 追加
+    └── transaction/      (Entityを返す) ← 拡充
 ```
 
 ## 修正例
@@ -295,50 +342,148 @@ export const getCategoriesHandler = async (c: Context) => {
 
 ### After (推奨される実装)
 ```typescript
+// domain/entity/category.ts
+import { Email } from "@paypay-money-diary/shared";
+
+export class Category {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly color: string,
+    public readonly icon: string | null,
+    public readonly displayOrder: number,
+    public readonly isDefault: boolean,
+    public readonly userId: string | null, // nullの場合はシステムカテゴリ
+  ) {}
+
+  isSystemCategory(): boolean {
+    return this.userId === null;
+  }
+
+  belongsToUser(userId: string): boolean {
+    return this.userId === userId;
+  }
+}
+
 // domain/repository/categoryRepository.ts
+import { Category } from "@/domain/entity/category";
+
 export interface ICategoryRepository {
   findByUserId(userId: string): Promise<Category[]>;
   // ...
 }
 
 // infrastructure/repository/categoryRepository.ts
+import { Category } from "@/domain/entity/category";
+import { ICategoryRepository } from "@/domain/repository/categoryRepository";
+import { db } from "@/db";
+import { categories } from "@/db/schema";
+
 export class CategoryRepository implements ICategoryRepository {
   async findByUserId(userId: string): Promise<Category[]> {
-    // DBアクセス実装
+    const results = await db
+      .select()
+      .from(categories)
+      .where(or(isNull(categories.userId), eq(categories.userId, userId)));
+
+    return results.map(
+      (row) =>
+        new Category(
+          row.id,
+          row.name,
+          row.color,
+          row.icon,
+          row.displayOrder,
+          row.isDefault,
+          row.userId,
+        ),
+    );
   }
 }
 
 // usecase/category/listCategoriesUseCase.ts
+import { Category } from "@/domain/entity/category";
+import { ICategoryRepository } from "@/domain/repository/categoryRepository";
+
 export class ListCategoriesUseCase {
   constructor(private categoryRepository: ICategoryRepository) {}
-  
+
   async execute(userId: string): Promise<Category[]> {
+    // Entityを返す（DTOではない）
     return await this.categoryRepository.findByUserId(userId);
   }
 }
 
+// interface/dto/category.dto.ts（またはpackages/sharedを使用）
+import { z } from "zod";
+
+export const CategoryResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  color: z.string(),
+  icon: z.string().nullable(),
+  displayOrder: z.number(),
+  isDefault: z.boolean(),
+  isSystem: z.boolean(),
+});
+
+export type CategoryResponse = z.infer<typeof CategoryResponseSchema>;
+
 // interface/http/category/list.ts
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
+import { CategoryResponseSchema } from "@/interface/dto/category.dto";
+import { Category } from "@/domain/entity/category";
 
 export const getCategoriesHandler = async (c: Context) => {
   const userPayload = c.get("user");
+
+  if (!userPayload || !userPayload.userId) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
   const categoryRepository = new CategoryRepository();
   const listCategoriesUseCase = new ListCategoriesUseCase(categoryRepository);
-  
-  const categories = await listCategoriesUseCase.execute(userPayload.userId);
-  return c.json({ data: categories });
+
+  try {
+    // UsecaseはEntityを返す
+    const categories = await listCategoriesUseCase.execute(userPayload.userId);
+
+    // EntityをDTOに変換
+    const categoryDtos = categories.map((category) =>
+      CategoryResponseSchema.parse({
+        id: category.id,
+        name: category.name,
+        color: category.color,
+        icon: category.icon,
+        displayOrder: category.displayOrder,
+        isDefault: category.isDefault,
+        isSystem: category.isSystemCategory(),
+      }),
+    );
+
+    return c.json({ data: categoryDtos }, 200);
+  } catch (error) {
+    console.error("Get categories error:", error);
+    return c.json({ error: "Internal Server Error" }, 500);
+  }
 };
 ```
 
 ## まとめ
 
-現在のアーキテクチャは、**auth機能では適切にレイヤー分離されていますが、category、rule、transaction機能ではアーキテクチャが一貫していません**。これにより、以下の問題が発生しています：
+現在のアーキテクチャは、**auth機能では適切にレイヤー分離されていますが、category、rule、transaction機能ではアーキテクチャが一貫していません**。さらに、**EntityとDTOの区別が明確でない**という問題があります。これにより、以下の問題が発生しています：
 
 1. 機能追加時に一貫性のない実装パターンが発生
 2. テストが困難
 3. ビジネスロジックの再利用が困難
 4. 依存関係の方向が逆転
+5. EntityとDTOの責務が混在している
+6. ドメイン層が外部パッケージに依存している
 
-**推奨事項**: すべての機能でauth機能と同様のアーキテクチャパターンを適用し、クリーンアーキテクチャの原則に従った実装に統一することを強く推奨します。
+**推奨事項**: 
+1. すべての機能でauth機能と同様のアーキテクチャパターンを適用し、クリーンアーキテクチャの原則に従った実装に統一する
+2. Domain層にEntityを定義し、Usecase層はEntityを返すようにする
+3. Interface層（Controller層）でEntityをDTOに変換する
+4. DTOは `packages/shared` に定義するか、`apps/api/src/interface/dto/` に定義する
 
