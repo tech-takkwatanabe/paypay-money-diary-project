@@ -38,41 +38,41 @@
 ## フェーズ2: auth機能のリファクタリング (3-4時間)
 
 ### Service層の追加
-- [ ] `apps/api/src/service/auth/passwordService.ts` を作成
-- [ ] `apps/api/src/service/auth/tokenService.ts` を作成
-- [ ] `apps/api/src/service/auth/authService.ts` を作成
+- [x] `apps/api/src/service/auth/passwordService.ts` を作成
+- [x] `apps/api/src/service/auth/tokenService.ts` を作成
+- [x] `apps/api/src/service/auth/authService.ts` を作成
 
 ### Usecase層のリファクタリング
-- [ ] `apps/api/src/usecase/auth/loginUseCase.ts` をリファクタリング
-- [ ] `apps/api/src/usecase/auth/signupUseCase.ts` をリファクタリング
-- [ ] `apps/api/src/usecase/auth/getMeUseCase.ts` をリファクタリング
-- [ ] `apps/api/src/usecase/auth/refreshUseCase.ts` をリファクタリング
-- [ ] `apps/api/src/usecase/auth/logoutUseCase.ts` をリファクタリング
+- [x] `apps/api/src/usecase/auth/loginUseCase.ts` をリファクタリング
+- [x] `apps/api/src/usecase/auth/signupUseCase.ts` をリファクタリング
+- [x] `apps/api/src/usecase/auth/getMeUseCase.ts` をリファクタリング
+- [x] `apps/api/src/usecase/auth/refreshUseCase.ts` をリファクタリング
+- [x] `apps/api/src/usecase/auth/logoutUseCase.ts` をリファクタリング
 
 ### Controller層の作成
-- [ ] `apps/api/src/controller/auth/` ディレクトリを作成
-- [ ] `apps/api/src/controller/auth/authController.ts` を作成
-- [ ] `apps/api/src/controller/auth/auth.routes.ts` を作成（`routes/auth.routes.ts`から移動）
-- [ ] `apps/api/src/interface/http/auth/login.ts` を削除
-- [ ] `apps/api/src/interface/http/auth/signup.ts` を削除
-- [ ] `apps/api/src/interface/http/auth/me.ts` を削除
-- [ ] `apps/api/src/interface/http/auth/refresh.ts` を削除
-- [ ] `apps/api/src/interface/http/auth/logout.ts` を削除
-- [ ] `apps/api/src/routes/auth.routes.ts` を削除
+- [x] `apps/api/src/controller/auth/` ディレクトリを作成
+- [x] `apps/api/src/controller/auth/authController.ts` を作成
+- [x] `apps/api/src/controller/auth/auth.routes.ts` を作成（`routes/auth.routes.ts`から移動）
+- [x] `apps/api/src/interface/http/auth/login.ts` を削除
+- [x] `apps/api/src/interface/http/auth/signup.ts` を削除
+- [x] `apps/api/src/interface/http/auth/me.ts` を削除
+- [x] `apps/api/src/interface/http/auth/refresh.ts` を削除
+- [x] `apps/api/src/interface/http/auth/logout.ts` を削除
+- [x] `apps/api/src/routes/auth.routes.ts` を削除
 
 ### テストファイルの修正
-- [ ] `apps/api/src/usecase/auth/loginUseCase.test.ts` を修正
-- [ ] `apps/api/src/usecase/auth/signupUseCase.test.ts` を修正
-- [ ] `apps/api/src/usecase/auth/getMeUseCase.test.ts` を修正
-- [ ] `apps/api/src/usecase/auth/refreshUseCase.test.ts` を修正
-- [ ] `apps/api/src/usecase/auth/logoutUseCase.test.ts` を修正
-- [ ] `apps/api/src/controller/auth/authController.test.ts` を作成（既存のテストを統合）
-- [ ] `apps/api/src/interface/http/auth/*.test.ts` を削除
+- [x] `apps/api/src/usecase/auth/loginUseCase.test.ts` を修正
+- [x] `apps/api/src/usecase/auth/signupUseCase.test.ts` を修正
+- [x] `apps/api/src/usecase/auth/getMeUseCase.test.ts` を修正
+- [x] `apps/api/src/usecase/auth/refreshUseCase.test.ts` を修正
+- [x] `apps/api/src/usecase/auth/logoutUseCase.test.ts` を修正
+- [x] `apps/api/src/controller/auth/authController.test.ts` を作成（既存のテストを統合）
+- [x] `apps/api/src/interface/http/auth/*.test.ts` を削除
 
 ### 検証
-- [ ] すべてのauth関連テストが通ることを確認
-- [ ] 手動でauth機能をテスト（登録、ログイン、ログアウト、トークン更新、ユーザー情報取得）
-- [ ] OpenAPI仕様が正しく生成されることを確認
+- [x] すべてのauth関連テストが通ることを確認
+- [x] 手動でauth機能をテスト（登録、ログイン、ログアウト、トークン更新、ユーザー情報取得）
+- [x] OpenAPI仕様が正しく生成されることを確認
 
 ---
 
