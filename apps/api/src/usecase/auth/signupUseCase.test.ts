@@ -1,26 +1,36 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { describe, it, expect, mock, beforeEach, type Mock } from "bun:test";
 import { SignupUseCase } from "./signupUseCase";
 import { IUserRepository } from "@/domain/repository/userRepository";
-import { CreateUserInput, User, Email, Password } from "@paypay-money-diary/shared";
+import { CreateUserInput, Email, Password } from "@paypay-money-diary/shared";
+import { User } from "@/domain/entity/user";
+import { AuthService } from "@/service/auth/authService";
+import { PasswordService } from "@/service/auth/passwordService";
 
 // Mock IUserRepository
-const mockFindByEmail = mock();
-const mockFindById = mock();
-const mockCreate = mock();
+const mockUserRepository = {
+  findByEmail: mock() as Mock<IUserRepository["findByEmail"]>,
+  findById: mock() as Mock<IUserRepository["findById"]>,
+  create: mock() as Mock<IUserRepository["create"]>,
+} satisfies IUserRepository;
 
-const mockUserRepository: IUserRepository = {
-  findByEmail: mockFindByEmail as IUserRepository["findByEmail"],
-  findById: mockFindById as IUserRepository["findById"],
-  create: mockCreate as IUserRepository["create"],
-};
+// Mock Services
+const mockAuthService = {
+  checkUserExists: mock() as Mock<AuthService["checkUserExists"]>,
+} as unknown as AuthService;
+
+const mockPasswordService = {
+  hashPassword: mock() as Mock<PasswordService["hashPassword"]>,
+} as unknown as PasswordService;
 
 describe("SignupUseCase", () => {
   let signupUseCase: SignupUseCase;
 
   beforeEach(() => {
-    signupUseCase = new SignupUseCase(mockUserRepository);
-    mockFindByEmail.mockReset();
-    mockCreate.mockReset();
+    signupUseCase = new SignupUseCase(mockUserRepository, mockAuthService, mockPasswordService);
+    mockUserRepository.findByEmail.mockClear();
+    mockUserRepository.create.mockClear();
+    (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockClear();
+    (mockPasswordService.hashPassword as Mock<PasswordService["hashPassword"]>).mockClear();
   });
 
   it("should create a new user successfully", async () => {
@@ -31,27 +41,20 @@ describe("SignupUseCase", () => {
       password: "password123",
     };
 
-    const mockUser: User = {
-      id: "uuid-123",
-      name: input.name,
-      email: Email.create(input.email),
-      password: Password.create("hashed_password"),
-    };
+    const mockUser = new User("uuid-123", input.name, Email.create(input.email), Password.create("hashed_password"));
 
-    mockFindByEmail.mockResolvedValue(null);
-    mockCreate.mockResolvedValue(mockUser);
+    (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockResolvedValue(false);
+    (mockPasswordService.hashPassword as Mock<PasswordService["hashPassword"]>).mockResolvedValue("hashed_password");
+    (mockUserRepository.create as Mock<IUserRepository["create"]>).mockResolvedValue(mockUser);
 
     // Act
     const result = await signupUseCase.execute(input);
 
     // Assert
-    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(input.email);
+    expect(mockAuthService.checkUserExists).toHaveBeenCalledWith(input.email);
+    expect(mockPasswordService.hashPassword).toHaveBeenCalledWith(input.password);
     expect(mockUserRepository.create).toHaveBeenCalled();
-    expect(result).toEqual({
-      id: mockUser.id!,
-      name: mockUser.name,
-      email: mockUser.email.toString(),
-    });
+    expect(result).toBe(mockUser);
   });
 
   it("should throw error if user already exists", async () => {
@@ -62,18 +65,11 @@ describe("SignupUseCase", () => {
       password: "password123",
     };
 
-    const existingUser: User = {
-      id: "uuid-existing",
-      name: "Existing User",
-      email: Email.create(input.email),
-      password: Password.create("hashed_password"),
-    };
-
-    mockFindByEmail.mockResolvedValue(existingUser);
+    (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockResolvedValue(true);
 
     // Act & Assert
     expect(signupUseCase.execute(input)).rejects.toThrow("User already exists");
-    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(input.email);
+    expect(mockAuthService.checkUserExists).toHaveBeenCalledWith(input.email);
     expect(mockUserRepository.create).not.toHaveBeenCalled();
   });
 });
