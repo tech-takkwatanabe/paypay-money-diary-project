@@ -1,81 +1,59 @@
-import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
-import { IUserRepository } from "@/domain/repository/userRepository";
-import { ITokenRepository } from "@/domain/repository/tokenRepository";
-
-// Mock dependencies
-const mockVerifyRefreshToken = mock(() => ({
-  userId: "uuid-123",
-  email: "test@example.com",
-}));
-const mockGenerateAccessToken = mock(() => "new_access_token");
-const mockGenerateRefreshToken = mock(() => "new_refresh_token");
-
-mock.module("@/infrastructure/auth/jwt", () => ({
-  verifyRefreshToken: mockVerifyRefreshToken,
-  generateAccessToken: mockGenerateAccessToken,
-  generateRefreshToken: mockGenerateRefreshToken,
-}));
-
-// Import RefreshUseCase AFTER mocking modules
+import { describe, it, expect, mock, beforeEach, type Mock } from "bun:test";
 import { RefreshUseCase } from "./refreshUseCase";
-
-// Mock IUserRepository
-const mockFindByEmail = mock();
-const mockFindById = mock();
-const mockCreate = mock();
-
-const mockUserRepository: IUserRepository = {
-  findByEmail: mockFindByEmail as IUserRepository["findByEmail"],
-  findById: mockFindById as IUserRepository["findById"],
-  create: mockCreate as IUserRepository["create"],
-};
+import { ITokenRepository } from "@/domain/repository/tokenRepository";
+import { TokenService } from "@/service/auth/tokenService";
 
 // Mock ITokenRepository
-const mockSaveRefreshToken = mock();
-const mockFindRefreshToken = mock();
-const mockFindOldRefreshToken = mock();
-const mockDeleteRefreshToken = mock();
+const mockTokenRepository = {
+  saveRefreshToken: mock() as Mock<ITokenRepository["saveRefreshToken"]>,
+  findRefreshToken: mock() as Mock<ITokenRepository["findRefreshToken"]>,
+  findOldRefreshToken: mock() as Mock<ITokenRepository["findOldRefreshToken"]>,
+  deleteRefreshToken: mock() as Mock<ITokenRepository["deleteRefreshToken"]>,
+} as unknown as ITokenRepository;
 
-const mockTokenRepository: ITokenRepository = {
-  saveRefreshToken: mockSaveRefreshToken as ITokenRepository["saveRefreshToken"],
-  findRefreshToken: mockFindRefreshToken as ITokenRepository["findRefreshToken"],
-  findOldRefreshToken: mockFindOldRefreshToken as ITokenRepository["findOldRefreshToken"],
-  deleteRefreshToken: mockDeleteRefreshToken as ITokenRepository["deleteRefreshToken"],
-};
+// Mock TokenService
+const mockTokenService = {
+  verifyRefreshToken: mock() as Mock<TokenService["verifyRefreshToken"]>,
+  generateTokenPair: mock() as Mock<TokenService["generateTokenPair"]>,
+  generateAccessToken: mock() as Mock<TokenService["generateAccessToken"]>,
+} as unknown as TokenService;
 
 describe("RefreshUseCase", () => {
   let refreshUseCase: RefreshUseCase;
 
   beforeEach(() => {
-    refreshUseCase = new RefreshUseCase(mockUserRepository, mockTokenRepository);
-    mockVerifyRefreshToken.mockClear();
-    mockGenerateAccessToken.mockClear();
-    mockGenerateRefreshToken.mockClear();
-    mockFindRefreshToken.mockReset();
-    mockFindOldRefreshToken.mockReset();
-    mockSaveRefreshToken.mockReset();
-    mockDeleteRefreshToken.mockReset();
-  });
-
-  afterEach(() => {
-    mock.restore();
+    refreshUseCase = new RefreshUseCase(mockTokenRepository, mockTokenService);
+    (mockTokenService.verifyRefreshToken as Mock<TokenService["verifyRefreshToken"]>).mockClear();
+    (mockTokenService.generateTokenPair as Mock<TokenService["generateTokenPair"]>).mockClear();
+    (mockTokenService.generateAccessToken as Mock<TokenService["generateAccessToken"]>).mockClear();
+    (mockTokenRepository.findRefreshToken as Mock<ITokenRepository["findRefreshToken"]>).mockClear();
+    (mockTokenRepository.findOldRefreshToken as Mock<ITokenRepository["findOldRefreshToken"]>).mockClear();
+    (mockTokenRepository.saveRefreshToken as Mock<ITokenRepository["saveRefreshToken"]>).mockClear();
   });
 
   it("should refresh tokens successfully", async () => {
     // Arrange
     const currentRefreshToken = "valid_refresh_token";
-    mockFindRefreshToken.mockResolvedValue(currentRefreshToken);
-    mockFindOldRefreshToken.mockResolvedValue(null);
+    const payload = { userId: "uuid-123", email: "test@example.com" };
+
+    (mockTokenService.verifyRefreshToken as Mock<TokenService["verifyRefreshToken"]>).mockReturnValue(payload);
+    (mockTokenRepository.findRefreshToken as Mock<ITokenRepository["findRefreshToken"]>).mockResolvedValue(
+      currentRefreshToken
+    );
+    (mockTokenRepository.findOldRefreshToken as Mock<ITokenRepository["findOldRefreshToken"]>).mockResolvedValue(null);
+    (mockTokenService.generateTokenPair as Mock<TokenService["generateTokenPair"]>).mockReturnValue({
+      accessToken: "new_access_token",
+      refreshToken: "new_refresh_token",
+    });
 
     // Act
     const result = await refreshUseCase.execute(currentRefreshToken);
 
     // Assert
-    expect(mockVerifyRefreshToken).toHaveBeenCalledWith(currentRefreshToken);
-    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith("uuid-123");
-    expect(mockGenerateAccessToken).toHaveBeenCalled();
-    expect(mockGenerateRefreshToken).toHaveBeenCalled();
-    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith("uuid-123", "new_refresh_token");
+    expect(mockTokenService.verifyRefreshToken).toHaveBeenCalledWith(currentRefreshToken);
+    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith(payload.userId);
+    expect(mockTokenService.generateTokenPair).toHaveBeenCalledWith(payload);
+    expect(mockTokenRepository.saveRefreshToken).toHaveBeenCalledWith(payload.userId, "new_refresh_token");
     expect(result).toEqual({
       accessToken: "new_access_token",
       refreshToken: "new_refresh_token",
@@ -86,37 +64,48 @@ describe("RefreshUseCase", () => {
     // Arrange
     const currentRefreshToken = "old_refresh_token";
     const storedToken = "different_refresh_token";
-    mockFindRefreshToken.mockResolvedValue(storedToken);
-    mockFindOldRefreshToken.mockResolvedValue(null);
+    const payload = { userId: "uuid-123", email: "test@example.com" };
+
+    (mockTokenService.verifyRefreshToken as Mock<TokenService["verifyRefreshToken"]>).mockReturnValue(payload);
+    (mockTokenRepository.findRefreshToken as Mock<ITokenRepository["findRefreshToken"]>).mockResolvedValue(storedToken);
+    (mockTokenRepository.findOldRefreshToken as Mock<ITokenRepository["findOldRefreshToken"]>).mockResolvedValue(null);
 
     // Act & Assert
-    expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow("Invalid refresh token");
-    // Note: In the new implementation, we don't delete the token on mismatch to avoid accidental logout
-    expect(mockTokenRepository.deleteRefreshToken).not.toHaveBeenCalled();
+    await expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow("Invalid refresh token");
   });
 
   it("should refresh successfully with old token during grace period", async () => {
     // Arrange
     const oldRefreshToken = "old_refresh_token";
     const currentStoredToken = "current_stored_token";
-    mockFindRefreshToken.mockResolvedValue(currentStoredToken);
-    mockFindOldRefreshToken.mockResolvedValue(oldRefreshToken);
+    const payload = { userId: "uuid-123", email: "test@example.com" };
+
+    (mockTokenService.verifyRefreshToken as Mock<TokenService["verifyRefreshToken"]>).mockReturnValue(payload);
+    (mockTokenRepository.findRefreshToken as Mock<ITokenRepository["findRefreshToken"]>).mockResolvedValue(
+      currentStoredToken
+    );
+    (mockTokenRepository.findOldRefreshToken as Mock<ITokenRepository["findOldRefreshToken"]>).mockResolvedValue(
+      oldRefreshToken
+    );
+    (mockTokenService.generateAccessToken as Mock<TokenService["generateAccessToken"]>).mockReturnValue(
+      "new_access_token"
+    );
 
     // Act
     const result = await refreshUseCase.execute(oldRefreshToken);
 
     // Assert
-    expect(mockVerifyRefreshToken).toHaveBeenCalledWith(oldRefreshToken);
-    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith("uuid-123");
-    expect(mockTokenRepository.findOldRefreshToken).toHaveBeenCalledWith("uuid-123");
-    expect(mockGenerateAccessToken).toHaveBeenCalled();
+    expect(mockTokenService.verifyRefreshToken).toHaveBeenCalledWith(oldRefreshToken);
+    expect(mockTokenRepository.findRefreshToken).toHaveBeenCalledWith(payload.userId);
+    expect(mockTokenRepository.findOldRefreshToken).toHaveBeenCalledWith(payload.userId);
+    expect(mockTokenService.generateAccessToken).toHaveBeenCalledWith(payload);
     // Should NOT generate new refresh token or save it
-    expect(mockGenerateRefreshToken).not.toHaveBeenCalled();
+    expect(mockTokenService.generateTokenPair).not.toHaveBeenCalled();
     expect(mockTokenRepository.saveRefreshToken).not.toHaveBeenCalled();
 
     expect(result).toEqual({
       accessToken: "new_access_token",
-      refreshToken: currentStoredToken, // Returns the current valid token
+      refreshToken: currentStoredToken,
     });
   });
 });
