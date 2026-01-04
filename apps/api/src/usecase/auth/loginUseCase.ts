@@ -1,59 +1,47 @@
-import { compare } from "bcryptjs";
-import { IUserRepository } from "@/domain/repository/userRepository";
 import { ITokenRepository } from "@/domain/repository/tokenRepository";
 import { LoginInput } from "@paypay-money-diary/shared";
-import { generateAccessToken, generateRefreshToken } from "@/infrastructure/auth/jwt";
+import { AuthService } from "@/service/auth/authService";
+import { TokenService } from "@/service/auth/tokenService";
+import { User } from "@/domain/entity/user";
 
-interface LoginResponse {
+/**
+ * Login Response
+ */
+export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  user: User;
 }
 
+/**
+ * Login Use Case
+ * ログインのユースケースを実装
+ */
 export class LoginUseCase {
   constructor(
-    private userRepository: IUserRepository,
+    private authService: AuthService,
+    private tokenService: TokenService,
     private tokenRepository: ITokenRepository
   ) {}
 
   async execute(input: LoginInput): Promise<LoginResponse> {
-    // 1. Find user by email
-    const user = await this.userRepository.findByEmail(input.email);
-    if (!user) {
-      throw new Error("Invalid credentials");
-    }
+    // 1. ユーザー認証（Service層に委譲）
+    const user = await this.authService.authenticateUser(input.email, input.password);
 
-    // 2. Verify password
-    const isPasswordValid = await compare(input.password, user.password.value);
-    if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
-    }
-
-    // 3. Generate tokens
-    const payload = {
-      userId: user.id!,
+    // 2. トークン生成（Service層に委譲）
+    const { accessToken, refreshToken } = this.tokenService.generateTokenPair({
+      userId: user.id,
       email: user.email.toString(),
-    };
+    });
 
-    const accessToken = generateAccessToken(payload);
-    const refreshToken = generateRefreshToken(payload);
+    // 3. リフレッシュトークンを保存
+    await this.tokenRepository.saveRefreshToken(user.id, refreshToken);
 
-    // 4. Store refresh token
-    await this.tokenRepository.saveRefreshToken(user.id!, refreshToken);
-
-    // 5. Return tokens and user info
+    // 4. 結果を返す（Entityを返す）
     return {
       accessToken,
       refreshToken,
-      user: {
-        id: user.id!,
-        name: user.name,
-        email: user.email.toString(),
-      },
+      user,
     };
   }
 }
