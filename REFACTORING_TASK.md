@@ -8,29 +8,29 @@
 ## フェーズ1: 基盤整備 (2-3時間)
 
 ### packages/shared の拡充
-- [ ] `packages/shared/package.json` に `zod` を依存関係として追加
-- [ ] `packages/shared/src/schema/category.ts` を作成
-- [ ] `packages/shared/src/schema/rule.ts` を作成
-- [ ] `packages/shared/src/schema/transaction.ts` を作成
-- [ ] `packages/shared/src/index.ts` を更新（新しいスキーマをエクスポート）
-- [ ] `pnpm install` を実行して依存関係をインストール
+- [x] `packages/shared/package.json` に `zod` を依存関係として追加
+- [x] `packages/shared/src/schema/category.ts` を作成
+- [x] `packages/shared/src/schema/rule.ts` を作成
+- [x] `packages/shared/src/schema/transaction.ts` を作成
+- [x] `packages/shared/src/index.ts` を更新（新しいスキーマをエクスポート）
+- [x] `pnpm install` を実行して依存関係をインストール
 
 ### apps/api の Domain層拡充
-- [ ] `apps/api/src/domain/entity/user.ts` を作成
-- [ ] `apps/api/src/domain/entity/category.ts` を作成
-- [ ] `apps/api/src/domain/entity/rule.ts` を作成
-- [ ] `apps/api/src/domain/entity/transaction.ts` を作成
-- [ ] `apps/api/src/domain/repository/categoryRepository.ts` を作成
-- [ ] `apps/api/src/domain/repository/ruleRepository.ts` を作成
-- [ ] `apps/api/src/domain/repository/transactionRepository.ts` を作成
+- [x] `apps/api/src/domain/entity/user.ts` を作成
+- [x] `apps/api/src/domain/entity/category.ts` を作成
+- [x] `apps/api/src/domain/entity/rule.ts` を作成
+- [x] `apps/api/src/domain/entity/transaction.ts` を作成
+- [x] `apps/api/src/domain/repository/categoryRepository.ts` を作成
+- [x] `apps/api/src/domain/repository/ruleRepository.ts` を作成
+- [x] `apps/api/src/domain/repository/transactionRepository.ts` を作成
 
 ### apps/api の Infrastructure層拡充
-- [ ] `apps/api/src/infrastructure/repository/categoryRepository.ts` を作成
-- [ ] `apps/api/src/infrastructure/repository/ruleRepository.ts` を作成
-- [ ] `apps/api/src/infrastructure/repository/transactionRepository.ts` を作成
+- [x] `apps/api/src/infrastructure/repository/categoryRepository.ts` を作成
+- [x] `apps/api/src/infrastructure/repository/ruleRepository.ts` を作成
+- [x] `apps/api/src/infrastructure/repository/transactionRepository.ts` を作成
 
 ### 検証
-- [ ] TypeScriptのビルドエラーがないことを確認
+- [x] TypeScriptのビルドエラーがないことを確認
 - [ ] 既存のテストが通ることを確認
 
 ---
