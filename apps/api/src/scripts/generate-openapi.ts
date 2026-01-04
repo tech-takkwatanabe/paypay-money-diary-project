@@ -22,7 +22,7 @@ import {
   type RefreshRoute,
   type LogoutRoute,
   type MeRoute,
-} from "@/routes/auth.routes";
+} from "@/controller/auth/auth.routes";
 
 // Transaction routes (スキーマ定義のみ)
 import {
