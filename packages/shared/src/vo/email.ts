@@ -24,7 +24,8 @@ export class Email {
 
 // Zod Schema with transformation to Value Object
 export const EmailSchema = z
+  .string()
   .email({ message: "無効なメールアドレス形式です。" })
-  .transform((email) => Email.create(email));
+  .transform((email: string) => Email.create(email));
 
 export type EmailType = z.infer<typeof EmailSchema>;
