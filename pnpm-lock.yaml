@@ -30,10 +30,10 @@ importers:
         version: 0.5.3(hono@4.11.3)
       '@hono/zod-openapi':
         specifier: ^1.2.0
-        version: 1.2.0(hono@4.11.3)(zod@4.1.13)
+        version: 1.2.0(hono@4.11.3)(zod@4.3.5)
       '@hono/zod-validator':
         specifier: 0.7.6
-        version: 0.7.6(hono@4.11.3)(zod@4.1.13)
+        version: 0.7.6(hono@4.11.3)(zod@4.3.5)
       '@paypay-money-diary/shared':
         specifier: workspace:^
         version: link:../../packages/shared
@@ -179,6 +179,10 @@ importers:
         version: 17.0.0
 
   packages/shared:
+    dependencies:
+      zod:
+        specifier: ^4.3.5
+        version: 4.3.5
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -4347,6 +4351,9 @@ packages:
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
+  zod@4.3.5:
+    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+
 snapshots:
 
   '@acemir/cssom@0.9.30': {}
@@ -4392,10 +4399,10 @@ snapshots:
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
-  '@asteasolutions/zod-to-openapi@8.2.0(zod@4.1.13)':
+  '@asteasolutions/zod-to-openapi@8.2.0(zod@4.3.5)':
     dependencies:
       openapi3-ts: 4.5.0
-      zod: 4.1.13
+      zod: 4.3.5
 
   '@asyncapi/specs@6.10.0':
     dependencies:
@@ -4794,18 +4801,18 @@ snapshots:
     dependencies:
       hono: 4.11.3
 
-  '@hono/zod-openapi@1.2.0(hono@4.11.3)(zod@4.1.13)':
+  '@hono/zod-openapi@1.2.0(hono@4.11.3)(zod@4.3.5)':
     dependencies:
-      '@asteasolutions/zod-to-openapi': 8.2.0(zod@4.1.13)
-      '@hono/zod-validator': 0.7.6(hono@4.11.3)(zod@4.1.13)
+      '@asteasolutions/zod-to-openapi': 8.2.0(zod@4.3.5)
+      '@hono/zod-validator': 0.7.6(hono@4.11.3)(zod@4.3.5)
       hono: 4.11.3
       openapi3-ts: 4.5.0
-      zod: 4.1.13
+      zod: 4.3.5
 
-  '@hono/zod-validator@0.7.6(hono@4.11.3)(zod@4.1.13)':
+  '@hono/zod-validator@0.7.6(hono@4.11.3)(zod@4.3.5)':
     dependencies:
       hono: 4.11.3
-      zod: 4.1.13
+      zod: 4.3.5
 
   '@humanfs/core@0.19.1': {}
 
@@ -6819,8 +6826,8 @@ snapshots:
       '@babel/parser': 7.28.5
       eslint: 9.39.2(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.1.13
-      zod-validation-error: 4.0.2(zod@4.1.13)
+      zod: 4.3.5
+      zod-validation-error: 4.0.2(zod@4.3.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -8672,8 +8679,10 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@4.0.2(zod@4.1.13):
+  zod-validation-error@4.0.2(zod@4.3.5):
     dependencies:
-      zod: 4.1.13
+      zod: 4.3.5
 
   zod@4.1.13: {}
+
+  zod@4.3.5: {}
