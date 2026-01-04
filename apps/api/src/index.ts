@@ -4,7 +4,6 @@ import { cors } from "hono/cors";
 import { authMiddleware } from "@/interface/http/middleware/auth";
 
 // Handlers
-import { signupHandler, loginHandler, refreshHandler, logoutHandler, meHandler } from "@/interface/http/auth";
 import {
   uploadCsvHandler,
   getTransactionsHandler,
@@ -21,7 +20,7 @@ import {
 } from "@/interface/http/category";
 import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandler } from "@/interface/http/rule";
 // OpenAPI Route definitions
-import { signupRoute, loginRoute, refreshRoute, logoutRoute, meRoute } from "@/routes/auth.routes";
+import { registerAuthRoutes } from "@/controller/auth/auth.routes";
 import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from "@/routes/rule.routes";
 import {
   uploadCsvRoute,
@@ -49,16 +48,9 @@ app.get("/", (c) => {
 const api = new OpenAPIHono();
 
 // ===== 認証 API (OpenAPI 対応) =====
-api.openapi(signupRoute, signupHandler);
-api.openapi(loginRoute, loginHandler);
-api.openapi(refreshRoute, refreshHandler);
-
-// 認証必須エンドポイント
 api.use("/auth/logout", authMiddleware);
-api.openapi(logoutRoute, logoutHandler);
-
 api.use("/auth/me", authMiddleware);
-api.openapi(meRoute, meHandler);
+registerAuthRoutes(api);
 
 // ===== 取引 API =====
 api.use("/transactions/*", authMiddleware);
