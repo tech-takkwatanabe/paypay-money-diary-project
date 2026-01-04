@@ -1,4 +1,5 @@
-import { User, CreateUserInput } from "@paypay-money-diary/shared";
+import { User } from "@/domain/entity/user";
+import { CreateUserInput } from "@paypay-money-diary/shared";
 
 export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
