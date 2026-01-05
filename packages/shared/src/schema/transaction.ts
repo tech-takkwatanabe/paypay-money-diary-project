@@ -24,22 +24,41 @@ export const TransactionListQuerySchema = z.object({
   year: z.string().optional(),
   month: z.string().optional(),
   categoryId: z.string().uuid().optional(),
+  page: z.string().optional(),
+  limit: z.string().optional(),
 });
 
 // トランザクション集計レスポンス
 export const TransactionSummarySchema = z.object({
-  year: z.number(),
-  month: z.number().optional(),
-  totalAmount: z.number(),
+  summary: z.object({
+    totalAmount: z.number(),
+    transactionCount: z.number(),
+  }),
   categoryBreakdown: z.array(
     z.object({
-      categoryId: z.string().uuid(),
+      categoryId: z.string().uuid().nullable(),
       categoryName: z.string(),
       categoryColor: z.string(),
-      amount: z.number(),
-      percentage: z.number(),
+      totalAmount: z.number(),
+      transactionCount: z.number(),
     })
   ),
+  monthlyBreakdown: z
+    .array(
+      z.object({
+        month: z.number(),
+        totalAmount: z.number(),
+        categories: z.array(
+          z.object({
+            categoryId: z.string().uuid().nullable(),
+            categoryName: z.string(),
+            categoryColor: z.string(),
+            amount: z.number(),
+          })
+        ),
+      })
+    )
+    .optional(),
 });
 
 // 利用可能年度レスポンス
