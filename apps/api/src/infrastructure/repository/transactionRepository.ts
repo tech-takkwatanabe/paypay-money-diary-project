@@ -19,6 +19,10 @@ export class TransactionRepository implements ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      pagination?: {
+        page: number;
+        limit: number;
+      };
     }
   ): Promise<Transaction[]> {
     let query = db
@@ -67,6 +71,12 @@ export class TransactionRepository implements ITransactionRepository {
     // カテゴリでフィルタ
     if (options?.categoryId) {
       query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
+    }
+
+    // ページネーション
+    if (options?.pagination) {
+      const offset = (options.pagination.page - 1) * options.pagination.limit;
+      query = query.limit(options.pagination.limit).offset(offset);
     }
 
     const results = await query.orderBy(desc(expenses.transactionDate));
@@ -126,6 +136,55 @@ export class TransactionRepository implements ITransactionRepository {
       row.createdAt ?? undefined,
       undefined
     );
+  }
+
+  /**
+   * 条件に一致するトランザクションの総件数を取得
+   */
+  async countByUserId(
+    userId: string,
+    options?: {
+      year?: number;
+      month?: number;
+      categoryId?: string;
+    }
+  ): Promise<number> {
+    let query = db
+      .select({ count: sql<number>`count(*)` })
+      .from(expenses)
+      .where(eq(expenses.userId, userId))
+      .$dynamic();
+
+    if (options?.year) {
+      const startDate = new Date(options.year, 0, 1);
+      const endDate = new Date(options.year + 1, 0, 1);
+      query = query.where(
+        and(
+          eq(expenses.userId, userId),
+          gte(expenses.transactionDate, startDate),
+          lte(expenses.transactionDate, endDate)
+        )
+      );
+    }
+
+    if (options?.month && options?.year) {
+      const startDate = new Date(options.year, options.month - 1, 1);
+      const endDate = new Date(options.year, options.month, 1);
+      query = query.where(
+        and(
+          eq(expenses.userId, userId),
+          gte(expenses.transactionDate, startDate),
+          lte(expenses.transactionDate, endDate)
+        )
+      );
+    }
+
+    if (options?.categoryId) {
+      query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
+    }
+
+    const results = await query;
+    return Number(results[0]?.count ?? 0);
   }
 
   /**
@@ -311,5 +370,18 @@ export class TransactionRepository implements ITransactionRepository {
           undefined
         )
     );
+  }
+
+  /**
+   * 外部取引IDでトランザクションが存在するか確認
+   */
+  async existsByExternalId(userId: string, externalId: string): Promise<boolean> {
+    const results = await db
+      .select({ id: expenses.id })
+      .from(expenses)
+      .where(and(eq(expenses.userId, userId), eq(expenses.externalTransactionId, externalId)))
+      .limit(1);
+
+    return results.length > 0;
   }
 }

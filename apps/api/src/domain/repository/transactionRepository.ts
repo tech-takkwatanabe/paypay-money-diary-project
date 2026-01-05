@@ -15,8 +15,24 @@ export interface ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      pagination?: {
+        page: number;
+        limit: number;
+      };
     }
   ): Promise<Transaction[]>;
+
+  /**
+   * 条件に一致するトランザクションの総件数を取得
+   */
+  countByUserId(
+    userId: string,
+    options?: {
+      year?: number;
+      month?: number;
+      categoryId?: string;
+    }
+  ): Promise<number>;
 
   /**
    * IDでトランザクションを検索
@@ -70,4 +86,9 @@ export interface ITransactionRepository {
       categoryColor: string;
     }>
   ): Promise<Transaction[]>;
+
+  /**
+   * 外部取引IDでトランザクションが存在するか確認
+   */
+  existsByExternalId(userId: string, externalId: string): Promise<boolean>;
 }
