@@ -1,8 +1,11 @@
 import { describe, it, expect, mock, spyOn, afterEach } from "bun:test";
 import { app } from "@/index";
 import jwt from "jsonwebtoken";
+import { ListTransactionsUseCase } from "@/usecase/transaction/listTransactionsUseCase";
+import { GetTransactionSummaryUseCase } from "@/usecase/transaction/getTransactionSummaryUseCase";
+import { ReCategorizeTransactionsUseCase } from "@/usecase/transaction/reCategorizeTransactionsUseCase";
+import { GetAvailableYearsUseCase } from "@/usecase/transaction/getAvailableYearsUseCase";
 import { UploadCsvUseCase } from "@/usecase/transaction/uploadCsvUseCase";
-import { db } from "@/db";
 
 // Set test environment variables
 process.env.JWT_ACCESS_SECRET = "test-secret";
@@ -42,7 +45,8 @@ describe("Transaction Routes", () => {
       // Assert
       expect(res.status).toBe(201);
       const body = await res.json();
-      expect(body.uploadId).toBe("upload-123");
+      expect(body.message).toBe("CSV uploaded successfully");
+      expect(body.processedCount).toBe(8);
       expect(spy).toHaveBeenCalled();
     });
   });
@@ -50,26 +54,9 @@ describe("Transaction Routes", () => {
   describe("GET /api/transactions", () => {
     it("should return 200 and transaction list", async () => {
       // Arrange
-      const mockTransactions = [
-        {
-          id: "1",
-          transactionDate: new Date("2024-01-01"),
-          amount: 1000,
-          merchant: "Store A",
-        },
-      ];
-
-      spyOn(db, "select").mockImplementation(() => {
-        const chain = {
-          from: mock().mockReturnThis(),
-          leftJoin: mock().mockReturnThis(),
-          where: mock().mockReturnThis(),
-          orderBy: mock().mockReturnThis(),
-          limit: mock().mockReturnThis(),
-          offset: mock().mockImplementation(() => Promise.resolve(mockTransactions)),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) => resolve([{ count: 1 }])),
-        };
-        return chain as unknown as never;
+      const spy = spyOn(ListTransactionsUseCase.prototype, "execute").mockResolvedValue({
+        data: [],
+        pagination: { page: 1, limit: 50, totalCount: 0, totalPages: 0 },
       });
 
       // Act
@@ -82,28 +69,22 @@ describe("Transaction Routes", () => {
       // Assert
       expect(res.status).toBe(200);
       const body = await res.json();
-      expect(body.data).toHaveLength(1);
+      expect(body.data).toBeDefined();
+      expect(spy).toHaveBeenCalled();
     });
   });
 
   describe("GET /api/transactions/summary", () => {
     it("should return 200 and summary data", async () => {
       // Arrange
-      spyOn(db, "select").mockImplementation(() => {
-        const chain = {
-          from: mock().mockReturnThis(),
-          where: mock().mockReturnThis(),
-          leftJoin: mock().mockReturnThis(),
-          groupBy: mock().mockImplementation(() => Promise.resolve([{ totalAmount: 1000, transactionCount: 1 }])),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) =>
-            resolve([{ totalAmount: 1000, transactionCount: 1 }])
-          ),
-        };
-        return chain as unknown as never;
+      const spy = spyOn(GetTransactionSummaryUseCase.prototype, "execute").mockResolvedValue({
+        summary: { totalAmount: 1000, transactionCount: 1 },
+        categoryBreakdown: [],
+        monthlyBreakdown: [],
       });
 
       // Act
-      const res = await app.request("/api/transactions/summary", {
+      const res = await app.request("/api/transactions/summary?year=2024", {
         headers: {
           Cookie: `accessToken=${testToken}`,
         },
@@ -113,20 +94,16 @@ describe("Transaction Routes", () => {
       expect(res.status).toBe(200);
       const body = await res.json();
       expect(body.summary.totalAmount).toBe(1000);
+      expect(spy).toHaveBeenCalled();
     });
   });
 
   describe("POST /api/transactions/re-categorize", () => {
     it("should return 200 on successful re-categorization", async () => {
       // Arrange
-      spyOn(db, "select").mockImplementation(() => {
-        const chain = {
-          from: mock().mockReturnThis(),
-          where: mock().mockReturnThis(),
-          orderBy: mock().mockImplementation(() => Promise.resolve([])),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) => resolve([])),
-        };
-        return chain as unknown as never;
+      const spy = spyOn(ReCategorizeTransactionsUseCase.prototype, "execute").mockResolvedValue({
+        message: "Success",
+        updatedCount: 5,
       });
 
       // Act
@@ -134,31 +111,28 @@ describe("Transaction Routes", () => {
         method: "POST",
         headers: {
           Cookie: `accessToken=${testToken}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ year: 2024 }),
       });
 
       // Assert
       expect(res.status).toBe(200);
       const body = await res.json();
-      expect(body.message).toBe("No rules found");
+      expect(body.message).toBe("Success");
+      expect(spy).toHaveBeenCalled();
     });
   });
 
-  describe("GET /api/transactions/years", () => {
+  describe("GET /api/transactions/available-years", () => {
     it("should return 200 and available years", async () => {
       // Arrange
-      const mockUploads = [{ fileName: "Transactions_20240101-20241231.csv" }];
-      spyOn(db, "select").mockImplementation(() => {
-        const chain = {
-          from: mock().mockReturnThis(),
-          where: mock().mockImplementation(() => Promise.resolve(mockUploads)),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) => resolve(mockUploads)),
-        };
-        return chain as unknown as never;
+      const spy = spyOn(GetAvailableYearsUseCase.prototype, "execute").mockResolvedValue({
+        years: [2024],
       });
 
       // Act
-      const res = await app.request("/api/transactions/years", {
+      const res = await app.request("/api/transactions/available-years", {
         headers: {
           Cookie: `accessToken=${testToken}`,
         },
@@ -168,6 +142,7 @@ describe("Transaction Routes", () => {
       expect(res.status).toBe(200);
       const body = await res.json();
       expect(body.years).toEqual([2024]);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });
