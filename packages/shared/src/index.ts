@@ -1,3 +1,6 @@
+// Common schema
+export * from "./schema/common";
+
 // Value Objects
 export * from "./vo/email";
 export * from "./vo/password";
