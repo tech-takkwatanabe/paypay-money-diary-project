@@ -40,7 +40,7 @@ import {
   type UpdateTransactionRoute,
 } from "@/routes/transaction.routes";
 
-// Category routes (スキーマ定義のみ)
+// Category routes
 import {
   getCategoriesRoute,
   createCategoryRoute,
@@ -50,7 +50,7 @@ import {
   type CreateCategoryRoute,
   type UpdateCategoryRoute,
   type DeleteCategoryRoute,
-} from "@/routes/category.routes";
+} from "@/controller/category/category.routes";
 
 // Rule routes
 import {
@@ -62,7 +62,7 @@ import {
   type CreateRuleRoute,
   type UpdateRuleRoute,
   type DeleteRuleRoute,
-} from "@/routes/rule.routes";
+} from "@/controller/rule/rule.routes";
 
 const app = new OpenAPIHono();
 
@@ -168,6 +168,8 @@ const createCategoryDummy: RouteHandler<CreateCategoryRoute> = async (c) => {
       icon: null,
       displayOrder: 0,
       isDefault: false,
+      isSystem: false,
+      userId: null,
     },
     201
   );
@@ -182,13 +184,15 @@ const updateCategoryDummy: RouteHandler<UpdateCategoryRoute> = async (c) => {
       icon: null,
       displayOrder: 0,
       isDefault: false,
+      isSystem: false,
+      userId: null,
     },
     200
   );
 };
 
 const deleteCategoryDummy: RouteHandler<DeleteCategoryRoute> = async (c) => {
-  return c.json({ message: "" }, 200);
+  return c.json({ message: "Category deleted successfully" }, 200);
 };
 
 // ===== Rule dummy handlers =====
@@ -199,12 +203,15 @@ const getRulesDummy: RouteHandler<GetRulesRoute> = async (c) => {
 const createRuleDummy: RouteHandler<CreateRuleRoute> = async (c) => {
   return c.json(
     {
-      id: "",
+      id: "550e8400-e29b-41d4-a716-446655440000",
       keyword: "",
-      categoryId: "",
+      categoryId: "550e8400-e29b-41d4-a716-446655440002",
       categoryName: "",
       priority: 0,
       isSystem: false,
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     },
     201
   );
@@ -213,19 +220,22 @@ const createRuleDummy: RouteHandler<CreateRuleRoute> = async (c) => {
 const updateRuleDummy: RouteHandler<UpdateRuleRoute> = async (c) => {
   return c.json(
     {
-      id: "",
+      id: "550e8400-e29b-41d4-a716-446655440000",
       keyword: "",
-      categoryId: "",
+      categoryId: "550e8400-e29b-41d4-a716-446655440002",
       categoryName: "",
       priority: 0,
       isSystem: false,
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     },
     200
   );
 };
 
 const deleteRuleDummy: RouteHandler<DeleteRuleRoute> = async (c) => {
-  return c.json({ message: "" }, 200);
+  return c.json({ message: "Rule deleted successfully" }, 200);
 };
 
 // Register all routes
