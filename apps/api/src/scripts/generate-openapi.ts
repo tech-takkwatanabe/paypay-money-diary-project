@@ -27,18 +27,18 @@ import {
 // Transaction routes (スキーマ定義のみ)
 import {
   uploadCsvRoute,
-  getTransactionsRoute,
+  listTransactionsRoute,
   getSummaryRoute,
   getAvailableYearsRoute,
   reCategorizeRoute,
   updateTransactionRoute,
   type UploadCsvRoute,
-  type GetTransactionsRoute,
+  type ListTransactionsRoute,
   type GetSummaryRoute,
   type GetAvailableYearsRoute,
   type ReCategorizeRoute,
   type UpdateTransactionRoute,
-} from "@/routes/transaction.routes";
+} from "@/controller/transaction/transaction.routes";
 
 // Category routes
 import {
@@ -99,17 +99,15 @@ const uploadCsvDummy: RouteHandler<UploadCsvRoute> = async (c) => {
   return c.json(
     {
       message: "",
-      uploadId: "",
-      totalRows: 0,
-      importedRows: 0,
-      skippedRows: 0,
-      duplicateRows: 0,
+      processedCount: 0,
+      categorizedCount: 0,
+      uncategorizedCount: 0,
     },
     201
   );
 };
 
-const getTransactionsDummy: RouteHandler<GetTransactionsRoute> = async (c) => {
+const getTransactionsDummy: RouteHandler<ListTransactionsRoute> = async (c) => {
   return c.json(
     {
       data: [],
@@ -135,20 +133,22 @@ const getAvailableYearsDummy: RouteHandler<GetAvailableYearsRoute> = async (c) =
 };
 
 const reCategorizeDummy: RouteHandler<ReCategorizeRoute> = async (c) => {
-  return c.json({ message: "" }, 200);
+  return c.json({ message: "", updatedCount: 0 }, 200);
 };
 
 const updateTransactionDummy: RouteHandler<UpdateTransactionRoute> = async (c) => {
   return c.json(
     {
-      id: "",
-      transactionDate: "",
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      date: new Date().toISOString(),
+      description: "",
       amount: 0,
-      merchant: "",
-      paymentMethod: null,
-      categoryId: null,
-      categoryName: null,
-      categoryColor: null,
+      categoryId: "550e8400-e29b-41d4-a716-446655440002",
+      categoryName: "",
+      categoryColor: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     },
     200
   );
@@ -246,7 +246,7 @@ app.openapi(logoutRoute, logoutDummy);
 app.openapi(meRoute, meDummy);
 
 app.openapi(uploadCsvRoute, uploadCsvDummy);
-app.openapi(getTransactionsRoute, getTransactionsDummy);
+app.openapi(listTransactionsRoute, getTransactionsDummy);
 app.openapi(getSummaryRoute, getSummaryDummy);
 app.openapi(getAvailableYearsRoute, getAvailableYearsDummy);
 app.openapi(reCategorizeRoute, reCategorizeDummy);
