@@ -1,31 +1,27 @@
 import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from "bun:test";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { registerRuleRoutes } from "./rule.routes";
+import { Env } from "@/types/hono";
 import { ListRulesUseCase } from "@/usecase/rule/listRulesUseCase";
 import { CreateRuleUseCase } from "@/usecase/rule/createRuleUseCase";
 import { UpdateRuleUseCase } from "@/usecase/rule/updateRuleUseCase";
 import { DeleteRuleUseCase } from "@/usecase/rule/deleteRuleUseCase";
 import { Rule } from "@/domain/entity/rule";
 
-type Env = {
-  Variables: {
-    user: { userId: string };
-  };
-};
-
 describe("RuleController", () => {
   let app: OpenAPIHono<Env>;
-  const userId = "550e8400-e29b-41d4-a716-446655440001";
+  const mockUserId = "user-123";
+  const mockUserEmail = "test@example.com";
   const categoryId = "550e8400-e29b-41d4-a716-446655440002";
   const ruleId = "550e8400-e29b-41d4-a716-446655440000";
 
-  const mockRule = new Rule(ruleId, userId, "keyword-1", categoryId, 10, new Date(), new Date(), "Food");
+  const mockRule = new Rule(ruleId, mockUserId, "keyword-1", categoryId, 10, new Date(), new Date(), "Food");
 
   beforeEach(() => {
     app = new OpenAPIHono<Env>();
     // 認証ミドルウェアのモック
     app.use("*", async (c, next) => {
-      c.set("user", { userId });
+      c.set("user", { userId: mockUserId, email: mockUserEmail });
       await next();
     });
     registerRuleRoutes(app);
@@ -44,7 +40,7 @@ describe("RuleController", () => {
 
       expect(res.status).toBe(200);
       expect(body).toEqual({ data: [mockRule.toResponse()] });
-      expect(spy).toHaveBeenCalledWith(userId);
+      expect(spy).toHaveBeenCalledWith(mockUserId);
     });
   });
 
@@ -62,7 +58,7 @@ describe("RuleController", () => {
 
       expect(res.status).toBe(201);
       expect(body).toEqual(mockRule.toResponse());
-      expect(spy).toHaveBeenCalledWith(userId, expect.objectContaining(input));
+      expect(spy).toHaveBeenCalledWith(mockUserId, expect.objectContaining(input));
     });
   });
 
@@ -80,7 +76,7 @@ describe("RuleController", () => {
 
       expect(res.status).toBe(200);
       expect(body).toEqual(mockRule.toResponse());
-      expect(spy).toHaveBeenCalledWith(ruleId, userId, expect.objectContaining(input));
+      expect(spy).toHaveBeenCalledWith(ruleId, mockUserId, expect.objectContaining(input));
     });
 
     it("should return 403 when modifying system rule", async () => {
@@ -109,7 +105,7 @@ describe("RuleController", () => {
 
       expect(res.status).toBe(200);
       expect(await res.json()).toEqual({ message: "Rule deleted successfully" });
-      expect(spy).toHaveBeenCalledWith(ruleId, userId);
+      expect(spy).toHaveBeenCalledWith(ruleId, mockUserId);
     });
 
     it("should return 404 when rule not found", async () => {

@@ -7,7 +7,7 @@ import {
   ErrorResponseSchema,
 } from "@paypay-money-diary/shared";
 import { RuleController } from "./ruleController";
-import { Env } from "hono";
+import { Env } from "@/types/hono";
 
 // レスポンススキーマの定義
 const RuleListResponseSchema = z.object({
