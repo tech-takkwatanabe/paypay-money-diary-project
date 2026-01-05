@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, or, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { categoryRules } from "@/db/schema";
+import { categoryRules, categories } from "@/db/schema";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
 import { Rule } from "@/domain/entity/rule";
 import { CreateRuleInput, UpdateRuleInput } from "@paypay-money-diary/shared";
@@ -15,21 +15,31 @@ export class RuleRepository implements IRuleRepository {
    */
   async findByUserId(userId: string): Promise<Rule[]> {
     const results = await db
-      .select()
+      .select({
+        id: categoryRules.id,
+        userId: categoryRules.userId,
+        keyword: categoryRules.keyword,
+        categoryId: categoryRules.categoryId,
+        priority: categoryRules.priority,
+        createdAt: categoryRules.createdAt,
+        categoryName: categories.name,
+      })
       .from(categoryRules)
-      .where(eq(categoryRules.userId, userId))
-      .orderBy(categoryRules.priority);
+      .leftJoin(categories, eq(categoryRules.categoryId, categories.id))
+      .where(or(eq(categoryRules.userId, userId), isNull(categoryRules.userId)))
+      .orderBy(categoryRules.priority, categoryRules.keyword);
 
     return results.map(
       (row) =>
         new Rule(
           row.id,
-          row.userId!,
+          row.userId,
           row.keyword,
           row.categoryId,
           row.priority,
           row.createdAt ?? undefined,
-          undefined // updatedAt is not in the schema
+          undefined,
+          row.categoryName
         )
     );
   }
@@ -38,7 +48,20 @@ export class RuleRepository implements IRuleRepository {
    * IDでルールを検索
    */
   async findById(id: string): Promise<Rule | null> {
-    const results = await db.select().from(categoryRules).where(eq(categoryRules.id, id)).limit(1);
+    const results = await db
+      .select({
+        id: categoryRules.id,
+        userId: categoryRules.userId,
+        keyword: categoryRules.keyword,
+        categoryId: categoryRules.categoryId,
+        priority: categoryRules.priority,
+        createdAt: categoryRules.createdAt,
+        categoryName: categories.name,
+      })
+      .from(categoryRules)
+      .leftJoin(categories, eq(categoryRules.categoryId, categories.id))
+      .where(eq(categoryRules.id, id))
+      .limit(1);
 
     if (results.length === 0) {
       return null;
@@ -47,12 +70,13 @@ export class RuleRepository implements IRuleRepository {
     const row = results[0];
     return new Rule(
       row.id,
-      row.userId!,
+      row.userId,
       row.keyword,
       row.categoryId,
       row.priority,
       row.createdAt ?? undefined,
-      undefined
+      undefined,
+      row.categoryName
     );
   }
 
@@ -60,7 +84,7 @@ export class RuleRepository implements IRuleRepository {
    * ルールを作成
    */
   async create(userId: string, input: CreateRuleInput): Promise<Rule> {
-    const results = await db
+    const insertResults = await db
       .insert(categoryRules)
       .values({
         userId,
@@ -70,16 +94,11 @@ export class RuleRepository implements IRuleRepository {
       })
       .returning();
 
-    const row = results[0];
-    return new Rule(
-      row.id,
-      row.userId!,
-      row.keyword,
-      row.categoryId,
-      row.priority,
-      row.createdAt ?? undefined,
-      undefined
-    );
+    const newRow = insertResults[0];
+    // カテゴリ名を含めて再取得
+    const rule = await this.findById(newRow.id);
+    if (!rule) throw new Error("Failed to create rule");
+    return rule;
   }
 
   /**
@@ -92,18 +111,12 @@ export class RuleRepository implements IRuleRepository {
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId;
     if (input.priority !== undefined) updateData.priority = input.priority;
 
-    const results = await db.update(categoryRules).set(updateData).where(eq(categoryRules.id, id)).returning();
+    await db.update(categoryRules).set(updateData).where(eq(categoryRules.id, id));
 
-    const row = results[0];
-    return new Rule(
-      row.id,
-      row.userId!,
-      row.keyword,
-      row.categoryId,
-      row.priority,
-      row.createdAt ?? undefined,
-      undefined
-    );
+    // カテゴリ名を含めて再取得
+    const rule = await this.findById(id);
+    if (!rule) throw new Error("Rule not found after update");
+    return rule;
   }
 
   /**
