@@ -1,13 +1,6 @@
-/**
- * CSV アップロードユースケース
- * CSVファイルをパースし、支出データをDBに保存する
- */
-
-import { db } from "@/db";
-import { csvUploads, expenses } from "@/db/schema";
-import { parsePayPayCsv } from "@/infrastructure/csv/paypayParser";
-import { assignCategories } from "@/infrastructure/csv/categoryClassifier";
-import { eq, and } from "drizzle-orm";
+import { ITransactionRepository } from "@/domain/repository/transactionRepository";
+import { ICsvUploadRepository } from "@/domain/repository/csvUploadRepository";
+import { CsvService } from "@/service/transaction/csvService";
 
 export interface UploadCsvInput {
   userId: string;
@@ -24,26 +17,29 @@ export interface UploadCsvResult {
 }
 
 export class UploadCsvUseCase {
+  constructor(
+    private transactionRepository: ITransactionRepository,
+    private csvUploadRepository: ICsvUploadRepository,
+    private csvService: CsvService
+  ) {}
+
   async execute(input: UploadCsvInput): Promise<UploadCsvResult> {
     const { userId, fileName, csvContent } = input;
 
     // 1. CSV をパース
-    const parseResult = parsePayPayCsv(csvContent);
+    const parseResult = this.csvService.parseCsv(csvContent);
 
     // 2. アップロード履歴を保存
-    const [upload] = await db
-      .insert(csvUploads)
-      .values({
-        userId,
-        fileName,
-        rawData: parseResult.rawData,
-        rowCount: parseResult.totalRows,
-        status: "processing",
-      })
-      .returning();
+    const upload = await this.csvUploadRepository.create({
+      userId,
+      fileName,
+      rawData: parseResult.rawData,
+      rowCount: parseResult.totalRows,
+      status: "processing",
+    });
 
     // 3. カテゴリを割り当て
-    const categoryMap = await assignCategories(parseResult.expenses, userId);
+    const categoryMap = await this.csvService.assignCategories(parseResult.expenses, userId);
 
     // 4. 重複排除しながら支出データを保存
     let importedRows = 0;
@@ -51,28 +47,23 @@ export class UploadCsvUseCase {
 
     for (const expense of parseResult.expenses) {
       try {
-        // 重複チェック（同じ取引番号が存在するか）
-        const existing = await db
-          .select({ id: expenses.id })
-          .from(expenses)
-          .where(and(eq(expenses.userId, userId), eq(expenses.externalTransactionId, expense.externalTransactionId)))
-          .limit(1);
+        // 重複チェック
+        const exists = await this.transactionRepository.existsByExternalId(userId, expense.externalTransactionId);
 
-        if (existing.length > 0) {
+        if (exists) {
           duplicateRows++;
           continue;
         }
 
         // 新規挿入
-        await db.insert(expenses).values({
+        await this.transactionRepository.create({
           userId,
-          uploadId: upload.id,
-          transactionDate: expense.transactionDate,
+          date: expense.transactionDate,
+          description: expense.merchant,
           amount: expense.amount,
-          merchant: expense.merchant,
-          categoryId: categoryMap.get(expense.merchant) ?? null,
-          paymentMethod: expense.paymentMethod,
-          externalTransactionId: expense.externalTransactionId,
+          categoryId: categoryMap.get(expense.merchant) ?? "",
+          categoryName: "", // リポジトリ側で補完されるか、ここでは空で渡す
+          categoryColor: "",
         });
 
         importedRows++;
@@ -87,7 +78,7 @@ export class UploadCsvUseCase {
     }
 
     // 5. アップロードステータスを更新
-    await db.update(csvUploads).set({ status: "processed" }).where(eq(csvUploads.id, upload.id));
+    await this.csvUploadRepository.updateStatus(upload.id, "processed");
 
     return {
       uploadId: upload.id,
