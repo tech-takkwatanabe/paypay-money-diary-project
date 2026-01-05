@@ -7,7 +7,7 @@ import {
   ErrorResponseSchema,
 } from "@paypay-money-diary/shared";
 import { CategoryController } from "./categoryController";
-import { Env } from "hono";
+import { Env } from "@/types/hono";
 
 // レスポンススキーマの定義
 const CategoryListResponseSchema = z.object({
@@ -216,7 +216,7 @@ export type DeleteCategoryRoute = typeof deleteCategoryRoute;
 /**
  * カテゴリ関連のルートを登録
  */
-export const registerCategoryRoutes = <E extends Env>(app: OpenAPIHono<E>) => {
+export const registerCategoryRoutes = (app: OpenAPIHono<Env>) => {
   const controller = new CategoryController();
 
   // カテゴリ一覧取得

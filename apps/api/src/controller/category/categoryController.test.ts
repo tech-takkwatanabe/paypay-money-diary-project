@@ -1,29 +1,25 @@
 import { describe, it, expect, beforeEach, spyOn, afterEach } from "bun:test";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { registerCategoryRoutes } from "./category.routes";
+import { Env } from "@/types/hono";
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
 import { UpdateCategoryUseCase } from "@/usecase/category/updateCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/usecase/category/deleteCategoryUseCase";
 import { Category } from "@/domain/entity/category";
 
-type Env = {
-  Variables: {
-    user: { userId: string };
-  };
-};
-
 describe("CategoryController", () => {
   let app: OpenAPIHono<Env>;
-  const userId = "user-1";
+  const mockUserId = "user-123";
+  const mockUserEmail = "test@example.com";
 
-  const mockCategory = new Category("cat-1", "Food", "#FF0000", "food", 0, false, userId);
+  const mockCategory = new Category("cat-1", "Food", "#FF0000", "food", 0, false, mockUserId);
 
   beforeEach(() => {
     app = new OpenAPIHono<Env>();
     // 認証ミドルウェアのモック
     app.use("*", async (c, next) => {
-      c.set("user", { userId });
+      c.set("user", { userId: mockUserId, email: mockUserEmail });
       await next();
     });
     registerCategoryRoutes(app);
@@ -42,7 +38,7 @@ describe("CategoryController", () => {
 
       expect(res.status).toBe(200);
       expect(body).toEqual({ data: [mockCategory.toResponse()] });
-      expect(spy).toHaveBeenCalledWith(userId);
+      expect(spy).toHaveBeenCalledWith(mockUserId);
     });
   });
 
@@ -61,7 +57,7 @@ describe("CategoryController", () => {
       expect(res.status).toBe(201);
       // OpenAPI定義に合わせたレスポンス形式を確認
       expect(body).toEqual(mockCategory.toResponse());
-      expect(spy).toHaveBeenCalledWith(userId, expect.objectContaining(input));
+      expect(spy).toHaveBeenCalledWith(mockUserId, expect.objectContaining(input));
     });
 
     it("should return 409 when name is duplicated", async () => {
@@ -95,7 +91,7 @@ describe("CategoryController", () => {
 
       expect(res.status).toBe(200);
       expect(body.name).toBe(mockCategory.name);
-      expect(spy).toHaveBeenCalledWith("cat-1", userId, expect.objectContaining(input));
+      expect(spy).toHaveBeenCalledWith("cat-1", mockUserId, expect.objectContaining(input));
     });
 
     it("should return 403 when modifying system category", async () => {
@@ -122,7 +118,7 @@ describe("CategoryController", () => {
 
       expect(res.status).toBe(200);
       expect(await res.json()).toEqual({ message: "Category deleted successfully" });
-      expect(spy).toHaveBeenCalledWith("cat-1", userId);
+      expect(spy).toHaveBeenCalledWith("cat-1", mockUserId);
     });
 
     it("should return 404 when category not found", async () => {
