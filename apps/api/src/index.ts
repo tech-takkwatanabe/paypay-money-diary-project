@@ -3,27 +3,14 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { cors } from "hono/cors";
 import { authMiddleware } from "@/interface/http/middleware/auth";
 
-// Handlers
-import {
-  uploadCsvHandler,
-  getTransactionsHandler,
-  getTransactionsSummaryHandler,
-  getAvailableYearsHandler,
-  reCategorizeHandler,
-  updateTransactionHandler,
-} from "@/interface/http/transaction";
 import { registerAuthRoutes } from "@/controller/auth/auth.routes";
 import { registerCategoryRoutes } from "@/controller/category/category.routes";
 import { registerRuleRoutes } from "@/controller/rule/rule.routes";
-import {
-  uploadCsvRoute,
-  getTransactionsRoute,
-  getSummaryRoute,
-  getAvailableYearsRoute,
-  reCategorizeRoute,
-  updateTransactionRoute,
-} from "@/routes/transaction.routes";
-const app = new OpenAPIHono();
+import { registerTransactionRoutes } from "@/controller/transaction/transaction.routes";
+
+import { Env } from "@/types/hono";
+
+const app = new OpenAPIHono<Env>();
 
 // CORS 設定 (Cookie 認証に必要)
 app.use(
@@ -38,21 +25,16 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-const api = new OpenAPIHono();
+const api = new OpenAPIHono<Env>();
 
 // ===== 認証 API (OpenAPI 対応) =====
 api.use("/auth/logout", authMiddleware);
 api.use("/auth/me", authMiddleware);
 registerAuthRoutes(api);
 
-// ===== 取引 API =====
+// ===== 取引 API (OpenAPI 対応) =====
 api.use("/transactions/*", authMiddleware);
-api.openapi(uploadCsvRoute, uploadCsvHandler);
-api.openapi(getTransactionsRoute, getTransactionsHandler);
-api.openapi(getSummaryRoute, getTransactionsSummaryHandler);
-api.openapi(getAvailableYearsRoute, getAvailableYearsHandler);
-api.openapi(reCategorizeRoute, reCategorizeHandler);
-api.openapi(updateTransactionRoute, updateTransactionHandler);
+registerTransactionRoutes(api);
 
 // ===== カテゴリ API (OpenAPI 対応) =====
 api.use("/categories", authMiddleware);
