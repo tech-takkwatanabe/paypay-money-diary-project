@@ -3,10 +3,10 @@
  * HttpOnly Cookie 認証方式
  */
 
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { createRoute, z } from "@hono/zod-openapi";
+import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { CreateUserSchema, LoginSchema } from "@paypay-money-diary/shared";
 import { AuthController } from "./authController";
+import { Env } from "@/types/hono";
 
 // ===== スキーマ定義 =====
 
@@ -249,7 +249,7 @@ export const meRoute = createRoute({
 
 // ===== ルート登録 =====
 
-export function registerAuthRoutes(app: OpenAPIHono) {
+export function registerAuthRoutes(app: OpenAPIHono<Env>) {
   const authController = new AuthController();
 
   app.openapi(signupRoute, (c) => authController.signup(c));

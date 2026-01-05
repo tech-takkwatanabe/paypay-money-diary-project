@@ -1,9 +1,9 @@
 import { describe, it, expect, mock, beforeEach, spyOn, afterEach } from "bun:test";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { type Context, type Next } from "hono";
-import { registerAuthRoutes } from "./auth.routes";
+import { Env } from "@/types/hono";
 import { Email, Password } from "@paypay-money-diary/shared";
 import { User } from "@/domain/entity/user";
+import { registerAuthRoutes } from "./auth.routes";
 
 import { LoginUseCase } from "@/usecase/auth/loginUseCase";
 import { SignupUseCase } from "@/usecase/auth/signupUseCase";
@@ -11,15 +11,16 @@ import { GetMeUseCase } from "@/usecase/auth/getMeUseCase";
 import { RefreshUseCase } from "@/usecase/auth/refreshUseCase";
 import { LogoutUseCase } from "@/usecase/auth/logoutUseCase";
 import * as cookieUtils from "@/infrastructure/auth/cookie";
+import { type Context, type Next } from "hono";
 
 // Mock middleware
-const authMiddleware = async (c: Context, next: Next) => {
+const authMiddleware = async (c: Context<Env>, next: Next) => {
   c.set("user", { userId: "uuid-123", email: "test@example.com" });
   await next();
 };
 
 describe("AuthController", () => {
-  let app: OpenAPIHono;
+  let app: OpenAPIHono<Env>;
 
   // Spies
   let loginSpy: ReturnType<typeof spyOn>;
@@ -31,7 +32,7 @@ describe("AuthController", () => {
   let clearAuthCookiesSpy: ReturnType<typeof spyOn>;
 
   beforeEach(() => {
-    app = new OpenAPIHono();
+    app = new OpenAPIHono<Env>();
     // Register middleware for protected routes
     app.use("/auth/logout", authMiddleware);
     app.use("/auth/me", authMiddleware);
