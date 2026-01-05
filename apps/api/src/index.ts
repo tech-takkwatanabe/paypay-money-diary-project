@@ -12,16 +12,9 @@ import {
   reCategorizeHandler,
   updateTransactionHandler,
 } from "@/interface/http/transaction";
-import {
-  getCategoriesHandler,
-  createCategoryHandler,
-  updateCategoryHandler,
-  deleteCategoryHandler,
-} from "@/interface/http/category";
-import { getRulesHandler, createRuleHandler, updateRuleHandler, deleteRuleHandler } from "@/interface/http/rule";
-// OpenAPI Route definitions
 import { registerAuthRoutes } from "@/controller/auth/auth.routes";
-import { getRulesRoute, createRuleRoute, updateRuleRoute, deleteRuleRoute } from "@/routes/rule.routes";
+import { registerCategoryRoutes } from "@/controller/category/category.routes";
+import { registerRuleRoutes } from "@/controller/rule/rule.routes";
 import {
   uploadCsvRoute,
   getTransactionsRoute,
@@ -61,19 +54,15 @@ api.openapi(getAvailableYearsRoute, getAvailableYearsHandler);
 api.openapi(reCategorizeRoute, reCategorizeHandler);
 api.openapi(updateTransactionRoute, updateTransactionHandler);
 
-// ===== カテゴリ API =====
-api.get("/categories", authMiddleware, getCategoriesHandler);
-api.post("/categories", authMiddleware, createCategoryHandler);
-api.put("/categories/:id", authMiddleware, updateCategoryHandler);
-api.delete("/categories/:id", authMiddleware, deleteCategoryHandler);
+// ===== カテゴリ API (OpenAPI 対応) =====
+api.use("/categories", authMiddleware);
+api.use("/categories/*", authMiddleware);
+registerCategoryRoutes(api);
 
-// ===== ルール API =====
+// ===== ルール API (OpenAPI 対応) =====
 api.use("/rules", authMiddleware);
 api.use("/rules/*", authMiddleware);
-api.openapi(getRulesRoute, getRulesHandler);
-api.openapi(createRuleRoute, createRuleHandler);
-api.openapi(updateRuleRoute, updateRuleHandler);
-api.openapi(deleteRuleRoute, deleteRuleHandler);
+registerRuleRoutes(api);
 
 // ===== OpenAPI ドキュメント (開発環境のみ) =====
 if (process.env.NODE_ENV !== "production") {
