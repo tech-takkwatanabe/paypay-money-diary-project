@@ -98,407 +98,86 @@ components:
         - id
         - name
         - email
-    UploadCsvResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: メッセージ
-        uploadId:
-          type: string
-          description: アップロードID
-        totalRows:
-          type: number
-          description: 総行数
-        importedRows:
-          type: number
-          description: インポート行数
-        skippedRows:
-          type: number
-          description: スキップ行数
-        duplicateRows:
-          type: number
-          description: 重複行数
-      required:
-        - message
-        - uploadId
-        - totalRows
-        - importedRows
-        - skippedRows
-        - duplicateRows
-    TransactionErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: エラーメッセージ
-      required:
-        - error
-    Transaction:
+    RuleResponse:
       type: object
       properties:
         id:
           type: string
-          description: 取引ID
-        transactionDate:
-          type: string
-          description: 取引日
-        amount:
-          type: number
-          description: 金額
-        merchant:
-          type: string
-          description: 取引先
-        paymentMethod:
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        userId:
           type: string
           nullable: true
-          description: 支払い方法
-        categoryId:
-          type: string
-          nullable: true
-          description: カテゴリID
-        categoryName:
-          type: string
-          nullable: true
-          description: カテゴリ名
-        categoryColor:
-          type: string
-          nullable: true
-          description: カテゴリ色
-      required:
-        - id
-        - transactionDate
-        - amount
-        - merchant
-        - paymentMethod
-        - categoryId
-        - categoryName
-        - categoryColor
-    Pagination:
-      type: object
-      properties:
-        page:
-          type: number
-          description: ページ番号
-        limit:
-          type: number
-          description: 1ページあたりの件数
-        totalCount:
-          type: number
-          description: 総件数
-        totalPages:
-          type: number
-          description: 総ページ数
-      required:
-        - page
-        - limit
-        - totalCount
-        - totalPages
-    TransactionListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Transaction"
-          description: 取引一覧
-        pagination:
-          $ref: "#/components/schemas/Pagination"
-      required:
-        - data
-        - pagination
-    CategoryBreakdown:
-      type: object
-      properties:
-        categoryId:
-          type: string
-          nullable: true
-          description: カテゴリID
-        categoryName:
-          type: string
-          description: カテゴリ名
-        categoryColor:
-          type: string
-          description: カテゴリ色
-        categoryIcon:
-          type: string
-          nullable: true
-          description: カテゴリアイコン
-        totalAmount:
-          type: number
-          description: 合計金額
-        transactionCount:
-          type: number
-          description: 取引数
-      required:
-        - categoryId
-        - categoryName
-        - categoryColor
-        - categoryIcon
-        - totalAmount
-        - transactionCount
-    MonthlyBreakdown:
-      type: object
-      properties:
-        month:
-          type: number
-          description: 月
-        totalAmount:
-          type: number
-          description: 合計金額
-        categories:
-          type: array
-          items:
-            type: object
-            properties:
-              categoryId:
-                type: string
-                nullable: true
-                description: カテゴリID
-              categoryName:
-                type: string
-                description: カテゴリ名
-              categoryColor:
-                type: string
-                description: カテゴリ色
-              amount:
-                type: number
-                description: 金額
-            required:
-              - categoryId
-              - categoryName
-              - categoryColor
-              - amount
-          description: カテゴリー別内訳
-      required:
-        - month
-        - totalAmount
-        - categories
-    SummaryResponse:
-      type: object
-      properties:
-        summary:
-          type: object
-          properties:
-            totalAmount:
-              type: number
-              description: 合計金額
-            transactionCount:
-              type: number
-              description: 取引数
-          required:
-            - totalAmount
-            - transactionCount
-        categoryBreakdown:
-          type: array
-          items:
-            $ref: "#/components/schemas/CategoryBreakdown"
-          description: カテゴリ別内訳
-        monthlyBreakdown:
-          type: array
-          items:
-            $ref: "#/components/schemas/MonthlyBreakdown"
-          description: 月別内訳
-      required:
-        - summary
-        - categoryBreakdown
-        - monthlyBreakdown
-    Category:
-      type: object
-      properties:
-        id:
-          type: string
-          description: カテゴリID
-        name:
-          type: string
-          description: カテゴリ名
-        color:
-          type: string
-          description: 色コード
-        icon:
-          type: string
-          nullable: true
-          description: アイコン
-        displayOrder:
-          type: number
-          description: 表示順
-        isDefault:
-          type: boolean
-          description: デフォルトカテゴリか
-      required:
-        - id
-        - name
-        - color
-        - icon
-        - displayOrder
-        - isDefault
-    CategoryWithSystem:
-      allOf:
-        - $ref: "#/components/schemas/Category"
-        - type: object
-          properties:
-            isSystem:
-              type: boolean
-              description: システムカテゴリか
-          required:
-            - isSystem
-    CategoryListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/CategoryWithSystem"
-          description: カテゴリ一覧
-      required:
-        - data
-    CategoryErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: エラーメッセージ
-      required:
-        - error
-    CreateCategoryRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 50
-          description: カテゴリ名
-        color:
-          type: string
-          pattern: ^#[0-9A-Fa-f]{6}$
-          description: 色コード (#RRGGBB)
-        icon:
-          type: string
-          maxLength: 50
-          description: アイコン
-        displayOrder:
-          type: integer
-          minimum: 0
-          description: 表示順
-      required:
-        - name
-        - color
-    UpdateCategoryRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 50
-          description: カテゴリ名
-        color:
-          type: string
-          pattern: ^#[0-9A-Fa-f]{6}$
-          description: 色コード
-        icon:
-          type: string
-          nullable: true
-          maxLength: 50
-          description: アイコン
-        displayOrder:
-          type: integer
-          minimum: 0
-          description: 表示順
-    DeleteCategoryResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: メッセージ
-      required:
-        - message
-    Rule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ルールID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440001
         keyword:
           type: string
-          description: キーワード
+          example: コンビニ
         categoryId:
           type: string
-          description: カテゴリID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440002
         categoryName:
           type: string
-          description: カテゴリ名
+          nullable: true
+          example: 食費
         priority:
           type: number
-          description: 優先度
+          example: 10
         isSystem:
           type: boolean
-          description: システムルールか
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-01-01T00:00:00Z
       required:
         - id
+        - userId
         - keyword
         - categoryId
         - categoryName
         - priority
         - isSystem
-    RuleListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Rule"
-          description: ルール一覧
-      required:
-        - data
-    RuleErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: エラーメッセージ
-      required:
-        - error
-    CreateRuleRequest:
+        - createdAt
+        - updatedAt
+    CreateRuleInput:
       type: object
       properties:
         keyword:
           type: string
           minLength: 1
-          maxLength: 100
-          description: キーワード
+          example: コンビニ
         categoryId:
           type: string
-          description: カテゴリID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440002
         priority:
           type: integer
           minimum: 0
-          description: 優先度
+          example: 10
       required:
         - keyword
         - categoryId
-    UpdateRuleRequest:
+    UpdateRuleInput:
       type: object
       properties:
         keyword:
           type: string
           minLength: 1
-          maxLength: 100
-          description: キーワード
+          example: スーパー
         categoryId:
           type: string
-          description: カテゴリID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440003
         priority:
           type: integer
           minimum: 0
-          description: 優先度
-    DeleteRuleResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: メッセージ
-      required:
-        - message
+          example: 20
   parameters: {}
 paths:
   /auth/signup:
@@ -685,11 +364,7 @@ paths:
   /transactions/upload:
     post:
       tags:
-        - Transaction
-      summary: CSV アップロード
-      description: PayPay CSV ファイルをアップロードして取引データをインポートします
-      security:
-        - Bearer: []
+        - Transactions
       requestBody:
         content:
           multipart/form-data:
@@ -698,187 +373,240 @@ paths:
               properties:
                 file:
                   type: string
-                  description: CSV ファイル
                   format: binary
-              required:
-                - file
       responses:
         "201":
-          description: アップロード成功
+          description: CSVをアップロード
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UploadCsvResponse"
+                type: object
+                properties:
+                  message:
+                    type: string
+                  processedCount:
+                    type: number
+                  categorizedCount:
+                    type: number
+                  uncategorizedCount:
+                    type: number
+                required:
+                  - message
+                  - processedCount
+                  - categorizedCount
+                  - uncategorizedCount
         "400":
-          description: バリデーションエラー
+          description: バリデーションエラーまたはアップロード失敗
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
   /transactions:
     get:
       tags:
-        - Transaction
-      summary: 取引履歴取得
-      description: 取引履歴を取得します（ページネーション対応）
-      security:
-        - Bearer: []
+        - Transactions
       parameters:
         - schema:
             type: string
-            description: ページ番号
           required: false
-          description: ページ番号
-          name: page
-          in: query
-        - schema:
-            type: string
-            description: 1ページあたりの件数
-          required: false
-          description: 1ページあたりの件数
-          name: limit
-          in: query
-        - schema:
-            type: string
-            description: 開始日 (YYYY-MM-DD)
-          required: false
-          description: 開始日 (YYYY-MM-DD)
-          name: startDate
-          in: query
-        - schema:
-            type: string
-            description: 終了日 (YYYY-MM-DD)
-          required: false
-          description: 終了日 (YYYY-MM-DD)
-          name: endDate
-          in: query
-        - schema:
-            type: string
-            description: 年 (YYYY)
-          required: false
-          description: 年 (YYYY)
           name: year
           in: query
         - schema:
             type: string
-            description: カテゴリID
           required: false
-          description: カテゴリID
+          name: month
+          in: query
+        - schema:
+            type: string
+            format: uuid
+          required: false
           name: categoryId
           in: query
         - schema:
             type: string
-            description: 取引先 (部分一致)
           required: false
-          description: 取引先 (部分一致)
-          name: merchant
+          name: page
           in: query
         - schema:
             type: string
-            enum:
-              - transactionDate
-              - amount
-            default: transactionDate
-            description: ソート項目
           required: false
-          description: ソート項目
-          name: sortBy
-          in: query
-        - schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-            description: ソート順
-          required: false
-          description: ソート順
-          name: sortOrder
+          name: limit
           in: query
       responses:
         "200":
-          description: 取得成功
+          description: トランザクション一覧を取得
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TransactionListResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        userId:
+                          type: string
+                          format: uuid
+                        date:
+                          type: string
+                          format: date-time
+                        description:
+                          type: string
+                        amount:
+                          type: number
+                        categoryId:
+                          type: string
+                          format: uuid
+                        categoryName:
+                          type: string
+                        categoryColor:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                      required:
+                        - id
+                        - userId
+                        - date
+                        - description
+                        - amount
+                        - categoryId
+                        - categoryName
+                        - categoryColor
+                        - createdAt
+                        - updatedAt
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      totalCount:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - totalCount
+                      - totalPages
+                required:
+                  - data
+                  - pagination
   /transactions/summary:
     get:
       tags:
-        - Transaction
-      summary: 取引集計
-      description: 取引データの集計情報を取得します
-      security:
-        - Bearer: []
+        - Transactions
       parameters:
         - schema:
             type: string
-            description: 年 (YYYY)
-          required: false
-          description: 年 (YYYY)
+            example: "2024"
+          required: true
           name: year
           in: query
         - schema:
             type: string
-            description: 月 (1-12)
+            example: "12"
           required: false
-          description: 月 (1-12)
           name: month
           in: query
       responses:
         "200":
-          description: 取得成功
+          description: トランザクション集計を取得
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SummaryResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-  /transactions/years:
+                type: object
+                properties:
+                  summary:
+                    type: object
+                    properties:
+                      totalAmount:
+                        type: number
+                      transactionCount:
+                        type: number
+                    required:
+                      - totalAmount
+                      - transactionCount
+                  categoryBreakdown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        categoryId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        categoryName:
+                          type: string
+                        categoryColor:
+                          type: string
+                        totalAmount:
+                          type: number
+                        transactionCount:
+                          type: number
+                      required:
+                        - categoryId
+                        - categoryName
+                        - categoryColor
+                        - totalAmount
+                        - transactionCount
+                  monthlyBreakdown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        month:
+                          type: number
+                        totalAmount:
+                          type: number
+                        categories:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              categoryId:
+                                type: string
+                                nullable: true
+                                format: uuid
+                              categoryName:
+                                type: string
+                              categoryColor:
+                                type: string
+                              amount:
+                                type: number
+                            required:
+                              - categoryId
+                              - categoryName
+                              - categoryColor
+                              - amount
+                      required:
+                        - month
+                        - totalAmount
+                        - categories
+                required:
+                  - summary
+                  - categoryBreakdown
+  /transactions/available-years:
     get:
       tags:
-        - Transaction
-      summary: 利用可能な年リスト取得
-      description: CSV アップロード履歴から利用可能な年のリストを取得します
-      security:
-        - Bearer: []
+        - Transactions
       responses:
         "200":
-          description: 取得成功
+          description: 利用可能な年度を取得
           content:
             application/json:
               schema:
@@ -888,32 +616,31 @@ paths:
                     type: array
                     items:
                       type: number
-                    description: 利用可能な年リスト
                 required:
                   - years
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
   /transactions/re-categorize:
     post:
       tags:
-        - Transaction
-      summary: 取引再カテゴリ分類
-      description: 現在のルールに基づいて、既存の「その他」カテゴリの取引を再分類します
-      security:
-        - Cookie: []
+        - Transactions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  minimum: 2000
+                  maximum: 2100
+                month:
+                  type: integer
+                  minimum: 1
+                  maximum: 12
+              required:
+                - year
       responses:
         "200":
-          description: 処理成功
+          description: トランザクションを再分類
           content:
             application/json:
               schema:
@@ -921,6 +648,700 @@ paths:
                 properties:
                   message:
                     type: string
+                  updatedCount:
+                    type: number
+                required:
+                  - message
+                  - updatedCount
+  /transactions/{id}:
+    put:
+      tags:
+        - Transactions
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440000
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: string
+                  format: uuid
+              required:
+                - categoryId
+      responses:
+        "200":
+          description: トランザクションを更新
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  date:
+                    type: string
+                    format: date-time
+                  description:
+                    type: string
+                  amount:
+                    type: number
+                  categoryId:
+                    type: string
+                    format: uuid
+                  categoryName:
+                    type: string
+                  categoryColor:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                required:
+                  - id
+                  - userId
+                  - date
+                  - description
+                  - amount
+                  - categoryId
+                  - categoryName
+                  - categoryColor
+                  - createdAt
+                  - updatedAt
+        "403":
+          description: 権限がありません
+        "404":
+          description: トランザクションが見つかりません
+  /categories:
+    get:
+      summary: カテゴリ一覧取得
+      tags:
+        - Categories
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        color:
+                          type: string
+                        icon:
+                          type: string
+                          nullable: true
+                        displayOrder:
+                          type: number
+                        isDefault:
+                          type: boolean
+                        isSystem:
+                          type: boolean
+                        userId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                      required:
+                        - id
+                        - name
+                        - color
+                        - icon
+                        - displayOrder
+                        - isDefault
+                        - isSystem
+                        - userId
+                required:
+                  - data
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+    post:
+      summary: カテゴリ作成
+      tags:
+        - Categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                color:
+                  type: string
+                  pattern: ^#[0-9A-Fa-f]{6}$
+                icon:
+                  type: string
+                  nullable: true
+                displayOrder:
+                  type: number
+              required:
+                - name
+                - color
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  color:
+                    type: string
+                  icon:
+                    type: string
+                    nullable: true
+                  displayOrder:
+                    type: number
+                  isDefault:
+                    type: boolean
+                  isSystem:
+                    type: boolean
+                  userId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                required:
+                  - id
+                  - name
+                  - color
+                  - icon
+                  - displayOrder
+                  - isDefault
+                  - isSystem
+                  - userId
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "409":
+          description: カテゴリ名重複
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+  /categories/{id}:
+    put:
+      summary: カテゴリ更新
+      tags:
+        - Categories
+      parameters:
+        - schema:
+            type: string
+            example: "123"
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                color:
+                  type: string
+                  pattern: ^#[0-9A-Fa-f]{6}$
+                icon:
+                  type: string
+                  nullable: true
+                displayOrder:
+                  type: number
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  color:
+                    type: string
+                  icon:
+                    type: string
+                    nullable: true
+                  displayOrder:
+                    type: number
+                  isDefault:
+                    type: boolean
+                  isSystem:
+                    type: boolean
+                  userId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                required:
+                  - id
+                  - name
+                  - color
+                  - icon
+                  - displayOrder
+                  - isDefault
+                  - isSystem
+                  - userId
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "409":
+          description: カテゴリ名重複
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+    delete:
+      summary: カテゴリ削除
+      tags:
+        - Categories
+      parameters:
+        - schema:
+            type: string
+            example: "123"
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
+                required:
+                  - message
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+  /rules:
+    get:
+      summary: ルール一覧取得
+      tags:
+        - Rules
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RuleResponse"
+                required:
+                  - data
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+    post:
+      summary: ルール作成
+      tags:
+        - Rules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRuleInput"
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleResponse"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+  /rules/{id}:
+    put:
+      summary: ルール更新
+      tags:
+        - Rules
+      parameters:
+        - schema:
+            type: string
+            example: 550e8400-e29b-41d4-a716-446655440000
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRuleInput"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleResponse"
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "404":
+          description: ルールが見つからない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+    delete:
+      summary: ルール削除
+      tags:
+        - Rules
+      parameters:
+        - schema:
+            type: string
+            example: 550e8400-e29b-41d4-a716-446655440000
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
                 required:
                   - message
         "401":
@@ -932,6 +1353,31 @@ paths:
                 properties:
                   error:
                     type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "403":
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "404":
+          description: ルールが見つからない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
                 required:
                   - error
         "500":
@@ -943,411 +1389,6 @@ paths:
                 properties:
                   error:
                     type: string
+                    example: Internal Server Error
                 required:
                   - error
-  /transactions/{id}:
-    patch:
-      tags:
-        - Transaction
-      summary: 取引更新
-      description: 取引のカテゴリなどを更新します
-      security:
-        - Bearer: []
-      parameters:
-        - schema:
-            type: string
-            description: 取引ID
-          required: true
-          description: 取引ID
-          name: id
-          in: path
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                categoryId:
-                  type: string
-                  description: カテゴリID
-              required:
-                - categoryId
-      responses:
-        "200":
-          description: 更新成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        "400":
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "404":
-          description: 取引が見つかりません
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionErrorResponse"
-  /categories:
-    get:
-      tags:
-        - Category
-      summary: カテゴリ一覧取得
-      description: ユーザーが利用可能なカテゴリ一覧を取得します
-      security:
-        - Bearer: []
-      responses:
-        "200":
-          description: 取得成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryListResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-    post:
-      tags:
-        - Category
-      summary: カテゴリ作成
-      description: 新しいカテゴリを作成します
-      security:
-        - Bearer: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateCategoryRequest"
-      responses:
-        "201":
-          description: 作成成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
-        "400":
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "409":
-          description: カテゴリ名重複
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-  /categories/{id}:
-    put:
-      tags:
-        - Category
-      summary: カテゴリ更新
-      description: カテゴリを更新します（システムカテゴリは更新不可）
-      security:
-        - Bearer: []
-      parameters:
-        - schema:
-            type: string
-            description: カテゴリID
-          required: true
-          description: カテゴリID
-          name: id
-          in: path
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateCategoryRequest"
-      responses:
-        "200":
-          description: 更新成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
-        "400":
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "403":
-          description: 権限エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "404":
-          description: カテゴリが見つからない
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "409":
-          description: カテゴリ名重複
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-    delete:
-      tags:
-        - Category
-      summary: カテゴリ削除
-      description: カテゴリを削除します（システムカテゴリは削除不可）
-      security:
-        - Bearer: []
-      parameters:
-        - schema:
-            type: string
-            description: カテゴリID
-          required: true
-          description: カテゴリID
-          name: id
-          in: path
-      responses:
-        "200":
-          description: 削除成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeleteCategoryResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "403":
-          description: 権限エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "404":
-          description: カテゴリが見つからない
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryErrorResponse"
-  /rules:
-    get:
-      tags:
-        - Rule
-      summary: ルール一覧取得
-      description: ユーザーのカテゴリルール一覧を取得します
-      security:
-        - Cookie: []
-      responses:
-        "200":
-          description: 取得成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleListResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-    post:
-      tags:
-        - Rule
-      summary: ルール作成
-      description: 新しいカテゴリルールを作成します
-      security:
-        - Cookie: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateRuleRequest"
-      responses:
-        "201":
-          description: 作成成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Rule"
-        "400":
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-  /rules/{id}:
-    put:
-      tags:
-        - Rule
-      summary: ルール更新
-      description: カテゴリルールを更新します（システムルールは更新不可）
-      security:
-        - Cookie: []
-      parameters:
-        - schema:
-            type: string
-            description: ルールID
-          required: true
-          description: ルールID
-          name: id
-          in: path
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateRuleRequest"
-      responses:
-        "200":
-          description: 更新成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Rule"
-        "400":
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "403":
-          description: 権限エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "404":
-          description: ルールが見つからない
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-    delete:
-      tags:
-        - Rule
-      summary: ルール削除
-      description: カテゴリルールを削除します（システムルールは削除不可）
-      security:
-        - Cookie: []
-      parameters:
-        - schema:
-            type: string
-            description: ルールID
-          required: true
-          description: ルールID
-          name: id
-          in: path
-      responses:
-        "200":
-          description: 削除成功
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DeleteRuleResponse"
-        "401":
-          description: 認証エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "403":
-          description: 権限エラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "404":
-          description: ルールが見つからない
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
-        "500":
-          description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuleErrorResponse"
