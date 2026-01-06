@@ -194,51 +194,51 @@
 ## フェーズ6: フロントエンドの対応 (2-3時間)
 
 ### apps/web の依存関係追加
-- [ ] `apps/web/package.json` に `@paypay-money-diary/shared` と `zod` を追加
-- [ ] `pnpm install` を実行
+- [x] `apps/web/package.json` に `@paypay-money-diary/shared` と `zod` を追加
+- [x] `pnpm install` を実行
 
 ### フロントエンドでのZodバリデーション実装
-- [ ] `apps/web/src/app/signup/page.tsx` を修正（Zodバリデーションを実装）
-- [ ] `apps/web/src/app/login/page.tsx` を修正（Zodバリデーションを実装）
+- [x] `apps/web/src/app/signup/page.tsx` を修正（Zodバリデーションを実装）
+- [x] `apps/web/src/app/login/page.tsx` を修正（Zodバリデーションを実装）
 
 ### 検証
-- [ ] フロントエンドのビルドエラーがないことを確認
-- [ ] 手動でフロントエンドの動作をテスト（登録、ログイン）
-- [ ] バリデーションエラーメッセージが正しく表示されることを確認
+- [x] フロントエンドのビルドエラーがないことを確認
+- [x] 手動でフロントエンドの動作をテスト（登録、ログイン）
+- [x] バリデーションエラーメッセージが正しく表示されることを確認
 
 ---
 
 ## フェーズ7: クリーンアップと最終調整 (1-2時間)
 
 ### 不要なディレクトリの削除
-- [ ] `apps/api/src/interface/http/` ディレクトリを削除
-- [ ] `apps/api/src/routes/` ディレクトリを削除
+- [x] `apps/api/src/interface/http/` ディレクトリを削除
+- [x] `apps/api/src/routes/` ディレクトリを削除
 
 ### エントリーポイントの修正
-- [ ] `apps/api/src/index.ts` を修正（インポートパスを `controller/` に変更）
+- [x] `apps/api/src/index.ts` を修正（インポートパスを `controller/` に変更）
 
 ### ドキュメントの更新
-- [ ] `apps/api/ARCHITECTURE.md` を作成（新しいアーキテクチャの説明）
-- [ ] `apps/api/README.md` を更新（アーキテクチャの説明を更新）
+- [x] `apps/api/ARCHITECTURE.md` を作成（新しいアーキテクチャの説明）
+- [x] `apps/api/README.md` を更新（アーキテクチャの説明を更新）
 
 ### 最終検証
-- [ ] すべてのテストが通ることを確認（`pnpm test`）
-- [ ] ビルドが成功することを確認（`pnpm build`）
-- [ ] OpenAPI仕様が正しく生成されることを確認
-- [ ] 手動ですべての機能をテスト
-- [ ] フロントエンドとバックエンドの統合テスト
+- [x] すべてのテストが通ることを確認（`pnpm test`）
+- [x] ビルドが成功することを確認（`pnpm build`）
+- [x] OpenAPI仕様が正しく生成されることを確認
+- [x] 手動ですべての機能をテスト
+- [x] フロントエンドとバックエンドの統合テスト
 
 ---
 
 ## 完了条件
 
-- [ ] すべてのテストが通る
-- [ ] ビルドが成功する
-- [ ] OpenAPI仕様が正しく生成される
-- [ ] すべての機能が正常に動作する
-- [ ] フロントエンドとバックエンドが正しく連携する
-- [ ] ドキュメントが更新されている
-- [ ] コードレビューが完了している
+- [x] すべてのテストが通る
+- [x] ビルドが成功する
+- [x] OpenAPI仕様が正しく生成される
+- [x] すべての機能が正常に動作する
+- [x] フロントエンドとバックエンドが正しく連携する
+- [x] ドキュメントが更新されている
+- [x] コードレビューが完了している
 
 ---
 
