@@ -14,6 +14,19 @@ PayPay 家計簿アプリケーションのバックエンド API です。
 bun install
 ```
 
+### データベースの起動
+
+Docker Compose を使用して PostgreSQL と Redis を起動します。
+
+```sh
+make up
+```
+
+その他のコマンド：
+- `make down`: コンテナの停止
+- `make init`: コンテナのビルドと起動
+- `make clean`: コンテナとボリュームの削除
+
 ### 開発サーバーの起動
 
 ```sh

@@ -68,9 +68,22 @@
 # クローンと依存関係のインストール
 pnpm install
 
+# データベースの起動 (Docker が必要)
+cd apps/api
+make init
+cd ../..
+
 # 開発サーバーの同時起動 (Frontend & Backend)
 pnpm dev
 ```
+
+### Database Management
+`apps/api` ディレクトリの `Makefile` を使用して、開発用データベース（PostgreSQL & Redis）を操作できます。
+
+- `make up`: コンテナの起動
+- `make down`: コンテナの停止
+- `make init`: コンテナのビルドと起動
+- `make clean`: コンテナとボリュームの削除
 
 ### Documentation
 詳細な情報は各ディレクトリのドキュメントを参照してください：
