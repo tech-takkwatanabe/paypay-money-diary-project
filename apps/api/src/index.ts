@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import { cors } from "hono/cors";
-import { authMiddleware } from "@/interface/http/middleware/auth";
+import { authMiddleware } from "@/middleware/auth";
 
 import { registerAuthRoutes } from "@/controller/auth/auth.routes";
 import { registerCategoryRoutes } from "@/controller/category/category.routes";
