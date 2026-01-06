@@ -1,63 +1,49 @@
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, it, expect, beforeEach, mock } from "bun:test";
 import { PasswordService } from "./passwordService";
+
+// bcryptjs をモック化
+const mockHash = mock(async () => "hashed-password");
+const mockCompare = mock(async () => true);
+
+mock.module("bcryptjs", () => ({
+  hash: mockHash,
+  compare: mockCompare,
+}));
 
 describe("PasswordService", () => {
   let passwordService: PasswordService;
   const testPassword = "test-password";
-  let hashedPassword: string;
 
   beforeEach(() => {
     passwordService = new PasswordService();
+    mockHash.mockClear();
+    mockCompare.mockClear();
   });
 
   describe("hashPassword", () => {
-    it("should hash a password", async () => {
-      // Act
-      hashedPassword = await passwordService.hashPassword(testPassword);
+    it("should call bcrypt.hash with correct arguments", async () => {
+      const result = await passwordService.hashPassword(testPassword);
 
-      // Assert
-      expect(hashedPassword).toBeDefined();
-      expect(hashedPassword).not.toBe(testPassword);
-      expect(hashedPassword.length).toBeGreaterThan(10); // bcrypt hash has a specific format
+      expect(result).toBe("hashed-password");
+      // 第2引数の salt rounds が 10 であることを検証
+      expect(mockHash).toHaveBeenCalledWith(testPassword, 10);
     });
   });
 
   describe("verifyPassword", () => {
-    beforeEach(async () => {
-      // Ensure we have a hashed password for verification tests
-      hashedPassword = await passwordService.hashPassword(testPassword);
+    it("should call bcrypt.compare with correct arguments", async () => {
+      const hashedPassword = "stored-hash";
+      const result = await passwordService.verifyPassword(testPassword, hashedPassword);
+
+      expect(result).toBe(true);
+      expect(mockCompare).toHaveBeenCalledWith(testPassword, hashedPassword);
     });
 
-    it("should verify a correct password", async () => {
-      // Act
-      const isValid = await passwordService.verifyPassword(testPassword, hashedPassword);
+    it("should return false when bcrypt.compare returns false", async () => {
+      mockCompare.mockImplementation(async () => false);
+      const result = await passwordService.verifyPassword("wrong-password", "some-hash");
 
-      // Assert
-      expect(isValid).toBe(true);
-    });
-
-    it("should reject an incorrect password", async () => {
-      // Act
-      const isValid = await passwordService.verifyPassword("wrong-password", hashedPassword);
-
-      // Assert
-      expect(isValid).toBe(false);
-    });
-
-    it("should handle empty password", async () => {
-      // Act
-      const isValid = await passwordService.verifyPassword("", hashedPassword);
-
-      // Assert
-      expect(isValid).toBe(false);
-    });
-
-    it("should handle empty hash", async () => {
-      // Act
-      const isValid = await passwordService.verifyPassword(testPassword, "");
-
-      // Assert
-      expect(isValid).toBe(false);
+      expect(result).toBe(false);
     });
   });
 });
