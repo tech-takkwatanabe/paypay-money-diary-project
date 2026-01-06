@@ -1,16 +1,18 @@
-import { describe, it, expect, beforeEach, afterEach, mock } from "bun:test";
+import { describe, it, expect, beforeEach, mock, type Mock } from "bun:test";
 import { TokenService, type TokenPayload } from "./tokenService";
-import * as jwt from "@/infrastructure/auth/jwt";
 
-// Store original implementations
-const originalJwt = { ...jwt };
-
-// Mock the JWT functions
-const mockGenerateAccessToken = mock(() => "mock-access-token");
-const mockGenerateRefreshToken = mock(() => "mock-refresh-token");
-const mockVerifyRefreshToken = mock(() => ({
+// Mock the JWT functions at the module level
+const mockGenerateAccessToken = mock((_payload: TokenPayload) => "mock-access-token");
+const mockGenerateRefreshToken = mock((_payload: TokenPayload) => "mock-refresh-token");
+const mockVerifyRefreshToken = mock((_token: string) => ({
   userId: "user-123",
   email: "test@example.com",
+}));
+
+mock.module("@/infrastructure/auth/jwt", () => ({
+  generateAccessToken: mockGenerateAccessToken,
+  generateRefreshToken: mockGenerateRefreshToken,
+  verifyRefreshToken: mockVerifyRefreshToken,
 }));
 
 describe("TokenService", () => {
@@ -20,40 +22,40 @@ describe("TokenService", () => {
     email: "test@example.com",
   };
 
+  const typedMockGenerateAccessToken = mockGenerateAccessToken as Mock<(payload: TokenPayload) => string>;
+  const typedMockGenerateRefreshToken = mockGenerateRefreshToken as Mock<(payload: TokenPayload) => string>;
+  const typedMockVerifyRefreshToken = mockVerifyRefreshToken as Mock<(token: string) => TokenPayload>;
+
   beforeEach(() => {
-    // Setup mocks before each test
-    mock.module("@/infrastructure/auth/jwt", () => ({
-      generateAccessToken: mockGenerateAccessToken,
-      generateRefreshToken: mockGenerateRefreshToken,
-      verifyRefreshToken: mockVerifyRefreshToken,
-    }));
-
     tokenService = new TokenService();
-    mockGenerateAccessToken.mockClear();
-    mockGenerateRefreshToken.mockClear();
-    mockVerifyRefreshToken.mockClear();
-  });
+    typedMockGenerateAccessToken.mockClear();
+    typedMockGenerateRefreshToken.mockClear();
+    typedMockVerifyRefreshToken.mockClear();
 
-  afterEach(() => {
-    // Restore original implementations after each test
-    mock.module("@/infrastructure/auth/jwt", () => originalJwt);
+    // Reset default implementations
+    typedMockGenerateAccessToken.mockReturnValue("mock-access-token");
+    typedMockGenerateRefreshToken.mockReturnValue("mock-refresh-token");
+    typedMockVerifyRefreshToken.mockReturnValue({
+      userId: "user-123",
+      email: "test@example.com",
+    });
   });
 
   describe("generateTokenPair", () => {
     it("should generate both access and refresh tokens", () => {
       // Arrange
-      const mockAccessToken = "mock-access-token";
-      const mockRefreshToken = "mock-refresh-token";
+      const mockAccessToken = "custom-access-token";
+      const mockRefreshToken = "custom-refresh-token";
 
-      mockGenerateAccessToken.mockReturnValue(mockAccessToken);
-      mockGenerateRefreshToken.mockReturnValue(mockRefreshToken);
+      typedMockGenerateAccessToken.mockReturnValue(mockAccessToken);
+      typedMockGenerateRefreshToken.mockReturnValue(mockRefreshToken);
 
       // Act
       const result = tokenService.generateTokenPair(mockPayload);
 
       // Assert
-      expect(mockGenerateAccessToken).toHaveBeenCalledWith(mockPayload);
-      expect(mockGenerateRefreshToken).toHaveBeenCalledWith(mockPayload);
+      expect(typedMockGenerateAccessToken).toHaveBeenCalledWith(mockPayload);
+      expect(typedMockGenerateRefreshToken).toHaveBeenCalledWith(mockPayload);
       expect(result).toEqual({
         accessToken: mockAccessToken,
         refreshToken: mockRefreshToken,
@@ -64,14 +66,14 @@ describe("TokenService", () => {
   describe("generateAccessToken", () => {
     it("should generate an access token", () => {
       // Arrange
-      const mockToken = "mock-access-token";
-      mockGenerateAccessToken.mockReturnValue(mockToken);
+      const mockToken = "custom-access-token";
+      typedMockGenerateAccessToken.mockReturnValue(mockToken);
 
       // Act
       const result = tokenService.generateAccessToken(mockPayload);
 
       // Assert
-      expect(mockGenerateAccessToken).toHaveBeenCalledWith(mockPayload);
+      expect(typedMockGenerateAccessToken).toHaveBeenCalledWith(mockPayload);
       expect(result).toBe(mockToken);
     });
   });
@@ -80,13 +82,13 @@ describe("TokenService", () => {
     it("should verify a refresh token", () => {
       // Arrange
       const mockToken = "mock-refresh-token";
-      mockVerifyRefreshToken.mockReturnValue(mockPayload);
+      typedMockVerifyRefreshToken.mockReturnValue(mockPayload);
 
       // Act
       const result = tokenService.verifyRefreshToken(mockToken);
 
       // Assert
-      expect(mockVerifyRefreshToken).toHaveBeenCalledWith(mockToken);
+      expect(typedMockVerifyRefreshToken).toHaveBeenCalledWith(mockToken);
       expect(result).toEqual(mockPayload);
     });
 
@@ -94,13 +96,13 @@ describe("TokenService", () => {
       // Arrange
       const mockToken = "invalid-token";
       const error = new Error("Invalid token");
-      mockVerifyRefreshToken.mockImplementation(() => {
+      typedMockVerifyRefreshToken.mockImplementation(() => {
         throw error;
       });
 
       // Act & Assert
       expect(() => tokenService.verifyRefreshToken(mockToken)).toThrow(error);
-      expect(mockVerifyRefreshToken).toHaveBeenCalledWith(mockToken);
+      expect(typedMockVerifyRefreshToken).toHaveBeenCalledWith(mockToken);
     });
   });
 });
