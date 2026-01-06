@@ -1,66 +1,82 @@
-# PayPay Money Diary (🚧 Under Construction 🚧)
+# 📱 PayPay Money Diary
 
-PayPay の取引履歴 CSV を活用し、支出を可視化して家計管理をサポートするアプリケーションです。
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/tech-takkwatanabe/paypay-money-diary-project)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-black.svg)](https://nextjs.org/)
+[![Hono](https://img.shields.io/badge/Hono-4.11-orange.svg)](https://hono.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
-## 概要
+**PayPay の取引履歴 CSV をスマートに可視化。**  
+複雑な家計管理を、CSV アップロードひとつでシンプルに解決するパーソナルファイナンスツールです。
 
-PayPay アプリからダウンロードできる取引履歴 CSV をアップロードするだけで、自動的にカテゴリ分けを行い、月別・年別の支出レポートを生成します。
+---
 
-### 主な機能
+## ✨ Key Features
 
-- **CSV インポート**: PayPay 取引履歴の取り込み
-- **ダッシュボード**:
-  - 月次レポート（カテゴリ別円グラフ）
-  - 年次レポート（月別・カテゴリ別積み上げ棒グラフ）
-- **カテゴリ管理**: 取引先ごとのカテゴリ自動推定と学習
+- **🚀 Instant CSV Import**: PayPay アプリから書き出した CSV をドラッグ＆ドロップするだけで取り込み完了。
+- **📊 Interactive Dashboard**: 月次・年次の支出推移を、美しくインタラクティブなグラフで可視化。
+- **🧠 Smart Categorization**: 取引先名からカテゴリを自動推定。使えば使うほど、あなたの支出パターンを学習します。
+- **⚙️ Custom Rules**: 特定の取引先に対するカテゴリ割り当てを自由自在にコントロール。
+- **🔒 Privacy First**: データはあなたの管理下に。セキュアな認証基盤（JWT + HttpOnly Cookie）を採用。
 
-## 技術スタック
+## 🛠 Tech Stack
 
-### Frontend
+### Monorepo Infrastructure
+- **[Turborepo](https://turbo.build/)**: 高速なビルドパイプラインとキャッシュ管理。
+- **[pnpm](https://pnpm.io/)**: 効率的なパッケージ管理とディスクスペースの節約。
 
+### Frontend (`apps/web`)
 - **Framework**: Next.js (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS, Shadcn UI
-- **Charts**: ApexCharts
+- **Styling**: Tailwind CSS + Shadcn UI (Modern & Responsive)
+- **Charts**: ApexCharts (Interactive Data Visualization)
+- **API Client**: Orval (OpenAPI スキーマからの自動生成)
 
-### Backend
+### Backend (`apps/api`)
+- **Runtime**: Bun (High Performance)
+- **Framework**: Hono (Ultra-fast & Type-safe)
+- **Database**: PostgreSQL + Drizzle ORM
+- **Cache**: Redis (Session & Token Management)
+- **Architecture**: Clean Architecture (Maintainable & Testable)
 
-- **Framework**: Hono
-- **Database**: PostgreSQL
-- **ORM**: Drizzle ORM
+### Shared Package (`packages/shared`)
+- **Validation**: Zod (フロント・バックエンド間でのバリデーションスキーマ共有)
+- **Domain**: Value Objects によるドメイン知識の集約
 
-### Infrastructure / Tooling
+## 📂 Project Structure
 
-- **Monorepo**: Turborepo
-- **Package Manager**: pnpm
+```text
+.
+├── apps/
+│   ├── web/        # Next.js Frontend (Modern UI/UX)
+│   └── api/        # Hono Backend (Clean Architecture Implementation)
+├── packages/
+│   ├── shared/     # Shared Schemas, Types & Value Objects
+│   └── eslint/     # Unified Linting Configurations
+└── ...
+```
 
-## セットアップ (開発中)
+## 🚀 Getting Started
 
-### 前提条件
+### Prerequisites
+- Node.js (v22+)
+- [Bun](https://bun.sh/) (Backend Runtime)
+- [pnpm](https://pnpm.io/)
 
-- Node.js (v22以上推奨)
-- Bun (Backend Runtime)
-- pnpm
-
-### インストール & 起動
+### Installation & Development
 
 ```bash
-# 依存関係のインストール
+# クローンと依存関係のインストール
 pnpm install
 
-# 開発サーバーの起動
+# 開発サーバーの同時起動 (Frontend & Backend)
 pnpm dev
 ```
 
-## ディレクトリ構成
+### Documentation
+詳細な情報は各ディレクトリのドキュメントを参照してください：
+- [📖 Backend Architecture](./apps/api/ARCHITECTURE.md)
+- [🔌 API Documentation (Swagger UI)](https://localhost:8080/api/docs) ※開発サーバー起動中のみ
 
-```
-.
-├── apps/
-│   ├── web/        # Next.js Frontend
-│   └── api/        # Hono Backend
-├── packages/
-│   ├── eslint/     # ESLint configuration
-│   └── shared/     # Shared types & utilities
-└── ...
-```
+---
+
+Developed with ❤️ by [tech-takkwatanabe](https://github.com/tech-takkwatanabe)
