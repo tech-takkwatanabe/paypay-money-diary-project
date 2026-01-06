@@ -1,129 +1,65 @@
-import { describe, expect, test, beforeEach, mock } from "bun:test";
+import { describe, expect, it, beforeEach, mock, type Mock } from "bun:test";
 import { TransactionService } from "./transactionService";
 import { Transaction } from "@/domain/entity/transaction";
-import { ITransactionRepository } from "@/domain/repository/transactionRepository";
-
-// Mock the transaction repository
-const mockTransactionRepository: ITransactionRepository = {
-  findById: mock(async (id: string) => {
-    if (id === "user1-tx1") {
-      return new Transaction(
-        "user1-tx1",
-        "user1",
-        new Date("2023-01-15"),
-        "Test Transaction 1",
-        1000,
-        "cat1",
-        "Food",
-        "#FF0000"
-      );
-    } else if (id === "user2-tx1") {
-      return new Transaction(
-        "user2-tx1",
-        "user2",
-        new Date("2023-01-15"),
-        "Test Transaction 2",
-        2000,
-        "cat2",
-        "Transport",
-        "#00FF00"
-      );
-    }
-    return null;
-  }),
-  // Add other required methods with mock implementations
-  create: mock(async (transaction) => ({
-    ...transaction,
-    id: 'new-transaction-id',
-    belongsToUser: (userId: string) => userId === transaction.userId,
-    belongsToYearMonth: () => true,
-    belongsToCategory: () => true,
-    changeCategory: function(categoryId: string, categoryName: string, categoryColor: string) {
-      return new Transaction(
-        this.id,
-        this.userId,
-        this.date,
-        this.description,
-        this.amount,
-        categoryId,
-        categoryName,
-        categoryColor,
-        this.createdAt,
-        this.updatedAt
-      );
-    },
-    toResponse: function() {
-      return {
-        id: this.id,
-        userId: this.userId,
-        date: this.date.toISOString(),
-        description: this.description,
-        amount: this.amount,
-        categoryId: this.categoryId,
-        categoryName: this.categoryName,
-        categoryColor: this.categoryColor,
-        createdAt: this.createdAt?.toISOString(),
-        updatedAt: this.updatedAt?.toISOString(),
-      };
-    }
-  } as Transaction)),
-  
-  update: mock(async (id: string, input) => {
-    const transaction = await mockTransactionRepository.findById(id);
-    if (!transaction) throw new Error('Transaction not found');
-    
-    return {
-      ...transaction,
-      ...input,
-      id,
-    } as Transaction;
-  }),
-  
-  delete: mock(async () => {
-    return undefined;
-  }),
-  
-  findByUserId: mock(async () => []),
-  
-  countByUserId: mock(async () => 0),
-  
-  getAvailableYears: mock(async () => [new Date().getFullYear()]),
-  
-  reCategorizeByRules: mock(async () => 0),
-  
-  createMany: mock(async () => []),
-  
-  existsByExternalId: mock(async () => false),
-};
+import type { ITransactionRepository } from "@/domain/repository/transactionRepository";
 
 describe("TransactionService", () => {
   let service: TransactionService;
+  let findByIdMock: Mock<(id: string) => Promise<Transaction | null>>;
+
+  const testTransaction1 = new Transaction(
+    "user1-tx1",
+    "user1",
+    new Date("2023-01-15"),
+    "Test Transaction 1",
+    1000,
+    "cat1",
+    "Food",
+    "#FF0000"
+  );
+
+  const testTransaction2 = new Transaction(
+    "user2-tx1",
+    "user2",
+    new Date("2023-01-15"),
+    "Test Transaction 2",
+    2000,
+    "cat2",
+    "Transport",
+    "#00FF00"
+  );
 
   beforeEach(() => {
-    // Reset all mocks before each test
-    for (const [_, mockFn] of Object.entries(mockTransactionRepository)) {
-      if (typeof mockFn === 'function' && 'mock' in mockFn) {
-        mockFn.mockClear();
-      }
-    }
+    findByIdMock = mock(async (id: string) => {
+      if (id === "user1-tx1") return testTransaction1;
+      if (id === "user2-tx1") return testTransaction2;
+      return null;
+    });
+
+    const mockTransactionRepository = {
+      findById: findByIdMock,
+    } as unknown as ITransactionRepository;
+
     service = new TransactionService(mockTransactionRepository);
   });
 
   describe("ensureUserCanAccess", () => {
-    test("should return transaction if user is the owner", async () => {
+    it("should return transaction if user is the owner", async () => {
       const transaction = await service.ensureUserCanAccess("user1-tx1", "user1");
       expect(transaction).toBeDefined();
       expect(transaction.id).toBe("user1-tx1");
       expect(transaction.userId).toBe("user1");
-      expect(mockTransactionRepository.findById).toHaveBeenCalledWith("user1-tx1");
+      expect(findByIdMock).toHaveBeenCalledWith("user1-tx1");
     });
 
-    test("should throw error if transaction not found", async () => {
+    it("should throw error if transaction not found", async () => {
       await expect(service.ensureUserCanAccess("nonexistent", "user1")).rejects.toThrow("Transaction not found");
     });
 
-    test("should throw error if user is not the owner", async () => {
-      await expect(service.ensureUserCanAccess("user2-tx1", "user1")).rejects.toThrow("Forbidden: You do not have access to this transaction");
+    it("should throw error if user is not the owner", async () => {
+      await expect(service.ensureUserCanAccess("user2-tx1", "user1")).rejects.toThrow(
+        "Forbidden: You do not have access to this transaction"
+      );
     });
   });
 
@@ -135,32 +71,32 @@ describe("TransactionService", () => {
       new Transaction("tx4", "user1", new Date("2023-01-18"), "Unknown", 300, "", "", ""),
     ];
 
-    test("should calculate correct totals and category breakdown", () => {
+    it("should calculate correct totals and category breakdown", () => {
       const result = service.calculateSummary(mockTransactions);
-      
+
       expect(result.totalAmount).toBe(3800);
       expect(result.transactionCount).toBe(4);
-      
+
       // Check category breakdown
       expect(result.categoryBreakdown).toHaveLength(3);
-      
-      const foodCategory = result.categoryBreakdown.find(c => c.categoryId === "food");
+
+      const foodCategory = result.categoryBreakdown.find((c) => c.categoryId === "food");
       expect(foodCategory).toBeDefined();
       expect(foodCategory?.totalAmount).toBe(3000);
       expect(foodCategory?.transactionCount).toBe(2);
-      
-      const transCategory = result.categoryBreakdown.find(c => c.categoryId === "trans");
+
+      const transCategory = result.categoryBreakdown.find((c) => c.categoryId === "trans");
       expect(transCategory).toBeDefined();
       expect(transCategory?.totalAmount).toBe(500);
-      
-      const unclassified = result.categoryBreakdown.find(c => c.categoryId === "");
+
+      const unclassified = result.categoryBreakdown.find((c) => c.categoryId === "");
       expect(unclassified).toBeDefined();
       expect(unclassified?.categoryName).toBe("未分類");
       expect(unclassified?.categoryColor).toBe("#CCCCCC");
       expect(unclassified?.totalAmount).toBe(300);
     });
 
-    test("should handle empty transactions array", () => {
+    it("should handle empty transactions array", () => {
       const result = service.calculateSummary([]);
       expect(result.totalAmount).toBe(0);
       expect(result.transactionCount).toBe(0);
@@ -181,32 +117,32 @@ describe("TransactionService", () => {
       new Transaction("tx6", "user1", new Date("2023-03-05"), "Unknown", 300, "", "", ""),
     ];
 
-    test("should group transactions by month with category breakdown", () => {
+    it("should group transactions by month with category breakdown", () => {
       const result = service.calculateMonthlyBreakdown(mockTransactions);
-      
+
       // Should have 3 months of data
       expect(result).toHaveLength(3);
-      
+
       // Check January
-      const january = result.find(m => m.month === 1);
+      const january = result.find((m) => m.month === 1);
       expect(january).toBeDefined();
       expect(january?.totalAmount).toBe(3500);
       expect(january?.categories).toHaveLength(2);
-      
-      const janFood = january?.categories.find(c => c.categoryId === "food");
+
+      const janFood = january?.categories.find((c) => c.categoryId === "food");
       expect(janFood?.amount).toBe(3000);
-      
+
       // Check February
-      const february = result.find(m => m.month === 2);
+      const february = result.find((m) => m.month === 2);
       expect(february?.totalAmount).toBe(2200);
-      
+
       // Check March (uncategorized)
-      const march = result.find(m => m.month === 3);
+      const march = result.find((m) => m.month === 3);
       expect(march?.categories[0].categoryName).toBe("未分類");
       expect(march?.categories[0].categoryColor).toBe("#CCCCCC");
     });
 
-    test("should return empty array for empty transactions", () => {
+    it("should return empty array for empty transactions", () => {
       const result = service.calculateMonthlyBreakdown([]);
       expect(result).toHaveLength(0);
     });
