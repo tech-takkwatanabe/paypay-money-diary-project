@@ -6,25 +6,11 @@ import { Rule } from "@/domain/entity/rule";
 import { Category } from "@/domain/entity/category";
 import { ParsedExpense, CsvParseResult } from "@/infrastructure/csv/paypayParser";
 
-// Mock the paypayParser module
-const mockParsePayPayCsv = mock(
-  (_content: string): CsvParseResult => ({
-    expenses: [],
-    rawData: [],
-    totalRows: 0,
-    expenseRows: 0,
-    skippedRows: 0,
-  })
-);
-
-mock.module("@/infrastructure/csv/paypayParser", () => ({
-  parsePayPayCsv: mockParsePayPayCsv,
-}));
-
 describe("CsvService", () => {
   let csvService: CsvService;
   let findRulesByUserIdMock: Mock<(userId: string) => Promise<Rule[]>>;
   let findCategoriesByUserIdMock: Mock<(userId: string) => Promise<Category[]>>;
+  let mockParsePayPayCsv: Mock<(content: string) => CsvParseResult>;
 
   const mockUserId = "user-123";
   const now = new Date();
@@ -44,6 +30,16 @@ describe("CsvService", () => {
     findRulesByUserIdMock = mock(async () => mockRules);
     findCategoriesByUserIdMock = mock(async () => mockCategories);
 
+    mockParsePayPayCsv = mock(
+      (_content: string): CsvParseResult => ({
+        expenses: [],
+        rawData: [],
+        totalRows: 0,
+        expenseRows: 0,
+        skippedRows: 0,
+      })
+    );
+
     const mockRuleRepository = {
       findByUserId: findRulesByUserIdMock,
     } as unknown as IRuleRepository;
@@ -52,8 +48,7 @@ describe("CsvService", () => {
       findByUserId: findCategoriesByUserIdMock,
     } as unknown as ICategoryRepository;
 
-    csvService = new CsvService(mockRuleRepository, mockCategoryRepository);
-    mockParsePayPayCsv.mockClear();
+    csvService = new CsvService(mockRuleRepository, mockCategoryRepository, mockParsePayPayCsv);
   });
 
   describe("parseCsv", () => {

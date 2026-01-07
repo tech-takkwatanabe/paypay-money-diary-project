@@ -1,18 +1,21 @@
-import { parsePayPayCsv, ParsedExpense } from "@/infrastructure/csv/paypayParser";
+import { parsePayPayCsv, ParsedExpense, CsvParseResult } from "@/infrastructure/csv/paypayParser";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
+
+type CsvParser = (content: string) => CsvParseResult;
 
 export class CsvService {
   constructor(
     private ruleRepository: IRuleRepository,
-    private categoryRepository: ICategoryRepository
+    private categoryRepository: ICategoryRepository,
+    private parser: CsvParser = parsePayPayCsv
   ) {}
 
   /**
    * CSVコンテンツをパース
    */
   parseCsv(csvContent: string) {
-    return parsePayPayCsv(csvContent);
+    return this.parser(csvContent);
   }
 
   /**
