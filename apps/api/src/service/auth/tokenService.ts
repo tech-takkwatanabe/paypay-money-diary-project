@@ -1,4 +1,4 @@
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "@/infrastructure/auth/jwt";
+import * as jwt from "@/infrastructure/auth/jwt";
 
 /**
  * Token Payload
@@ -21,13 +21,15 @@ export interface TokenPair {
  * トークン生成と検証を担当
  */
 export class TokenService {
+  constructor(private jwtProvider = jwt) {}
+
   /**
    * アクセストークンとリフレッシュトークンを生成
    */
   generateTokenPair(payload: TokenPayload): TokenPair {
     return {
-      accessToken: generateAccessToken(payload),
-      refreshToken: generateRefreshToken(payload),
+      accessToken: this.jwtProvider.generateAccessToken(payload),
+      refreshToken: this.jwtProvider.generateRefreshToken(payload),
     };
   }
 
@@ -35,13 +37,13 @@ export class TokenService {
    * アクセストークンのみを生成
    */
   generateAccessToken(payload: TokenPayload): string {
-    return generateAccessToken(payload);
+    return this.jwtProvider.generateAccessToken(payload);
   }
 
   /**
    * リフレッシュトークンを検証
    */
   verifyRefreshToken(token: string): TokenPayload {
-    return verifyRefreshToken(token) as TokenPayload;
+    return this.jwtProvider.verifyRefreshToken(token) as TokenPayload;
   }
 }
