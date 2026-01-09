@@ -1,4 +1,4 @@
-import { eq, and, sql, gte, lt, desc, ilike } from "drizzle-orm";
+import { eq, and, sql, gte, lt, desc, ilike, or, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { expenses, categories, categoryRules } from "@/db/schema";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
@@ -308,32 +308,30 @@ export class TransactionRepository implements ITransactionRepository {
   /**
    * 指定された年月のトランザクションのカテゴリを再分類
    */
-  async reCategorizeByRules(userId: string, year: number, month?: number): Promise<number> {
-    // ルールを取得
+  async reCategorizeByRules(userId: string, year?: number, month?: number): Promise<number> {
+    // ルールを取得（優先度の高い順）
     const rules = await db
       .select()
       .from(categoryRules)
-      .where(eq(categoryRules.userId, userId))
-      .orderBy(categoryRules.priority);
+      .where(or(eq(categoryRules.userId, userId), isNull(categoryRules.userId)))
+      .orderBy(desc(categoryRules.priority));
 
     if (rules.length === 0) {
       return 0;
     }
 
     // 対象のトランザクションを取得
-    const startDate = month ? new Date(year, month - 1, 1) : new Date(year, 0, 1);
-    const endDate = month ? new Date(year, month, 1) : new Date(year + 1, 0, 1);
+    const conditions = [eq(expenses.userId, userId)];
+    if (year) {
+      const startDate = month ? new Date(year, month - 1, 1) : new Date(year, 0, 1);
+      const endDate = month ? new Date(year, month, 1) : new Date(year + 1, 0, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    }
 
     const transactions = await db
       .select()
       .from(expenses)
-      .where(
-        and(
-          eq(expenses.userId, userId),
-          gte(expenses.transactionDate, startDate),
-          lt(expenses.transactionDate, endDate)
-        )
-      );
+      .where(and(...conditions));
 
     let updatedCount = 0;
 
@@ -341,8 +339,11 @@ export class TransactionRepository implements ITransactionRepository {
     for (const transaction of transactions) {
       for (const rule of rules) {
         if (transaction.merchant.toLowerCase().includes(rule.keyword.toLowerCase())) {
-          await db.update(expenses).set({ categoryId: rule.categoryId }).where(eq(expenses.id, transaction.id));
-          updatedCount++;
+          // カテゴリが異なる場合のみ更新
+          if (transaction.categoryId !== rule.categoryId) {
+            await db.update(expenses).set({ categoryId: rule.categoryId }).where(eq(expenses.id, transaction.id));
+            updatedCount++;
+          }
           break; // 最初にマッチしたルールを適用
         }
       }
