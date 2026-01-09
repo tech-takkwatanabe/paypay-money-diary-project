@@ -6,39 +6,65 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  Category,
-  CategoryErrorResponse,
-  CategoryListResponse,
-  CreateCategoryRequest,
-  DeleteCategoryResponse,
-  UpdateCategoryRequest,
+  DeleteCategoriesId200,
+  DeleteCategoriesId400,
+  DeleteCategoriesId401,
+  DeleteCategoriesId403,
+  DeleteCategoriesId404,
+  DeleteCategoriesId500,
+  GetCategories200,
+  GetCategories400,
+  GetCategories401,
+  GetCategories500,
+  PostCategories201,
+  PostCategories400,
+  PostCategories401,
+  PostCategories409,
+  PostCategories500,
+  PostCategoriesBody,
+  PutCategoriesId200,
+  PutCategoriesId400,
+  PutCategoriesId401,
+  PutCategoriesId403,
+  PutCategoriesId404,
+  PutCategoriesId409,
+  PutCategoriesId500,
+  PutCategoriesIdBody,
 } from "../../models";
 
 import { customFetch } from "../../customFetch";
 
 /**
- * ユーザーが利用可能なカテゴリ一覧を取得します
  * @summary カテゴリ一覧取得
  */
 export type getCategoriesResponse200 = {
-  data: CategoryListResponse;
+  data: GetCategories200;
   status: 200;
 };
 
+export type getCategoriesResponse400 = {
+  data: GetCategories400;
+  status: 400;
+};
+
 export type getCategoriesResponse401 = {
-  data: CategoryErrorResponse;
+  data: GetCategories401;
   status: 401;
 };
 
 export type getCategoriesResponse500 = {
-  data: CategoryErrorResponse;
+  data: GetCategories500;
   status: 500;
 };
 
 export type getCategoriesResponseSuccess = getCategoriesResponse200 & {
   headers: Headers;
 };
-export type getCategoriesResponseError = (getCategoriesResponse401 | getCategoriesResponse500) & {
+export type getCategoriesResponseError = (
+  | getCategoriesResponse400
+  | getCategoriesResponse401
+  | getCategoriesResponse500
+) & {
   headers: Headers;
 };
 
@@ -56,31 +82,30 @@ export const getCategories = async (options?: RequestInit): Promise<getCategorie
 };
 
 /**
- * 新しいカテゴリを作成します
  * @summary カテゴリ作成
  */
 export type postCategoriesResponse201 = {
-  data: Category;
+  data: PostCategories201;
   status: 201;
 };
 
 export type postCategoriesResponse400 = {
-  data: CategoryErrorResponse;
+  data: PostCategories400;
   status: 400;
 };
 
 export type postCategoriesResponse401 = {
-  data: CategoryErrorResponse;
+  data: PostCategories401;
   status: 401;
 };
 
 export type postCategoriesResponse409 = {
-  data: CategoryErrorResponse;
+  data: PostCategories409;
   status: 409;
 };
 
 export type postCategoriesResponse500 = {
-  data: CategoryErrorResponse;
+  data: PostCategories500;
   status: 500;
 };
 
@@ -103,53 +128,52 @@ export const getPostCategoriesUrl = () => {
 };
 
 export const postCategories = async (
-  createCategoryRequest: CreateCategoryRequest,
+  postCategoriesBody: PostCategoriesBody,
   options?: RequestInit
 ): Promise<postCategoriesResponse> => {
   return customFetch<postCategoriesResponse>(getPostCategoriesUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createCategoryRequest),
+    body: JSON.stringify(postCategoriesBody),
   });
 };
 
 /**
- * カテゴリを更新します（システムカテゴリは更新不可）
  * @summary カテゴリ更新
  */
 export type putCategoriesIdResponse200 = {
-  data: Category;
+  data: PutCategoriesId200;
   status: 200;
 };
 
 export type putCategoriesIdResponse400 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId400;
   status: 400;
 };
 
 export type putCategoriesIdResponse401 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId401;
   status: 401;
 };
 
 export type putCategoriesIdResponse403 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId403;
   status: 403;
 };
 
 export type putCategoriesIdResponse404 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId404;
   status: 404;
 };
 
 export type putCategoriesIdResponse409 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId409;
   status: 409;
 };
 
 export type putCategoriesIdResponse500 = {
-  data: CategoryErrorResponse;
+  data: PutCategoriesId500;
   status: 500;
 };
 
@@ -175,43 +199,47 @@ export const getPutCategoriesIdUrl = (id: string) => {
 
 export const putCategoriesId = async (
   id: string,
-  updateCategoryRequest: UpdateCategoryRequest,
+  putCategoriesIdBody: PutCategoriesIdBody,
   options?: RequestInit
 ): Promise<putCategoriesIdResponse> => {
   return customFetch<putCategoriesIdResponse>(getPutCategoriesIdUrl(id), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateCategoryRequest),
+    body: JSON.stringify(putCategoriesIdBody),
   });
 };
 
 /**
- * カテゴリを削除します（システムカテゴリは削除不可）
  * @summary カテゴリ削除
  */
 export type deleteCategoriesIdResponse200 = {
-  data: DeleteCategoryResponse;
+  data: DeleteCategoriesId200;
   status: 200;
 };
 
+export type deleteCategoriesIdResponse400 = {
+  data: DeleteCategoriesId400;
+  status: 400;
+};
+
 export type deleteCategoriesIdResponse401 = {
-  data: CategoryErrorResponse;
+  data: DeleteCategoriesId401;
   status: 401;
 };
 
 export type deleteCategoriesIdResponse403 = {
-  data: CategoryErrorResponse;
+  data: DeleteCategoriesId403;
   status: 403;
 };
 
 export type deleteCategoriesIdResponse404 = {
-  data: CategoryErrorResponse;
+  data: DeleteCategoriesId404;
   status: 404;
 };
 
 export type deleteCategoriesIdResponse500 = {
-  data: CategoryErrorResponse;
+  data: DeleteCategoriesId500;
   status: 500;
 };
 
@@ -219,6 +247,7 @@ export type deleteCategoriesIdResponseSuccess = deleteCategoriesIdResponse200 & 
   headers: Headers;
 };
 export type deleteCategoriesIdResponseError = (
+  | deleteCategoriesIdResponse400
   | deleteCategoriesIdResponse401
   | deleteCategoriesIdResponse403
   | deleteCategoriesIdResponse404
