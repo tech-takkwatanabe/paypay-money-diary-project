@@ -1,4 +1,4 @@
-import { eq, and, sql, gte, lte, desc, ilike } from "drizzle-orm";
+import { eq, and, sql, gte, lt, desc, ilike } from "drizzle-orm";
 import { db } from "@/db";
 import { expenses, categories, categoryRules } from "@/db/schema";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
@@ -26,6 +26,29 @@ export class TransactionRepository implements ITransactionRepository {
       };
     }
   ): Promise<Transaction[]> {
+    const conditions = [eq(expenses.userId, userId)];
+
+    // 年月でフィルタ
+    if (options?.month && options?.year) {
+      const startDate = new Date(options.year, options.month - 1, 1);
+      const endDate = new Date(options.year, options.month, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    } else if (options?.year) {
+      const startDate = new Date(options.year, 0, 1);
+      const endDate = new Date(options.year + 1, 0, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    }
+
+    // カテゴリでフィルタ
+    if (options?.categoryId) {
+      conditions.push(eq(expenses.categoryId, options.categoryId));
+    }
+
+    // 検索ワードでフィルタ
+    if (options?.search) {
+      conditions.push(ilike(expenses.merchant, `%${options.search}%`));
+    }
+
     let query = db
       .select({
         id: expenses.id,
@@ -40,44 +63,8 @@ export class TransactionRepository implements ITransactionRepository {
       })
       .from(expenses)
       .leftJoin(categories, eq(expenses.categoryId, categories.id))
-      .where(eq(expenses.userId, userId))
+      .where(and(...conditions))
       .$dynamic();
-
-    // 年でフィルタ
-    if (options?.year) {
-      const startDate = new Date(options.year, 0, 1);
-      const endDate = new Date(options.year + 1, 0, 1);
-      query = query.where(
-        and(
-          eq(expenses.userId, userId),
-          gte(expenses.transactionDate, startDate),
-          lte(expenses.transactionDate, endDate)
-        )
-      );
-    }
-
-    // 月でフィルタ
-    if (options?.month && options?.year) {
-      const startDate = new Date(options.year, options.month - 1, 1);
-      const endDate = new Date(options.year, options.month, 1);
-      query = query.where(
-        and(
-          eq(expenses.userId, userId),
-          gte(expenses.transactionDate, startDate),
-          lte(expenses.transactionDate, endDate)
-        )
-      );
-    }
-
-    // カテゴリでフィルタ
-    if (options?.categoryId) {
-      query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
-    }
-
-    // 検索ワードでフィルタ
-    if (options?.search) {
-      query = query.where(and(eq(expenses.userId, userId), ilike(expenses.merchant, `%${options.search}%`)));
-    }
 
     // ページネーション
     if (options?.pagination) {
@@ -156,46 +143,72 @@ export class TransactionRepository implements ITransactionRepository {
       search?: string;
     }
   ): Promise<number> {
-    let query = db
-      .select({ count: sql<number>`count(*)` })
-      .from(expenses)
-      .where(eq(expenses.userId, userId))
-      .$dynamic();
-
-    if (options?.year) {
-      const startDate = new Date(options.year, 0, 1);
-      const endDate = new Date(options.year + 1, 0, 1);
-      query = query.where(
-        and(
-          eq(expenses.userId, userId),
-          gte(expenses.transactionDate, startDate),
-          lte(expenses.transactionDate, endDate)
-        )
-      );
-    }
+    const conditions = [eq(expenses.userId, userId)];
 
     if (options?.month && options?.year) {
       const startDate = new Date(options.year, options.month - 1, 1);
       const endDate = new Date(options.year, options.month, 1);
-      query = query.where(
-        and(
-          eq(expenses.userId, userId),
-          gte(expenses.transactionDate, startDate),
-          lte(expenses.transactionDate, endDate)
-        )
-      );
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    } else if (options?.year) {
+      const startDate = new Date(options.year, 0, 1);
+      const endDate = new Date(options.year + 1, 0, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
     }
 
     if (options?.categoryId) {
-      query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
+      conditions.push(eq(expenses.categoryId, options.categoryId));
     }
 
     if (options?.search) {
-      query = query.where(and(eq(expenses.userId, userId), ilike(expenses.merchant, `%${options.search}%`)));
+      conditions.push(ilike(expenses.merchant, `%${options.search}%`));
     }
 
-    const results = await query;
+    const results = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(expenses)
+      .where(and(...conditions));
+
     return Number(results[0]?.count ?? 0);
+  }
+
+  /**
+   * 条件に一致するトランザクションの総額を取得
+   */
+  async sumByUserId(
+    userId: string,
+    options?: {
+      year?: number;
+      month?: number;
+      categoryId?: string;
+      search?: string;
+    }
+  ): Promise<number> {
+    const conditions = [eq(expenses.userId, userId)];
+
+    if (options?.month && options?.year) {
+      const startDate = new Date(options.year, options.month - 1, 1);
+      const endDate = new Date(options.year, options.month, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    } else if (options?.year) {
+      const startDate = new Date(options.year, 0, 1);
+      const endDate = new Date(options.year + 1, 0, 1);
+      conditions.push(gte(expenses.transactionDate, startDate), lt(expenses.transactionDate, endDate));
+    }
+
+    if (options?.categoryId) {
+      conditions.push(eq(expenses.categoryId, options.categoryId));
+    }
+
+    if (options?.search) {
+      conditions.push(ilike(expenses.merchant, `%${options.search}%`));
+    }
+
+    const results = await db
+      .select({ sum: sql<number>`sum(${expenses.amount})` })
+      .from(expenses)
+      .where(and(...conditions));
+
+    return Number(results[0]?.sum ?? 0);
   }
 
   /**
@@ -318,7 +331,7 @@ export class TransactionRepository implements ITransactionRepository {
         and(
           eq(expenses.userId, userId),
           gte(expenses.transactionDate, startDate),
-          lte(expenses.transactionDate, endDate)
+          lt(expenses.transactionDate, endDate)
         )
       );
 
