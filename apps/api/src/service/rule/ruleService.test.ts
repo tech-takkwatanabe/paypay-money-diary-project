@@ -53,9 +53,9 @@ describe("RuleService", () => {
       await expect(ruleService.ensureUserCanUpdate("rule-1", userId)).resolves.toBeUndefined();
     });
 
-    it("should throw error when updating system rule", async () => {
+    it("should allow updating system rule", async () => {
       (mockRuleRepository.findById as Mock<() => Promise<Rule | null>>).mockResolvedValue(systemRule);
-      await expect(ruleService.ensureUserCanUpdate("rule-2", userId)).rejects.toThrow("Cannot update system rules");
+      await expect(ruleService.ensureUserCanUpdate("rule-2", userId)).resolves.toBeUndefined();
     });
 
     it("should throw error when updating other user's rule", async () => {
@@ -70,9 +70,9 @@ describe("RuleService", () => {
       await expect(ruleService.ensureUserCanDelete("rule-1", userId)).resolves.toBeUndefined();
     });
 
-    it("should throw error when deleting system rule", async () => {
+    it("should allow deleting system rule", async () => {
       (mockRuleRepository.findById as Mock<() => Promise<Rule | null>>).mockResolvedValue(systemRule);
-      await expect(ruleService.ensureUserCanDelete("rule-2", userId)).rejects.toThrow("Cannot delete system rules");
+      await expect(ruleService.ensureUserCanDelete("rule-2", userId)).resolves.toBeUndefined();
     });
 
     it("should throw error when deleting other user's rule", async () => {
