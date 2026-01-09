@@ -6,6 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsReCategorize500 = {
+export type PostRules400 = {
   error: string;
 };

@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsReCategorize200 = {
-  message: string;
-  updatedCount: number;
+export type PostRules401 = {
+  error: string;
 };
