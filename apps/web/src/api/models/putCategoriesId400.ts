@@ -5,9 +5,7 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
-import type { Rule } from "./rule";
 
-export interface RuleListResponse {
-  /** ルール一覧 */
-  data: Rule[];
-}
+export type PutCategoriesId400 = {
+  error: string;
+};

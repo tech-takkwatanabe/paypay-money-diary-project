@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
-import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rule/rule";
-import { getCategories } from "@/api/generated/category/category";
-import { postTransactionsReCategorize } from "@/api/generated/transaction/transaction";
-import type { Rule, CategoryWithSystem } from "@/api/models";
+import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rules/rules";
+import { getCategories } from "@/api/generated/categories/categories";
+import { postTransactionsReCategorize } from "@/api/generated/transactions/transactions";
+import type { RuleResponse as Rule, GetCategories200DataItem as CategoryWithSystem } from "@/api/models";
 
 interface RuleFormData {
   keyword: string;
@@ -144,7 +144,7 @@ export default function RulesPage() {
 
     setIsReCategorizing(true);
     try {
-      const response = await postTransactionsReCategorize();
+      const response = await postTransactionsReCategorize({ year: new Date().getFullYear() });
       if (response.status === 200) {
         alert("再分類が完了しました");
       } else {

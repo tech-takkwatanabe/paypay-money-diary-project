@@ -8,9 +8,16 @@ import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
 import { Search, ChevronDown, ChevronUp, LogOut, Upload, Filter, Pencil, Check, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTransactions, getTransactionsYears, patchTransactionsId } from "@/api/generated/transaction/transaction";
-import { getCategories } from "@/api/generated/category/category";
-import type { Transaction, CategoryWithSystem } from "@/api/models";
+import {
+  getTransactions,
+  getTransactionsAvailableYears,
+  putTransactionsId,
+} from "@/api/generated/transactions/transactions";
+import { getCategories } from "@/api/generated/categories/categories";
+import type {
+  GetTransactions200DataItem as Transaction,
+  GetCategories200DataItem as CategoryWithSystem,
+} from "@/api/models";
 
 export default function ExpensesPage() {
   const { user, logout } = useAuth();
@@ -26,7 +33,7 @@ export default function ExpensesPage() {
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [merchantSearch, setMerchantSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"transactionDate" | "amount">("transactionDate");
+  const [sortBy, setSortBy] = useState<"date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // 編集状態
@@ -39,7 +46,7 @@ export default function ExpensesPage() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [yearsRes, categoriesRes] = await Promise.all([getTransactionsYears(), getCategories()]);
+        const [yearsRes, categoriesRes] = await Promise.all([getTransactionsAvailableYears(), getCategories()]);
 
         if (yearsRes.status === 200 && "data" in yearsRes) {
           setAvailableYears(yearsRes.data.years);
@@ -67,9 +74,7 @@ export default function ExpensesPage() {
         limit: limit.toString(),
         year: selectedYear || undefined,
         categoryId: selectedCategory || undefined,
-        merchant: merchantSearch || undefined,
-        sortBy,
-        sortOrder,
+        // merchant: merchantSearch || undefined, // API does not support merchant search yet
       });
 
       if (response.status === 200 && "data" in response) {
@@ -82,7 +87,7 @@ export default function ExpensesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, selectedYear, selectedCategory, merchantSearch, sortBy, sortOrder]);
+  }, [currentPage, selectedYear, selectedCategory]);
 
   useEffect(() => {
     fetchTransactions();
@@ -92,7 +97,7 @@ export default function ExpensesPage() {
     await logout();
   };
 
-  const handleSort = (column: "transactionDate" | "amount") => {
+  const handleSort = (column: "date" | "amount") => {
     if (sortBy === column) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -104,7 +109,7 @@ export default function ExpensesPage() {
 
   const handleUpdateCategory = async (id: string) => {
     try {
-      const response = await patchTransactionsId(id, {
+      const response = await putTransactionsId(id, {
         categoryId: editCategoryId,
       });
 
@@ -257,11 +262,11 @@ export default function ExpensesPage() {
                 <tr className="border-b bg-muted/50">
                   <th
                     className="px-4 py-3 font-medium text-sm cursor-pointer hover:bg-muted transition-colors"
-                    onClick={() => handleSort("transactionDate")}
+                    onClick={() => handleSort("date")}
                   >
                     <div className="flex items-center gap-1">
                       日付
-                      {sortBy === "transactionDate" &&
+                      {sortBy === "date" &&
                         (sortOrder === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
                     </div>
                   </th>
@@ -296,8 +301,8 @@ export default function ExpensesPage() {
                 ) : (
                   transactions.map((t) => (
                     <tr key={t.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3 text-sm whitespace-nowrap">{formatDate(t.transactionDate)}</td>
-                      <td className="px-4 py-3 text-sm font-medium">{t.merchant}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap">{formatDate(t.date)}</td>
+                      <td className="px-4 py-3 text-sm font-medium">{t.description}</td>
                       <td className="px-4 py-3 text-sm">
                         {editingId === t.id ? (
                           <div className="flex items-center gap-2">

@@ -6,6 +6,8 @@ import { postAuthSignup } from "@/api/generated/auth/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
+import { CreateUserSchema } from "@paypay-money-diary/shared";
+import { ZodError } from "zod";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -13,36 +15,46 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
+    setGeneralError("");
 
     if (password !== confirmPassword) {
-      setError("パスワードが一致しません");
+      setErrors({ confirmPassword: "パスワードが一致しません" });
       return;
     }
-
-    if (password.length < 8) {
-      setError("パスワードは8文字以上で入力してください");
-      return;
-    }
-
-    setIsLoading(true);
 
     try {
-      const response = await postAuthSignup({ name, email, password });
+      // Zodバリデーション
+      const validatedData = CreateUserSchema.parse({ name, email, password });
+
+      setIsLoading(true);
+      const response = await postAuthSignup(validatedData);
 
       if (response.status === 201) {
         // 登録成功後、ログインページへ
         router.push("/login?registered=true");
       } else if ("data" in response && "error" in response.data) {
-        setError(response.data.error);
+        setGeneralError(response.data.error);
       }
-    } catch (_err) {
-      setError("登録に失敗しました。もう一度お試しください。");
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const zodError = err as ZodError;
+        const fieldErrors: { [key: string]: string } = {};
+        zodError.issues.forEach((e) => {
+          if (e.path[0]) {
+            fieldErrors[e.path[0] as string] = e.message;
+          }
+        });
+        setErrors(fieldErrors);
+      } else {
+        setGeneralError("登録に失敗しました。もう一度お試しください。");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,9 +82,9 @@ export default function SignupPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {error && (
+              {generalError && (
                 <div className="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl">
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400">{generalError}</p>
                 </div>
               )}
 
@@ -87,7 +99,9 @@ export default function SignupPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="山田 太郎"
                   required
+                  className={errors.name ? "border-red-500" : ""}
                 />
+                {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
               </div>
 
               <div>
@@ -101,7 +115,9 @@ export default function SignupPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
               </div>
 
               <div>
@@ -116,7 +132,9 @@ export default function SignupPage() {
                   placeholder="8文字以上"
                   required
                   minLength={8}
+                  className={errors.password ? "border-red-500" : ""}
                 />
+                {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
               </div>
 
               <div>
@@ -133,7 +151,9 @@ export default function SignupPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="もう一度入力"
                   required
+                  className={errors.confirmPassword ? "border-red-500" : ""}
                 />
+                {errors.confirmPassword && <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>}
               </div>
 
               <Button type="submit" variant="brand" size="xl" disabled={isLoading} className="w-full">

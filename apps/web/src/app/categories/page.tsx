@@ -6,8 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
-import { getCategories, postCategories, putCategoriesId, deleteCategoriesId } from "@/api/generated/category/category";
-import type { CategoryWithSystem } from "@/api/models";
+import {
+  getCategories,
+  postCategories,
+  putCategoriesId,
+  deleteCategoriesId,
+} from "@/api/generated/categories/categories";
+import type { GetCategories200DataItem as CategoryWithSystem } from "@/api/models";
 
 // プリセットカラー
 const PRESET_COLORS = [

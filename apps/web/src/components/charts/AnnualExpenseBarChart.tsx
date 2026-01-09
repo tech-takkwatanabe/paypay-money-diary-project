@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { MonthlyBreakdown } from "@/api/models";
+import type { GetTransactionsSummary200MonthlyBreakdownItem as MonthlyBreakdown } from "@/api/models";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 

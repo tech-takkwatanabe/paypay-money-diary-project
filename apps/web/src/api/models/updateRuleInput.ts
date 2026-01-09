@@ -6,18 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface UpdateRuleRequest {
-  /**
-   * キーワード
-   * @minLength 1
-   * @maxLength 100
-   */
+export interface UpdateRuleInput {
+  /** @minLength 1 */
   keyword?: string;
-  /** カテゴリID */
   categoryId?: string;
-  /**
-   * 優先度
-   * @minimum 0
-   */
+  /** @minimum 0 */
   priority?: number;
 }

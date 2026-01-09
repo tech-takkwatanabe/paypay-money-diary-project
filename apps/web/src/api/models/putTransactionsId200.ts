@@ -6,17 +6,15 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Rule {
-  /** ルールID */
+export type PutTransactionsId200 = {
   id: string;
-  /** キーワード */
-  keyword: string;
-  /** カテゴリID */
+  userId: string;
+  date: string;
+  description: string;
+  amount: number;
   categoryId: string;
-  /** カテゴリ名 */
   categoryName: string;
-  /** 優先度 */
-  priority: number;
-  /** システムルールか */
-  isSystem: boolean;
-}
+  categoryColor: string;
+  createdAt: string;
+  updatedAt: string;
+};

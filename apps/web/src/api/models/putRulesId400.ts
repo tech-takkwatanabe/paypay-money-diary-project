@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface TransactionErrorResponse {
-  /** エラーメッセージ */
+export type PutRulesId400 = {
   error: string;
-}
+};

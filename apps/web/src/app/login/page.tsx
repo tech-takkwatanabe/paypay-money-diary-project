@@ -7,31 +7,49 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
+import { LoginSchema } from "@paypay-money-diary/shared";
+import { ZodError } from "zod";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    setErrors({});
+    setGeneralError("");
 
     try {
-      const response = await postAuthLogin({ email, password });
+      // Zodバリデーション
+      const validatedData = LoginSchema.parse({ email, password });
+
+      setIsLoading(true);
+      const response = await postAuthLogin(validatedData);
 
       if (response.status === 200) {
         await login();
         router.push("/");
       } else if ("data" in response && "error" in response.data) {
-        setError(response.data.error);
+        setGeneralError(response.data.error);
       }
-    } catch (_err) {
-      setError("ログインに失敗しました。もう一度お試しください。");
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const zodError = err as ZodError;
+        const fieldErrors: { [key: string]: string } = {};
+        zodError.issues.forEach((e) => {
+          if (e.path[0]) {
+            fieldErrors[e.path[0] as string] = e.message;
+          }
+        });
+        setErrors(fieldErrors);
+      } else {
+        setGeneralError("ログインに失敗しました。もう一度お試しください。");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -128,9 +146,9 @@ export default function LoginPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
+              {generalError && (
                 <div className="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl">
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400">{generalError}</p>
                 </div>
               )}
 
@@ -145,7 +163,9 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
               </div>
 
               <div>
@@ -159,7 +179,9 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  className={errors.password ? "border-red-500" : ""}
                 />
+                {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
               </div>
 
               <Button type="submit" variant="brand" size="xl" disabled={isLoading} className="w-full">

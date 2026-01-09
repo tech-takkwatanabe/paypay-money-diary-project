@@ -9,14 +9,11 @@ import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
 import { DollarSign, TrendingUp, Wallet, LogOut, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTransactionsSummary } from "@/api/generated/transaction/transaction";
-import { customFetch } from "@/api/customFetch";
-import type { SummaryResponse, CategoryBreakdown } from "@/api/models";
-
-interface AvailableYearsResponse {
-  status: number;
-  data: { years: number[] };
-}
+import { getTransactionsSummary, getTransactionsAvailableYears } from "@/api/generated/transactions/transactions";
+import type {
+  GetTransactionsSummary200 as SummaryResponse,
+  GetTransactionsSummary200CategoryBreakdownItem as CategoryBreakdown,
+} from "@/api/models";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -29,8 +26,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchYears = async () => {
       try {
-        const response = await customFetch<AvailableYearsResponse>("/transactions/years");
-        if (response.status === 200 && response.data.years) {
+        const response = await getTransactionsAvailableYears();
+        if (response.status === 200 && "data" in response) {
           setAvailableYears(response.data.years);
           // 最新の年をデフォルト選択
           if (response.data.years.length > 0) {

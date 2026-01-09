@@ -6,9 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SummaryResponseSummary = {
-  /** 合計金額 */
-  totalAmount: number;
-  /** 取引数 */
-  transactionCount: number;
+export type PutRulesId403 = {
+  error: string;
 };

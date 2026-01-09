@@ -6,16 +6,15 @@ import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-re
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
-import { postTransactionsUpload } from "@/api/generated/transaction/transaction";
+import { postTransactionsUpload } from "@/api/generated/transactions/transactions";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 interface UploadResult {
   message: string;
-  totalRows: number;
-  importedRows: number;
-  skippedRows: number;
-  duplicateRows: number;
+  processedCount: number;
+  categorizedCount: number;
+  uncategorizedCount: number;
 }
 
 export default function UploadPage() {
@@ -124,22 +123,18 @@ export default function UploadPage() {
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">アップロード完了</h2>
                 <p className="text-gray-500 dark:text-gray-400 mb-6">{result.message}</p>
 
-                <div className="grid grid-cols-2 gap-4 mb-6 max-w-sm mx-auto text-left">
+                <div className="grid grid-cols-3 gap-4 mb-6 max-w-sm mx-auto text-left">
                   <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                    <div className="text-sm text-gray-500">総行数</div>
-                    <div className="text-lg font-bold">{result.totalRows}</div>
+                    <div className="text-sm text-gray-500">処理件数</div>
+                    <div className="text-lg font-bold">{result.processedCount}</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                    <div className="text-sm text-gray-500">インポート</div>
-                    <div className="text-lg font-bold text-green-500">{result.importedRows}</div>
+                    <div className="text-sm text-gray-500">分類済</div>
+                    <div className="text-lg font-bold text-green-500">{result.categorizedCount}</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                    <div className="text-sm text-gray-500">スキップ</div>
-                    <div className="text-lg font-bold text-yellow-500">{result.skippedRows}</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                    <div className="text-sm text-gray-500">重複</div>
-                    <div className="text-lg font-bold text-gray-400">{result.duplicateRows}</div>
+                    <div className="text-sm text-gray-500">未分類</div>
+                    <div className="text-lg font-bold text-yellow-500">{result.uncategorizedCount}</div>
                   </div>
                 </div>
 
