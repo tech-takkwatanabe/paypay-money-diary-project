@@ -11,6 +11,7 @@ describe("ListTransactionsUseCase", () => {
     transactionRepository = {
       findByUserId: mock().mockResolvedValue([]),
       countByUserId: mock().mockResolvedValue(0),
+      sumByUserId: mock().mockResolvedValue(0),
     } as unknown as ITransactionRepository;
 
     useCase = new ListTransactionsUseCase(transactionRepository);
@@ -29,6 +30,7 @@ describe("ListTransactionsUseCase", () => {
       mockTransactions
     );
     (transactionRepository.countByUserId as Mock<typeof transactionRepository.countByUserId>).mockResolvedValue(25);
+    (transactionRepository.sumByUserId as Mock<typeof transactionRepository.sumByUserId>).mockResolvedValue(1000);
 
     // Act
     const result = await useCase.execute(userId, query);
@@ -47,11 +49,19 @@ describe("ListTransactionsUseCase", () => {
       pagination: { page: 2, limit: 10 },
     });
 
+    expect(transactionRepository.sumByUserId).toHaveBeenCalledWith(userId, {
+      year: 2024,
+      month: undefined,
+      categoryId: undefined,
+      pagination: { page: 2, limit: 10 },
+    });
+
     expect(result.data).toHaveLength(1);
     expect(result.pagination).toEqual({
       page: 2,
       limit: 10,
       totalCount: 25,
+      totalAmount: 1000,
       totalPages: 3,
     });
   });
