@@ -37,6 +37,19 @@ export interface ITransactionRepository {
   ): Promise<number>;
 
   /**
+   * 条件に一致するトランザクションの総額を取得
+   */
+  sumByUserId(
+    userId: string,
+    options?: {
+      year?: number;
+      month?: number;
+      categoryId?: string;
+      search?: string;
+    }
+  ): Promise<number>;
+
+  /**
    * IDでトランザクションを検索
    */
   findById(id: string): Promise<Transaction | null>;
