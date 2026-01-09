@@ -6,6 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsUploadBody = {
-  file?: Blob;
+export type PostTransactionsUpload201 = {
+  message: string;
+  processedCount: number;
+  categorizedCount: number;
+  uncategorizedCount: number;
 };
