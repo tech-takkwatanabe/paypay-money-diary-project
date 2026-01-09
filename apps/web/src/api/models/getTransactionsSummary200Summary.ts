@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactionsSummaryParams = {
-  year: string;
-  month?: string;
+export type GetTransactionsSummary200Summary = {
+  totalAmount: number;
+  transactionCount: number;
 };

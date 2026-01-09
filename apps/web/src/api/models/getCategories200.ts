@@ -5,8 +5,8 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
+import type { GetCategories200DataItem } from "./getCategories200DataItem";
 
-export type GetTransactionsSummaryParams = {
-  year: string;
-  month?: string;
+export type GetCategories200 = {
+  data: GetCategories200DataItem[];
 };

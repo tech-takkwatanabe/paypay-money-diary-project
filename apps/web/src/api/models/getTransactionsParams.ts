@@ -5,44 +5,11 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
-import type { GetTransactionsSortBy } from "./getTransactionsSortBy";
-import type { GetTransactionsSortOrder } from "./getTransactionsSortOrder";
 
 export type GetTransactionsParams = {
-  /**
-   * ページ番号
-   */
-  page?: string;
-  /**
-   * 1ページあたりの件数
-   */
-  limit?: string;
-  /**
-   * 開始日 (YYYY-MM-DD)
-   */
-  startDate?: string;
-  /**
-   * 終了日 (YYYY-MM-DD)
-   */
-  endDate?: string;
-  /**
-   * 年 (YYYY)
-   */
   year?: string;
-  /**
-   * カテゴリID
-   */
+  month?: string;
   categoryId?: string;
-  /**
-   * 取引先 (部分一致)
-   */
-  merchant?: string;
-  /**
-   * ソート項目
-   */
-  sortBy?: GetTransactionsSortBy;
-  /**
-   * ソート順
-   */
-  sortOrder?: GetTransactionsSortOrder;
+  page?: string;
+  limit?: string;
 };

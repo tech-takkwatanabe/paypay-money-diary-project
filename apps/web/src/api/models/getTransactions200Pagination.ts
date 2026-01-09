@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactionsYears200 = {
-  /** 利用可能な年リスト */
-  years: number[];
+export type GetTransactions200Pagination = {
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPages: number;
 };

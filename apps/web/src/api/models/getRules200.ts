@@ -5,8 +5,8 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
+import type { RuleResponse } from "./ruleResponse";
 
-export type GetTransactionsSummaryParams = {
-  year: string;
-  month?: string;
+export type GetRules200 = {
+  data: RuleResponse[];
 };
