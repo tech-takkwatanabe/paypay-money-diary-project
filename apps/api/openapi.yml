@@ -644,8 +644,6 @@ paths:
                   type: integer
                   minimum: 1
                   maximum: 12
-              required:
-                - year
       responses:
         "200":
           description: トランザクションを再分類

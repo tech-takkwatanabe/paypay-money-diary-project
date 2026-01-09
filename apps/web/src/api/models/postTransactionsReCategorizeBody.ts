@@ -11,7 +11,7 @@ export type PostTransactionsReCategorizeBody = {
    * @minimum 2000
    * @maximum 2100
    */
-  year: number;
+  year?: number;
   /**
    * @minimum 1
    * @maximum 12
