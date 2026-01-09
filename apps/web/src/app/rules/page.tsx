@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock, RefreshCw } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, X, Check, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,11 +140,11 @@ export default function RulesPage() {
   };
 
   const handleReCategorize = async () => {
-    if (!confirm("現在のルールに基づいて「その他」の取引を再分類しますか？")) return;
+    if (!confirm("現在のルールに基づいてすべての取引を再分類しますか？")) return;
 
     setIsReCategorizing(true);
     try {
-      const response = await postTransactionsReCategorize({ year: new Date().getFullYear() });
+      const response = await postTransactionsReCategorize({});
       if (response.status === 200) {
         alert("再分類が完了しました");
       } else {
@@ -373,26 +373,95 @@ export default function RulesPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <CardTitle className="text-lg">システムルール</CardTitle>
-              <Lock className="w-4 h-4 text-gray-400" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="divide-y dark:divide-gray-700">
               {systemRules.map((rule) => (
-                <div key={rule.id} className="py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-8">
-                    <div className="min-w-[120px]">
-                      <span className="text-sm text-gray-400 block">キーワード</span>
-                      <span className="font-medium">{rule.keyword}</span>
+                <div key={rule.id} className="py-4">
+                  {editingId === rule.id ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Input
+                          type="text"
+                          variant="filter"
+                          value={formData.keyword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              keyword: e.target.value,
+                            })
+                          }
+                        />
+                        <SelectNative
+                          variant="filter"
+                          value={formData.categoryId}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              categoryId: e.target.value,
+                            })
+                          }
+                        >
+                          {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </option>
+                          ))}
+                        </SelectNative>
+                      </div>
+                      {error && <p className="text-sm text-red-500">{error}</p>}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdate(rule.id)}
+                          disabled={isSubmitting}
+                          className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
+                        >
+                          <Check className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-sm text-gray-400 block">カテゴリ</span>
-                      <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">
-                        {rule.categoryName}
-                      </span>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-8">
+                        <div className="min-w-[120px]">
+                          <span className="text-sm text-gray-400 block">キーワード</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{rule.keyword}</span>
+                            <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded uppercase tracking-wider">
+                              System
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-400 block">カテゴリ</span>
+                          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">
+                            {rule.categoryName}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => startEdit(rule)}
+                          className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(rule.id, rule.keyword)}
+                          className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-xs text-gray-400">(編集不可)</span>
+                  )}
                 </div>
               ))}
             </div>
