@@ -10,5 +10,6 @@ export type GetTransactions200Pagination = {
   page: number;
   limit: number;
   totalCount: number;
+  totalAmount: number;
   totalPages: number;
 };
