@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchTransactionsIdBody = {
-  /** カテゴリID */
-  categoryId: string;
+export type PostCategories400 = {
+  error: string;
 };
