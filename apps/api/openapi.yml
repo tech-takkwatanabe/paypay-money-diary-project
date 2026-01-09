@@ -501,12 +501,15 @@ paths:
                         type: number
                       totalCount:
                         type: number
+                      totalAmount:
+                        type: number
                       totalPages:
                         type: number
                     required:
                       - page
                       - limit
                       - totalCount
+                      - totalAmount
                       - totalPages
                 required:
                   - data
