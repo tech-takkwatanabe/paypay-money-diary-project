@@ -190,6 +190,10 @@ export class TransactionRepository implements ITransactionRepository {
       query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
     }
 
+    if (options?.search) {
+      query = query.where(and(eq(expenses.userId, userId), ilike(expenses.merchant, `%${options.search}%`)));
+    }
+
     const results = await query;
     return Number(results[0]?.count ?? 0);
   }
