@@ -32,11 +32,7 @@ export class RuleService {
       throw new Error("Rule not found");
     }
 
-    if (rule.userId === null) {
-      throw new Error("Forbidden: Cannot update system rules");
-    }
-
-    if (rule.userId !== userId) {
+    if (rule.userId !== null && rule.userId !== userId) {
       throw new Error("Forbidden: You do not have permission to update this rule");
     }
   }
@@ -51,11 +47,7 @@ export class RuleService {
       throw new Error("Rule not found");
     }
 
-    if (rule.userId === null) {
-      throw new Error("Forbidden: Cannot delete system rules");
-    }
-
-    if (rule.userId !== userId) {
+    if (rule.userId !== null && rule.userId !== userId) {
       throw new Error("Forbidden: You do not have permission to delete this rule");
     }
   }
