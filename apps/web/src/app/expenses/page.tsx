@@ -26,11 +26,13 @@ export default function ExpensesPage() {
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   // フィルタ状態
   const [selectedYear, setSelectedYear] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [merchantSearch, setMerchantSearch] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
@@ -73,6 +75,7 @@ export default function ExpensesPage() {
         page: currentPage.toString(),
         limit: limit.toString(),
         year: selectedYear || undefined,
+        month: selectedMonth || undefined,
         categoryId: selectedCategory || undefined,
         search: merchantSearch || undefined,
       });
@@ -80,6 +83,7 @@ export default function ExpensesPage() {
       if (response.status === 200 && "data" in response) {
         setTransactions(response.data.data);
         setTotalCount(response.data.pagination.totalCount);
+        setTotalAmount(response.data.pagination.totalAmount);
         setTotalPages(response.data.pagination.totalPages);
       }
     } catch (error) {
@@ -87,7 +91,7 @@ export default function ExpensesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, selectedYear, selectedCategory, merchantSearch]);
+  }, [currentPage, selectedYear, selectedMonth, selectedCategory, merchantSearch]);
 
   useEffect(() => {
     fetchTransactions();
@@ -175,7 +179,13 @@ export default function ExpensesPage() {
       <main className="flex-1 p-4 sm:px-6 sm:py-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-2xl font-bold tracking-tight">支出一覧</h2>
-          <div className="text-sm text-muted-foreground">全 {totalCount} 件の取引</div>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div>全 {totalCount} 件の取引</div>
+            <div className="h-4 w-px bg-border" />
+            <div>
+              支出総額: <span className="font-bold text-foreground">{formatCurrency(totalAmount)}</span>
+            </div>
+          </div>
         </div>
 
         {/* フィルタ・検索バー */}
@@ -204,6 +214,9 @@ export default function ExpensesPage() {
                   value={selectedYear}
                   onChange={(e) => {
                     setSelectedYear(e.target.value);
+                    if (e.target.value === "") {
+                      setSelectedMonth("");
+                    }
                     setCurrentPage(1);
                   }}
                   className="flex-1"
@@ -216,6 +229,27 @@ export default function ExpensesPage() {
                   ))}
                 </SelectNative>
               </div>
+
+              {selectedYear && (
+                <div className="flex items-center gap-2">
+                  <SelectNative
+                    variant="filter"
+                    value={selectedMonth}
+                    onChange={(e) => {
+                      setSelectedMonth(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="flex-1"
+                  >
+                    <option value="">すべての月</option>
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                      <option key={month} value={month}>
+                        {month}月
+                      </option>
+                    ))}
+                  </SelectNative>
+                </div>
+              )}
 
               <div className="flex items-center gap-2">
                 <SelectNative
@@ -243,6 +277,7 @@ export default function ExpensesPage() {
                   onClick={() => {
                     setMerchantSearch("");
                     setSelectedYear(availableYears[0]?.toString() || "");
+                    setSelectedMonth("");
                     setSelectedCategory("");
                     setCurrentPage(1);
                   }}
