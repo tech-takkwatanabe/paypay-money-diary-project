@@ -15,6 +15,7 @@ export interface ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      search?: string;
       pagination?: {
         page: number;
         limit: number;
@@ -31,6 +32,7 @@ export interface ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      search?: string;
     }
   ): Promise<number>;
 

@@ -430,6 +430,11 @@ paths:
         - schema:
             type: string
           required: false
+          name: search
+          in: query
+        - schema:
+            type: string
+          required: false
           name: page
           in: query
         - schema:

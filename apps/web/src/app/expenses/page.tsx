@@ -74,7 +74,7 @@ export default function ExpensesPage() {
         limit: limit.toString(),
         year: selectedYear || undefined,
         categoryId: selectedCategory || undefined,
-        // merchant: merchantSearch || undefined, // API does not support merchant search yet
+        search: merchantSearch || undefined,
       });
 
       if (response.status === 200 && "data" in response) {
@@ -87,7 +87,7 @@ export default function ExpensesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, selectedYear, selectedCategory]);
+  }, [currentPage, selectedYear, selectedCategory, merchantSearch]);
 
   useEffect(() => {
     fetchTransactions();

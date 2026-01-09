@@ -1,4 +1,4 @@
-import { eq, and, sql, gte, lte, desc } from "drizzle-orm";
+import { eq, and, sql, gte, lte, desc, ilike } from "drizzle-orm";
 import { db } from "@/db";
 import { expenses, categories, categoryRules } from "@/db/schema";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
@@ -19,6 +19,7 @@ export class TransactionRepository implements ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      search?: string;
       pagination?: {
         page: number;
         limit: number;
@@ -71,6 +72,11 @@ export class TransactionRepository implements ITransactionRepository {
     // カテゴリでフィルタ
     if (options?.categoryId) {
       query = query.where(and(eq(expenses.userId, userId), eq(expenses.categoryId, options.categoryId)));
+    }
+
+    // 検索ワードでフィルタ
+    if (options?.search) {
+      query = query.where(and(eq(expenses.userId, userId), ilike(expenses.merchant, `%${options.search}%`)));
     }
 
     // ページネーション
@@ -147,6 +153,7 @@ export class TransactionRepository implements ITransactionRepository {
       year?: number;
       month?: number;
       categoryId?: string;
+      search?: string;
     }
   ): Promise<number> {
     let query = db

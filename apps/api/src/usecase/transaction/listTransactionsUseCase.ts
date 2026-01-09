@@ -12,6 +12,7 @@ export class ListTransactionsUseCase {
       year: query.year ? parseInt(query.year, 10) : undefined,
       month: query.month ? parseInt(query.month, 10) : undefined,
       categoryId: query.categoryId,
+      search: query.search,
       pagination: { page, limit },
     };
 

@@ -10,6 +10,7 @@ export type GetTransactionsParams = {
   year?: string;
   month?: string;
   categoryId?: string;
+  search?: string;
   page?: string;
   limit?: string;
 };

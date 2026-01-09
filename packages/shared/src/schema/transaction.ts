@@ -24,6 +24,7 @@ export const TransactionListQuerySchema = z.object({
   year: z.string().optional(),
   month: z.string().optional(),
   categoryId: z.string().uuid().optional(),
+  search: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional(),
 });
