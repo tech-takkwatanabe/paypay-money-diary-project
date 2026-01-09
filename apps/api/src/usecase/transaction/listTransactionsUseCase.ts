@@ -18,6 +18,7 @@ export class ListTransactionsUseCase {
 
     const transactions = await this.transactionRepository.findByUserId(userId, options);
     const totalCount = await this.transactionRepository.countByUserId(userId, options);
+    const totalAmount = await this.transactionRepository.sumByUserId(userId, options);
 
     return {
       data: transactions.map((t) => t.toResponse()),
@@ -25,6 +26,7 @@ export class ListTransactionsUseCase {
         page,
         limit,
         totalCount,
+        totalAmount,
         totalPages: Math.ceil(totalCount / limit),
       },
     };
