@@ -6,32 +6,44 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CreateRuleRequest,
-  DeleteRuleResponse,
-  Rule,
-  RuleErrorResponse,
-  RuleListResponse,
-  UpdateRuleRequest,
+  CreateRuleInput,
+  DeleteRulesId200,
+  DeleteRulesId401,
+  DeleteRulesId403,
+  DeleteRulesId404,
+  DeleteRulesId500,
+  GetRules200,
+  GetRules401,
+  GetRules500,
+  PostRules400,
+  PostRules401,
+  PostRules500,
+  PutRulesId400,
+  PutRulesId401,
+  PutRulesId403,
+  PutRulesId404,
+  PutRulesId500,
+  RuleResponse,
+  UpdateRuleInput,
 } from "../../models";
 
 import { customFetch } from "../../customFetch";
 
 /**
- * ユーザーのカテゴリルール一覧を取得します
  * @summary ルール一覧取得
  */
 export type getRulesResponse200 = {
-  data: RuleListResponse;
+  data: GetRules200;
   status: 200;
 };
 
 export type getRulesResponse401 = {
-  data: RuleErrorResponse;
+  data: GetRules401;
   status: 401;
 };
 
 export type getRulesResponse500 = {
-  data: RuleErrorResponse;
+  data: GetRules500;
   status: 500;
 };
 
@@ -56,26 +68,25 @@ export const getRules = async (options?: RequestInit): Promise<getRulesResponse>
 };
 
 /**
- * 新しいカテゴリルールを作成します
  * @summary ルール作成
  */
 export type postRulesResponse201 = {
-  data: Rule;
+  data: RuleResponse;
   status: 201;
 };
 
 export type postRulesResponse400 = {
-  data: RuleErrorResponse;
+  data: PostRules400;
   status: 400;
 };
 
 export type postRulesResponse401 = {
-  data: RuleErrorResponse;
+  data: PostRules401;
   status: 401;
 };
 
 export type postRulesResponse500 = {
-  data: RuleErrorResponse;
+  data: PostRules500;
   status: 500;
 };
 
@@ -93,48 +104,47 @@ export const getPostRulesUrl = () => {
 };
 
 export const postRules = async (
-  createRuleRequest: CreateRuleRequest,
+  createRuleInput: CreateRuleInput,
   options?: RequestInit
 ): Promise<postRulesResponse> => {
   return customFetch<postRulesResponse>(getPostRulesUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createRuleRequest),
+    body: JSON.stringify(createRuleInput),
   });
 };
 
 /**
- * カテゴリルールを更新します（システムルールは更新不可）
  * @summary ルール更新
  */
 export type putRulesIdResponse200 = {
-  data: Rule;
+  data: RuleResponse;
   status: 200;
 };
 
 export type putRulesIdResponse400 = {
-  data: RuleErrorResponse;
+  data: PutRulesId400;
   status: 400;
 };
 
 export type putRulesIdResponse401 = {
-  data: RuleErrorResponse;
+  data: PutRulesId401;
   status: 401;
 };
 
 export type putRulesIdResponse403 = {
-  data: RuleErrorResponse;
+  data: PutRulesId403;
   status: 403;
 };
 
 export type putRulesIdResponse404 = {
-  data: RuleErrorResponse;
+  data: PutRulesId404;
   status: 404;
 };
 
 export type putRulesIdResponse500 = {
-  data: RuleErrorResponse;
+  data: PutRulesId500;
   status: 500;
 };
 
@@ -159,43 +169,42 @@ export const getPutRulesIdUrl = (id: string) => {
 
 export const putRulesId = async (
   id: string,
-  updateRuleRequest: UpdateRuleRequest,
+  updateRuleInput: UpdateRuleInput,
   options?: RequestInit
 ): Promise<putRulesIdResponse> => {
   return customFetch<putRulesIdResponse>(getPutRulesIdUrl(id), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateRuleRequest),
+    body: JSON.stringify(updateRuleInput),
   });
 };
 
 /**
- * カテゴリルールを削除します（システムルールは削除不可）
  * @summary ルール削除
  */
 export type deleteRulesIdResponse200 = {
-  data: DeleteRuleResponse;
+  data: DeleteRulesId200;
   status: 200;
 };
 
 export type deleteRulesIdResponse401 = {
-  data: RuleErrorResponse;
+  data: DeleteRulesId401;
   status: 401;
 };
 
 export type deleteRulesIdResponse403 = {
-  data: RuleErrorResponse;
+  data: DeleteRulesId403;
   status: 403;
 };
 
 export type deleteRulesIdResponse404 = {
-  data: RuleErrorResponse;
+  data: DeleteRulesId404;
   status: 404;
 };
 
 export type deleteRulesIdResponse500 = {
-  data: RuleErrorResponse;
+  data: DeleteRulesId500;
   status: 500;
 };
 
