@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface DeleteRuleResponse {
-  /** メッセージ */
-  message: string;
-}
+export type DeleteCategoriesId400 = {
+  error: string;
+};

@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface DeleteCategoryResponse {
-  /** メッセージ */
-  message: string;
-}
+export type DeleteCategoriesId403 = {
+  error: string;
+};
