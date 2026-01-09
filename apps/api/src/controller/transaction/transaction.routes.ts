@@ -27,6 +27,7 @@ export const listTransactionsRoute = createRoute({
               page: z.number(),
               limit: z.number(),
               totalCount: z.number(),
+              totalAmount: z.number(),
               totalPages: z.number(),
             }),
           }),
