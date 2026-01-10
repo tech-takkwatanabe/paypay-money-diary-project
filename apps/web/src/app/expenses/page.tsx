@@ -208,48 +208,49 @@ export default function ExpensesPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-400" />
-                <SelectNative
-                  variant="filter"
-                  value={selectedYear}
-                  onChange={(e) => {
-                    setSelectedYear(e.target.value);
-                    if (e.target.value === "") {
-                      setSelectedMonth("");
-                    }
-                    setCurrentPage(1);
-                  }}
-                  className="flex-1"
-                >
-                  <option value="">すべての年</option>
-                  {availableYears.map((year) => (
-                    <option key={year} value={year}>
-                      {year}年
-                    </option>
-                  ))}
-                </SelectNative>
-              </div>
-
-              {selectedYear && (
-                <div className="flex items-center gap-2">
+                <div className="yearSelect flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-gray-400" />
                   <SelectNative
                     variant="filter"
-                    value={selectedMonth}
+                    value={selectedYear}
                     onChange={(e) => {
-                      setSelectedMonth(e.target.value);
+                      setSelectedYear(e.target.value);
+                      if (e.target.value === "") {
+                        setSelectedMonth("");
+                      }
                       setCurrentPage(1);
                     }}
                     className="flex-1"
                   >
-                    <option value="">すべての月</option>
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                      <option key={month} value={month}>
-                        {month}月
+                    <option value="">すべての年</option>
+                    {availableYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}年
                       </option>
                     ))}
                   </SelectNative>
                 </div>
-              )}
+                {selectedYear && (
+                  <div className="monthSelect flex items-center gap-2">
+                    <SelectNative
+                      variant="filter"
+                      value={selectedMonth}
+                      onChange={(e) => {
+                        setSelectedMonth(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      className="flex-1"
+                    >
+                      <option value="">すべての月</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                        <option key={month} value={month}>
+                          {month}月
+                        </option>
+                      ))}
+                    </SelectNative>
+                  </div>
+                )}
+              </div>
 
               <div className="flex items-center gap-2">
                 <SelectNative
