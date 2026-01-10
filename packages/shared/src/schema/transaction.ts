@@ -10,6 +10,7 @@ export const TransactionResponseSchema = z.object({
   categoryId: z.string().uuid(),
   categoryName: z.string(),
   categoryColor: z.string(),
+  displayOrder: z.number(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
@@ -40,6 +41,7 @@ export const TransactionSummarySchema = z.object({
       categoryId: z.string().uuid().nullable(),
       categoryName: z.string(),
       categoryColor: z.string(),
+      displayOrder: z.number(),
       totalAmount: z.number(),
       transactionCount: z.number(),
     })
@@ -54,6 +56,7 @@ export const TransactionSummarySchema = z.object({
             categoryId: z.string().uuid().nullable(),
             categoryName: z.string(),
             categoryColor: z.string(),
+            displayOrder: z.number(),
             amount: z.number(),
           })
         ),
