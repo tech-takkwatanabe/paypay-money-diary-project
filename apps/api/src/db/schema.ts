@@ -45,7 +45,7 @@ export const categories = pgTable(
     name: varchar("name", { length: 50 }).notNull(),
     color: varchar("color", { length: 7 }).notNull(),
     icon: varchar("icon", { length: 50 }),
-    displayOrder: integer("display_order").notNull().default(0),
+    displayOrder: integer("display_order").notNull().default(100),
     isDefault: boolean("is_default").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
