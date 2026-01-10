@@ -111,7 +111,7 @@ const getTransactionsDummy: RouteHandler<ListTransactionsRoute> = async (c) => {
   return c.json(
     {
       data: [],
-      pagination: { page: 1, limit: 50, totalCount: 0, totalPages: 0 },
+      pagination: { page: 1, limit: 50, totalCount: 0, totalAmount: 0, totalPages: 0 },
     },
     200
   );
@@ -147,6 +147,7 @@ const updateTransactionDummy: RouteHandler<UpdateTransactionRoute> = async (c) =
       categoryId: "550e8400-e29b-41d4-a716-446655440002",
       categoryName: "",
       categoryColor: "",
+      displayOrder: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
