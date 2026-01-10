@@ -15,6 +15,7 @@ export type GetTransactions200DataItem = {
   categoryId: string;
   categoryName: string;
   categoryColor: string;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 };
