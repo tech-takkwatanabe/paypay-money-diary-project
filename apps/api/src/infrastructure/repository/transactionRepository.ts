@@ -59,6 +59,7 @@ export class TransactionRepository implements ITransactionRepository {
         categoryId: expenses.categoryId,
         categoryName: categories.name,
         categoryColor: categories.color,
+        displayOrder: categories.displayOrder,
         createdAt: expenses.createdAt,
       })
       .from(expenses)
@@ -85,6 +86,7 @@ export class TransactionRepository implements ITransactionRepository {
           row.categoryId ?? "",
           row.categoryName ?? "未分類",
           row.categoryColor ?? "#CCCCCC",
+          row.displayOrder ?? 100,
           row.createdAt ?? undefined,
           undefined
         )
@@ -105,6 +107,7 @@ export class TransactionRepository implements ITransactionRepository {
         categoryId: expenses.categoryId,
         categoryName: categories.name,
         categoryColor: categories.color,
+        displayOrder: categories.displayOrder,
         createdAt: expenses.createdAt,
       })
       .from(expenses)
@@ -126,6 +129,7 @@ export class TransactionRepository implements ITransactionRepository {
       row.categoryId ?? "",
       row.categoryName ?? "未分類",
       row.categoryColor ?? "#CCCCCC",
+      row.displayOrder ?? 100,
       row.createdAt ?? undefined,
       undefined
     );
@@ -222,6 +226,7 @@ export class TransactionRepository implements ITransactionRepository {
     categoryId: string;
     categoryName: string;
     categoryColor: string;
+    displayOrder: number;
   }): Promise<Transaction> {
     const results = await db
       .insert(expenses)
@@ -244,6 +249,7 @@ export class TransactionRepository implements ITransactionRepository {
       transaction.categoryId,
       transaction.categoryName,
       transaction.categoryColor,
+      transaction.displayOrder,
       row.createdAt ?? undefined,
       undefined
     );
@@ -278,6 +284,7 @@ export class TransactionRepository implements ITransactionRepository {
       input.categoryId,
       category[0].name,
       category[0].color,
+      category[0].displayOrder,
       row.createdAt ?? undefined,
       undefined
     );
@@ -364,6 +371,7 @@ export class TransactionRepository implements ITransactionRepository {
       categoryId: string;
       categoryName: string;
       categoryColor: string;
+      displayOrder: number;
     }>
   ): Promise<Transaction[]> {
     if (transactions.length === 0) {
@@ -391,6 +399,7 @@ export class TransactionRepository implements ITransactionRepository {
           transactions[index].categoryId,
           transactions[index].categoryName,
           transactions[index].categoryColor,
+          transactions[index].displayOrder,
           row.createdAt ?? undefined,
           undefined
         )
