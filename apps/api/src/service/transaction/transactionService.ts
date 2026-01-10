@@ -32,6 +32,7 @@ export class TransactionService {
         categoryId: string;
         categoryName: string;
         categoryColor: string;
+        displayOrder: number;
         totalAmount: number;
         transactionCount: number;
       }
@@ -44,6 +45,7 @@ export class TransactionService {
           categoryId: t.categoryId,
           categoryName: t.categoryName || "未分類",
           categoryColor: t.categoryColor || "#CCCCCC",
+          displayOrder: t.displayOrder ?? 100,
           totalAmount: 0,
           transactionCount: 0,
         });
@@ -56,7 +58,7 @@ export class TransactionService {
     return {
       totalAmount,
       transactionCount,
-      categoryBreakdown: Array.from(categoryMap.values()),
+      categoryBreakdown: Array.from(categoryMap.values()).sort((a, b) => a.displayOrder - b.displayOrder),
     };
   }
 
@@ -75,6 +77,7 @@ export class TransactionService {
             categoryId: string;
             categoryName: string;
             categoryColor: string;
+            displayOrder: number;
             amount: number;
           }
         >;
@@ -99,6 +102,7 @@ export class TransactionService {
           categoryId: t.categoryId,
           categoryName: t.categoryName || "未分類",
           categoryColor: t.categoryColor || "#CCCCCC",
+          displayOrder: t.displayOrder ?? 100,
           amount: 0,
         });
       }
@@ -108,7 +112,7 @@ export class TransactionService {
     return Array.from(monthlyMap.values())
       .map((m) => ({
         ...m,
-        categories: Array.from(m.categories.values()),
+        categories: Array.from(m.categories.values()).sort((a, b) => a.displayOrder - b.displayOrder),
       }))
       .sort((a, b) => a.month - b.month);
   }
