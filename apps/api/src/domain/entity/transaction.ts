@@ -12,6 +12,7 @@ export class Transaction {
     public readonly categoryId: string,
     public readonly categoryName: string,
     public readonly categoryColor: string,
+    public readonly displayOrder: number = 0,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date
   ) {}
@@ -56,6 +57,7 @@ export class Transaction {
       categoryId,
       categoryName,
       categoryColor,
+      this.displayOrder,
       this.createdAt,
       new Date()
     );
@@ -74,6 +76,7 @@ export class Transaction {
       categoryId: this.categoryId,
       categoryName: this.categoryName,
       categoryColor: this.categoryColor,
+      displayOrder: this.displayOrder,
       createdAt: this.createdAt?.toISOString() ?? new Date().toISOString(),
       updatedAt: this.updatedAt?.toISOString() ?? new Date().toISOString(),
     };
