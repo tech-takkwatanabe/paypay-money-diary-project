@@ -11,5 +11,6 @@ export type GetTransactionsSummary200MonthlyBreakdownItemCategoriesItem = {
   categoryId: string | null;
   categoryName: string;
   categoryColor: string;
+  displayOrder: number;
   amount: number;
 };
