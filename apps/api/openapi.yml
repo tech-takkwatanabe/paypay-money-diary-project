@@ -475,6 +475,8 @@ paths:
                           type: string
                         categoryColor:
                           type: string
+                        displayOrder:
+                          type: number
                         createdAt:
                           type: string
                           format: date-time
@@ -490,6 +492,7 @@ paths:
                         - categoryId
                         - categoryName
                         - categoryColor
+                        - displayOrder
                         - createdAt
                         - updatedAt
                   pagination:
@@ -562,6 +565,8 @@ paths:
                           type: string
                         categoryColor:
                           type: string
+                        displayOrder:
+                          type: number
                         totalAmount:
                           type: number
                         transactionCount:
@@ -570,6 +575,7 @@ paths:
                         - categoryId
                         - categoryName
                         - categoryColor
+                        - displayOrder
                         - totalAmount
                         - transactionCount
                   monthlyBreakdown:
@@ -594,12 +600,15 @@ paths:
                                 type: string
                               categoryColor:
                                 type: string
+                              displayOrder:
+                                type: number
                               amount:
                                 type: number
                             required:
                               - categoryId
                               - categoryName
                               - categoryColor
+                              - displayOrder
                               - amount
                       required:
                         - month
@@ -710,6 +719,8 @@ paths:
                     type: string
                   categoryColor:
                     type: string
+                  displayOrder:
+                    type: number
                   createdAt:
                     type: string
                     format: date-time
@@ -725,6 +736,7 @@ paths:
                   - categoryId
                   - categoryName
                   - categoryColor
+                  - displayOrder
                   - createdAt
                   - updatedAt
         "403":
