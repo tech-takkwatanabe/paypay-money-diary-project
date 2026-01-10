@@ -19,9 +19,16 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
     new Map(
       data
         .flatMap((d) => d.categories)
-        .map((c) => [c.categoryId || "others", { name: c.categoryName, color: c.categoryColor }])
+        .map((c) => [
+          c.categoryId || "others",
+          {
+            name: c.categoryName,
+            color: c.categoryColor,
+            displayOrder: c.displayOrder ?? 100,
+          },
+        ])
     ).entries()
-  );
+  ).sort((a, b) => a[1].displayOrder - b[1].displayOrder);
 
   // 月別データを整形（1月〜12月）
   const monthlyData = monthNames.map((name, index) => {
