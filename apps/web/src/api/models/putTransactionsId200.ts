@@ -15,6 +15,7 @@ export type PutTransactionsId200 = {
   categoryId: string;
   categoryName: string;
   categoryColor: string;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 };
