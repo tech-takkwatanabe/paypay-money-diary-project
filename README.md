@@ -69,10 +69,16 @@ pnpm install
 - Node.js (v22+)
 - [Bun](https://bun.sh/) (Backend Runtime)
 - [pnpm](https://pnpm.io/)
+- [mkcert](https://github.com/FiloSottile/mkcert) (ローカル開発用 SSL 証明書)
 
 ### Installation & Development
 
 ```bash
+# SSL 証明書の生成 (初回のみ)
+mkdir -p .certificate
+mkcert -install
+mkcert -key-file .certificate/localhost-key.pem -cert-file .certificate/localhost-cert.pem localhost
+
 # データベースの起動 (Docker が必要)
 cd apps/api
 make init
