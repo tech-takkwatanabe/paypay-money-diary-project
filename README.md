@@ -82,6 +82,10 @@ mkcert -key-file .certificate/localhost-key.pem -cert-file .certificate/localhos
 # データベースの起動 (Docker が必要)
 cd apps/api
 make init
+
+# マイグレーションとシードの実行 (初回のみ)
+bun run db:migrate
+bun run db:seed
 cd ../..
 
 # 開発サーバーの同時起動 (Frontend & Backend)
