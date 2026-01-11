@@ -9,6 +9,14 @@
 **PayPay の取引履歴 CSV をスマートに可視化。**  
 複雑な家計管理を、CSV アップロードひとつでシンプルに解決するパーソナルファイナンスツールです。
 
+## 🚀 Getting Started
+
+```bash
+git clone https://github.com/tech-takkwatanabe/paypay-money-diary-project.git
+cd paypay-money-diary-project
+pnpm install
+```
+
 ---
 
 ## ✨ Key Features
@@ -55,7 +63,7 @@
 └── ...
 ```
 
-## 🚀 Getting Started
+## 🛠 Development Setup
 
 ### Prerequisites
 - Node.js (v22+)
@@ -65,9 +73,6 @@
 ### Installation & Development
 
 ```bash
-# クローンと依存関係のインストール
-pnpm install
-
 # データベースの起動 (Docker が必要)
 cd apps/api
 make init
