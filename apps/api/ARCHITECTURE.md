@@ -1,6 +1,7 @@
 # apps/api アーキテクチャ設計書
 
 ## 最終更新日
+
 2026-01-07
 
 ## 概要
@@ -56,9 +57,10 @@
 ### 2. Entity、DTO、ValueObjectの区別
 
 #### Entity（Domain層）
+
 - **定義場所**: `apps/api/src/domain/entity/`
 - **責務**: ドメインの中核概念を表現、ビジネスロジックを含む
-- **特徴**: 
+- **特徴**:
   - 識別子（ID）を持つ
   - ValueObjectを使用する
   - ビジネスルールを実装するメソッドを持つ
@@ -95,6 +97,7 @@ export class User {
 ```
 
 #### ValueObject（packages/shared）
+
 - **定義場所**: `packages/shared/src/vo/`
 - **責務**: 不変の値を表現、バリデーションを含む
 - **特徴**:
@@ -122,6 +125,7 @@ export class Email {
 ```
 
 #### DTO（packages/shared）
+
 - **定義場所**: `packages/shared/src/schema/`
 - **責務**: API層でのデータ転送、フロントエンドとバックエンドで共有
 - **特徴**:
@@ -213,7 +217,7 @@ async checkUserExists(email: string): Promise<boolean> {
 // infrastructure/repository/userRepository.ts
 async create(input: CreateUserInput & { passwordHash: string; uuid: string }): Promise<User> {
   const result = await db.insert(users).values({...}).returning();
-  
+
   // DBレコードをEntityに変換
   return new User(
     result[0].uuid,
@@ -329,6 +333,7 @@ apps/api/src/
 ### Controller層
 
 **責務**:
+
 - HTTPリクエストの受信とレスポンスの返却
 - リクエストのバリデーション（Zodスキーマ）
 - Usecaseの呼び出し
@@ -337,16 +342,19 @@ apps/api/src/
 - エラーハンドリング（HTTP層）
 
 **依存関係**:
+
 - Usecase層に依存
 - packages/sharedのDTOスキーマに依存
 
 **ファイル構成**:
+
 - `*Controller.ts`: HTTPハンドラーの実装
 - `*.routes.ts`: OpenAPIルート定義
 
 ### Usecase層
 
 **責務**:
+
 - ユースケースのフロー制御
 - 複数Serviceの組み合わせ
 - トランザクション管理
@@ -354,29 +362,35 @@ apps/api/src/
 - ビジネス例外のスロー
 
 **依存関係**:
+
 - Service層に依存
 - Domain層（Repository interface、Entity）に依存
 - Infrastructure層のRepository実装に依存（DI）
 
 **命名規則**:
+
 - `*UseCase.ts`: 単一のユースケースを実装
 
 ### Service層
 
 **責務**:
+
 - 純粋なビジネスロジック
 - 単一責任の原則に従う
 - 再利用可能なロジック
 - ドメインルールの実装
 
 **依存関係**:
+
 - Domain層（Repository interface、Entity）に依存
 - 他のServiceに依存可能
 
 **命名規則**:
+
 - `*Service.ts`: 特定のドメインに関するビジネスロジック
 
 **例**:
+
 - `PasswordService`: パスワードのハッシュ化・検証
 - `TokenService`: トークンの生成
 - `AuthService`: 認証ロジック
@@ -384,21 +398,25 @@ apps/api/src/
 ### Domain層
 
 **責務**:
+
 - ドメインモデルの定義
 - ビジネスルールの実装（Entity内）
 - データアクセスの抽象化（Repository interface）
 
 **依存関係**:
+
 - packages/sharedのValueObjectに依存
 - 他の層に依存しない（最も内側の層）
 
 **構成**:
+
 - `entity/`: Entityクラス
 - `repository/`: Repository interface
 
 ### Infrastructure層
 
 **責務**:
+
 - 外部システムとの連携
 - Repository interfaceの実装
 - データベースアクセス
@@ -406,10 +424,12 @@ apps/api/src/
 - ファイルシステムアクセス
 
 **依存関係**:
+
 - Domain層（Repository interface、Entity）に依存
 - 外部ライブラリに依存
 
 **構成**:
+
 - `repository/`: Repository実装
 - `auth/`: 認証関連のインフラストラクチャ
 - `csv/`: CSV処理

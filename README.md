@@ -30,16 +30,19 @@ pnpm install
 ## 🛠 Tech Stack
 
 ### Monorepo Infrastructure
+
 - **[Turborepo](https://turbo.build/)**: 高速なビルドパイプラインとキャッシュ管理。
 - **[pnpm](https://pnpm.io/)**: 効率的なパッケージ管理とディスクスペースの節約。
 
 ### Frontend (`apps/web`)
+
 - **Framework**: Next.js (App Router)
 - **Styling**: Tailwind CSS + Shadcn UI (Modern & Responsive)
 - **Charts**: ApexCharts (Interactive Data Visualization)
 - **API Client**: Orval (OpenAPI スキーマからの自動生成)
 
 ### Backend (`apps/api`)
+
 - **Runtime**: Bun (High Performance)
 - **Framework**: Hono (Ultra-fast & Type-safe)
 - **Database**: PostgreSQL + Drizzle ORM
@@ -47,6 +50,7 @@ pnpm install
 - **Architecture**: Clean Architecture (Maintainable & Testable)
 
 ### Shared Package (`packages/shared`)
+
 - **Validation**: Zod (フロント・バックエンド間でのバリデーションスキーマ共有)
 - **Domain**: Value Objects によるドメイン知識の集約
 
@@ -66,6 +70,7 @@ pnpm install
 ## 🛠 Development Setup
 
 ### Prerequisites
+
 - Node.js (v22+)
 - [Bun](https://bun.sh/) (Backend Runtime)
 - [pnpm](https://pnpm.io/)
@@ -93,6 +98,7 @@ pnpm dev
 ```
 
 ### Database Management
+
 `apps/api` ディレクトリの `Makefile` を使用して、開発用データベース（PostgreSQL & Redis）を操作できます。
 
 - `make up`: コンテナの起動
@@ -101,7 +107,9 @@ pnpm dev
 - `make clean`: コンテナとボリュームの削除
 
 ### Documentation
+
 詳細な情報は各ディレクトリのドキュメントを参照してください：
+
 - [📖 Backend Architecture](./apps/api/ARCHITECTURE.md)
 - [🔌 API Documentation (Swagger UI)](https://localhost:8080/api/docs) ※開発サーバー起動中のみ
 
