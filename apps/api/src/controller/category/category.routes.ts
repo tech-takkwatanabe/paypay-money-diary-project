@@ -49,6 +49,7 @@ export const getCategoriesRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const createCategoryRoute = createRoute({
@@ -95,6 +96,7 @@ export const createCategoryRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const updateCategoryRoute = createRoute({
@@ -156,6 +158,7 @@ export const updateCategoryRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const deleteCategoryRoute = createRoute({
@@ -206,6 +209,7 @@ export const deleteCategoryRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export type GetCategoriesRoute = typeof getCategoriesRoute;
