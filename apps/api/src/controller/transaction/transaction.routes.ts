@@ -37,6 +37,7 @@ export const listTransactionsRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 export type GetSummaryRoute = typeof getSummaryRoute;
@@ -60,6 +61,7 @@ export const getSummaryRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 export type UpdateTransactionRoute = typeof updateTransactionRoute;
@@ -95,6 +97,7 @@ export const updateTransactionRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 export type ReCategorizeRoute = typeof reCategorizeRoute;
@@ -121,6 +124,7 @@ export const reCategorizeRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 export type GetAvailableYearsRoute = typeof getAvailableYearsRoute;
@@ -138,6 +142,7 @@ export const getAvailableYearsRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 export type UploadCsvRoute = typeof uploadCsvRoute;
@@ -176,6 +181,7 @@ export const uploadCsvRoute = createRoute({
     },
   },
   tags: ["Transactions"],
+  security: [{ Cookie: [] }],
 });
 
 // 登録用関数
