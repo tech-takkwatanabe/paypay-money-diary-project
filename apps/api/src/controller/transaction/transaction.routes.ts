@@ -68,7 +68,7 @@ export const updateTransactionRoute = createRoute({
   path: "/transactions/{id}",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "550e8400-e29b-41d4-a716-446655440000" }),
+      id: z.uuid().openapi({ example: "550e8400-e29b-41d4-a716-446655440000" }),
     }),
     body: {
       content: {
