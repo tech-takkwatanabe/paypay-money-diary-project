@@ -43,6 +43,7 @@ export const getRulesRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const createRuleRoute = createRoute({
@@ -83,6 +84,7 @@ export const createRuleRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const updateRuleRoute = createRoute({
@@ -138,6 +140,7 @@ export const updateRuleRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export const deleteRuleRoute = createRoute({
@@ -182,6 +185,7 @@ export const deleteRuleRoute = createRoute({
       },
     },
   },
+  security: [{ Cookie: [] }],
 });
 
 export type GetRulesRoute = typeof getRulesRoute;
