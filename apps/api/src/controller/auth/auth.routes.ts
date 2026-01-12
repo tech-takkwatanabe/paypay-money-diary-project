@@ -13,7 +13,7 @@ import { Env } from "@/types/hono";
 // ユーザー情報スキーマ
 const UserSchema = z
   .object({
-    id: z.string().uuid().openapi({ description: "ユーザーID" }),
+    id: z.uuid().openapi({ description: "ユーザーID" }),
     name: z.string().openapi({ description: "ユーザー名" }),
     email: z.email().openapi({ description: "メールアドレス" }),
   })
