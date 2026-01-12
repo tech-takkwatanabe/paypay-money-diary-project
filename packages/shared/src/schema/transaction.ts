@@ -2,29 +2,29 @@ import { z } from "zod";
 
 // レスポンスDTO
 export const TransactionResponseSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  date: z.string().datetime(),
+  id: z.uuid(),
+  userId: z.uuid(),
+  date: z.iso.datetime(),
   description: z.string(),
   amount: z.number(),
-  categoryId: z.string().uuid(),
+  categoryId: z.uuid(),
   categoryName: z.string(),
   categoryColor: z.string(),
   displayOrder: z.number(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 // リクエストDTO（更新）
 export const UpdateTransactionInputSchema = z.object({
-  categoryId: z.string().uuid({ message: "有効なカテゴリIDを指定してください。" }),
+  categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }),
 });
 
 // トランザクション一覧のクエリパラメータ
 export const TransactionListQuerySchema = z.object({
   year: z.string().optional(),
   month: z.string().optional(),
-  categoryId: z.string().uuid().optional(),
+  categoryId: z.uuid().optional(),
   search: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional(),
@@ -38,7 +38,7 @@ export const TransactionSummarySchema = z.object({
   }),
   categoryBreakdown: z.array(
     z.object({
-      categoryId: z.string().uuid().nullable(),
+      categoryId: z.uuid().nullable(),
       categoryName: z.string(),
       categoryColor: z.string(),
       displayOrder: z.number(),
@@ -53,7 +53,7 @@ export const TransactionSummarySchema = z.object({
         totalAmount: z.number(),
         categories: z.array(
           z.object({
-            categoryId: z.string().uuid().nullable(),
+            categoryId: z.uuid().nullable(),
             categoryName: z.string(),
             categoryColor: z.string(),
             displayOrder: z.number(),
