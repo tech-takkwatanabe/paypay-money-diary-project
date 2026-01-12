@@ -2,14 +2,14 @@ import { z } from "zod";
 
 // レスポンスDTO
 export const CategoryResponseSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
   color: z.string(),
   icon: z.string().nullable(),
   displayOrder: z.number(),
   isDefault: z.boolean(),
   isSystem: z.boolean(),
-  userId: z.string().uuid().nullable(),
+  userId: z.uuid().nullable(),
 });
 
 // リクエストDTO（作成）
