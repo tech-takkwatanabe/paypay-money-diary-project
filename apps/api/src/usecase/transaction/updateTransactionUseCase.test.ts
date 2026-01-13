@@ -33,13 +33,14 @@ describe("UpdateTransactionUseCase", () => {
       "cat-old",
       "Old",
       "#000000",
+      100,
       new Date(),
       undefined
     );
 
     (transactionRepository.findById as Mock<typeof transactionRepository.findById>).mockResolvedValue(mockTransaction);
     (transactionRepository.update as Mock<typeof transactionRepository.update>).mockResolvedValue(
-      new Transaction(id, userId, new Date(), "Store A", 1000, "cat-new", "New", "#FFFFFF", new Date(), undefined)
+      new Transaction(id, userId, new Date(), "Store A", 1000, "cat-new", "New", "#FFFFFF", 100, new Date(), undefined)
     );
 
     // Act
@@ -69,6 +70,7 @@ describe("UpdateTransactionUseCase", () => {
       "cat-1",
       "Food",
       "#FF0000",
+      100,
       new Date(),
       undefined
     );
