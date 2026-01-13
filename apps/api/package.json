@@ -6,7 +6,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "bun run src/db/seed.ts",
     "openapi:generate": "bun run src/scripts/generate-openapi.ts",
-    "lint": "eslint .",
+    "lint": "eslint . && pnpm type-check",
+    "type-check": "tsc --noEmit",
     "test": "bun test",
     "test:watch": "bun test --watch"
   },
@@ -30,6 +31,7 @@
     "@types/jsonwebtoken": "9.0.10",
     "@types/pg": "8.16.0",
     "drizzle-kit": "0.31.8",
-    "eslint": "9.39.2"
+    "eslint": "9.39.2",
+    "typescript": "^5.9.3"
   }
 }
