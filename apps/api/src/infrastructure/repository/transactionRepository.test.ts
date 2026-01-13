@@ -114,6 +114,7 @@ describe("TransactionRepository", () => {
         categoryId: "cat-1",
         categoryName: "Shopping",
         categoryColor: "#0000FF",
+        displayOrder: 1,
       };
 
       const mockInsertedRow = {
