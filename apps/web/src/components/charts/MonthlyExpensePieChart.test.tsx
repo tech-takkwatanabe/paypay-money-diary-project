@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MonthlyExpensePieChart } from "./MonthlyExpensePieChart";
-import type { CategoryBreakdown } from "@/api/models";
+import type { GetTransactionsSummary200CategoryBreakdownItem as CategoryBreakdown } from "@/api/models";
 
 // Mock react-apexcharts
 interface MockChartProps {
@@ -40,7 +40,7 @@ describe("MonthlyExpensePieChart", () => {
       categoryId: "cat1",
       categoryName: "食費",
       categoryColor: "#FF6384",
-      categoryIcon: null,
+      displayOrder: 1,
       totalAmount: 50000,
       transactionCount: 10,
     },
@@ -48,7 +48,7 @@ describe("MonthlyExpensePieChart", () => {
       categoryId: "cat2",
       categoryName: "交通費",
       categoryColor: "#36A2EB",
-      categoryIcon: null,
+      displayOrder: 2,
       totalAmount: 20000,
       transactionCount: 5,
     },
@@ -56,7 +56,7 @@ describe("MonthlyExpensePieChart", () => {
       categoryId: "cat3",
       categoryName: "娯楽",
       categoryColor: "#FFCE56",
-      categoryIcon: null,
+      displayOrder: 3,
       totalAmount: 30000,
       transactionCount: 8,
     },
@@ -117,7 +117,7 @@ describe("MonthlyExpensePieChart", () => {
         categoryId: "cat1",
         categoryName: "食費",
         categoryColor: "",
-        categoryIcon: null,
+        displayOrder: 1,
         totalAmount: 50000,
         transactionCount: 10,
       },
@@ -136,7 +136,7 @@ describe("MonthlyExpensePieChart", () => {
         categoryId: "cat1",
         categoryName: "食費",
         categoryColor: "#FF6384",
-        categoryIcon: null,
+        displayOrder: 1,
         totalAmount: 50000,
         transactionCount: 10,
       },
