@@ -2,7 +2,7 @@ import { ITransactionRepository } from "@/domain/repository/transactionRepositor
 
 export interface ReCategorizeTransactionsInput {
   userId: string;
-  year: number;
+  year?: number;
   month?: number;
 }
 
