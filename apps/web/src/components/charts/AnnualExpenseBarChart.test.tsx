@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { AnnualExpenseBarChart } from "./AnnualExpenseBarChart";
-import type { MonthlyBreakdown } from "@/api/models";
+import type { GetTransactionsSummary200MonthlyBreakdownItem as MonthlyBreakdown } from "@/api/models";
 
 // Mock react-apexcharts
 interface MockChartProps {
@@ -44,12 +44,14 @@ describe("AnnualExpenseBarChart", () => {
           categoryId: "cat1",
           categoryName: "食費",
           categoryColor: "#FF6384",
+          displayOrder: 1,
           amount: 50000,
         },
         {
           categoryId: "cat2",
           categoryName: "交通費",
           categoryColor: "#36A2EB",
+          displayOrder: 2,
           amount: 20000,
         },
       ],
@@ -62,6 +64,7 @@ describe("AnnualExpenseBarChart", () => {
           categoryId: "cat1",
           categoryName: "食費",
           categoryColor: "#FF6384",
+          displayOrder: 1,
           amount: 45000,
         },
       ],
@@ -150,6 +153,7 @@ describe("AnnualExpenseBarChart", () => {
             categoryId: null,
             categoryName: "その他",
             categoryColor: "#CCCCCC",
+            displayOrder: 100,
             amount: 10000,
           },
         ],
