@@ -65,6 +65,7 @@ export interface ITransactionRepository {
     categoryId: string;
     categoryName: string;
     categoryColor: string;
+    displayOrder: number;
   }): Promise<Transaction>;
 
   /**
@@ -85,7 +86,7 @@ export interface ITransactionRepository {
   /**
    * 指定された年月のトランザクションのカテゴリを再分類
    */
-  reCategorizeByRules(userId: string, year: number, month?: number): Promise<number>;
+  reCategorizeByRules(userId: string, year?: number, month?: number): Promise<number>;
 
   /**
    * 複数のトランザクションを一括作成
@@ -99,6 +100,7 @@ export interface ITransactionRepository {
       categoryId: string;
       categoryName: string;
       categoryColor: string;
+      displayOrder: number;
     }>
   ): Promise<Transaction[]>;
 
