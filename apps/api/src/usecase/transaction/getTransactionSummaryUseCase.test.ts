@@ -33,6 +33,7 @@ describe("GetTransactionSummaryUseCase", () => {
         "cat-1",
         "Food",
         "#FF0000",
+        100,
         new Date(),
         undefined
       ),
@@ -45,6 +46,7 @@ describe("GetTransactionSummaryUseCase", () => {
         "cat-2",
         "Shop",
         "#00FF00",
+        100,
         new Date(),
         undefined
       ),
