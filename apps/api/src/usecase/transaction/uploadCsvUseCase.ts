@@ -64,6 +64,7 @@ export class UploadCsvUseCase {
           categoryId: categoryMap.get(expense.merchant) ?? "",
           categoryName: "", // リポジトリ側で補完されるか、ここでは空で渡す
           categoryColor: "",
+          displayOrder: 100,
         });
 
         importedRows++;
