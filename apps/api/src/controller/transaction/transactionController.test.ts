@@ -24,7 +24,7 @@ describe("TransactionController", () => {
     // ユースケースをスパイ/モック
     spyOn(ListTransactionsUseCase.prototype, "execute").mockResolvedValue({
       data: [],
-      pagination: { page: 1, limit: 50, totalCount: 0, totalPages: 0 },
+      pagination: { page: 1, limit: 50, totalCount: 0, totalAmount: 0, totalPages: 0 },
     });
     spyOn(GetTransactionSummaryUseCase.prototype, "execute").mockResolvedValue({
       summary: { totalAmount: 0, transactionCount: 0 },
@@ -40,6 +40,7 @@ describe("TransactionController", () => {
       categoryId: "cat-1",
       categoryName: "Food",
       categoryColor: "#FF0000",
+      displayOrder: 1,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
