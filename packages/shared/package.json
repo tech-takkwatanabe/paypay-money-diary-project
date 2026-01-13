@@ -5,7 +5,9 @@
   "types": "./src/index.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "lint": "pnpm type-check",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.2.0",
