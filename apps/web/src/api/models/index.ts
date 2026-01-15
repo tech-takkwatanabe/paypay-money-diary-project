@@ -52,6 +52,8 @@ export * from "./postCategoriesBody";
 export * from "./postRules400";
 export * from "./postRules401";
 export * from "./postRules500";
+export * from "./postTransactions201";
+export * from "./postTransactionsBody";
 export * from "./postTransactionsReCategorize200";
 export * from "./postTransactionsReCategorizeBody";
 export * from "./postTransactionsUpload201";

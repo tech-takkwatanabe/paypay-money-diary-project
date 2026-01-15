@@ -32,12 +32,16 @@ import {
   getAvailableYearsRoute,
   reCategorizeRoute,
   updateTransactionRoute,
+  createTransactionRoute,
+  deleteTransactionRoute,
   type UploadCsvRoute,
   type ListTransactionsRoute,
   type GetSummaryRoute,
   type GetAvailableYearsRoute,
   type ReCategorizeRoute,
   type UpdateTransactionRoute,
+  type CreateTransactionRoute,
+  type DeleteTransactionRoute,
 } from "@/controller/transaction/transaction.routes";
 
 // Category routes
@@ -155,6 +159,30 @@ const updateTransactionDummy: RouteHandler<UpdateTransactionRoute> = async (c) =
   );
 };
 
+const createTransactionDummy: RouteHandler<CreateTransactionRoute> = async (c) => {
+  return c.json(
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      date: new Date().toISOString(),
+      description: "手動入力支出",
+      amount: 1000,
+      categoryId: "550e8400-e29b-41d4-a716-446655440002",
+      categoryName: "食費",
+      categoryColor: "#FF0000",
+      displayOrder: 1,
+      paymentMethod: "現金",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    201
+  );
+};
+
+const deleteTransactionDummy: RouteHandler<DeleteTransactionRoute> = async (c) => {
+  return c.body(null, 204);
+};
+
 // ===== Category dummy handlers =====
 const getCategoriesDummy: RouteHandler<GetCategoriesRoute> = async (c) => {
   return c.json({ data: [] }, 200);
@@ -252,6 +280,8 @@ app.openapi(getSummaryRoute, getSummaryDummy);
 app.openapi(getAvailableYearsRoute, getAvailableYearsDummy);
 app.openapi(reCategorizeRoute, reCategorizeDummy);
 app.openapi(updateTransactionRoute, updateTransactionDummy);
+app.openapi(createTransactionRoute, createTransactionDummy);
+app.openapi(deleteTransactionRoute, deleteTransactionDummy);
 
 app.openapi(getCategoriesRoute, getCategoriesDummy);
 app.openapi(createCategoryRoute, createCategoryDummy);
@@ -291,6 +321,6 @@ const yamlContent = YAML.stringify(doc);
 fs.writeFileSync("openapi.yml", yamlContent);
 console.log("✅ openapi.yml を生成しました");
 console.log("📝 認証API: 5エンドポイント");
-console.log("📝 取引API: 4エンドポイント");
+console.log("📝 取引API: 8エンドポイント");
 console.log("📝 カテゴリAPI: 4エンドポイント");
 console.log("📝 ルールAPI: 4エンドポイント");

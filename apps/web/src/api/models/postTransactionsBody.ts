@@ -6,7 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PutTransactionsIdBody = {
-  categoryId?: string;
-  amount?: number;
+export type PostTransactionsBody = {
+  date: string;
+  amount: number;
+  /** @minLength 1 */
+  description: string;
+  categoryId: string;
 };

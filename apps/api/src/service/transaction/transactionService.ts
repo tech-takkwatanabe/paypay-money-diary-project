@@ -29,7 +29,7 @@ export class TransactionService {
     const categoryMap = new Map<
       string,
       {
-        categoryId: string;
+        categoryId: string | null;
         categoryName: string;
         categoryColor: string;
         displayOrder: number;
@@ -74,7 +74,7 @@ export class TransactionService {
         categories: Map<
           string,
           {
-            categoryId: string;
+            categoryId: string | null;
             categoryName: string;
             categoryColor: string;
             displayOrder: number;

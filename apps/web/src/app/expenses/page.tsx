@@ -6,12 +6,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
-import { Search, ChevronDown, ChevronUp, LogOut, Upload, Filter, Pencil, Check, X } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  ChevronUp,
+  LogOut,
+  Upload,
+  Filter,
+  Pencil,
+  Check,
+  X,
+  PlusCircle,
+  Trash2,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import {
   getTransactions,
   getTransactionsAvailableYears,
   putTransactionsId,
+  deleteTransactionsId,
 } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type {
@@ -33,6 +47,7 @@ export default function ExpensesPage() {
   // フィルタ状態
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [merchantSearch, setMerchantSearch] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
@@ -41,6 +56,7 @@ export default function ExpensesPage() {
   // 編集状態
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCategoryId, setEditCategoryId] = useState<string>("");
+  const [editAmount, setEditAmount] = useState<string>("");
 
   const limit = 50;
 
@@ -111,10 +127,12 @@ export default function ExpensesPage() {
     setCurrentPage(1);
   };
 
-  const handleUpdateCategory = async (id: string) => {
+  const handleUpdateTransaction = async (id: string) => {
     try {
+      const amount = editAmount !== "" ? parseInt(editAmount, 10) : undefined;
       const response = await putTransactionsId(id, {
         categoryId: editCategoryId,
+        amount: isNaN(Number(amount)) ? undefined : amount,
       });
 
       if (response.status === 200) {
@@ -123,7 +141,24 @@ export default function ExpensesPage() {
         setEditingId(null);
       }
     } catch (error) {
-      console.error("Failed to update category:", error);
+      console.error("Failed to update transaction:", error);
+    }
+  };
+
+  const handleDeleteTransaction = async (id: string) => {
+    if (!confirm("この取引を削除してもよろしいですか？")) {
+      return;
+    }
+
+    try {
+      const response = await deleteTransactionsId(id);
+      if (response.status === 204) {
+        setTransactions((prev) => prev.filter((t) => t.id !== id));
+        // 総額や件数も更新するために再取得
+        fetchTransactions();
+      }
+    } catch (error) {
+      console.error("Failed to delete transaction:", error);
     }
   };
 
@@ -168,6 +203,10 @@ export default function ExpensesPage() {
             <Upload className="h-4 w-4" />
             <span className="hidden sm:inline">CSV アップロード</span>
           </Link>
+          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+            <PlusCircle className="h-4 w-4" />
+            <span className="hidden sm:inline">手動入力</span>
+          </Button>
           <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
           <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
@@ -336,7 +375,12 @@ export default function ExpensesPage() {
                   </tr>
                 ) : (
                   transactions.map((t) => (
-                    <tr key={t.id} className="hover:bg-muted/30 transition-colors">
+                    <tr
+                      key={t.id}
+                      className={`transition-colors ${
+                        editingId === t.id ? "bg-red-50/50 dark:bg-red-900/10" : "hover:bg-muted/30"
+                      }`}
+                    >
                       <td className="px-4 py-3 text-sm whitespace-nowrap">{formatDate(t.date)}</td>
                       <td className="px-4 py-3 text-sm font-medium">{t.description}</td>
                       <td className="px-4 py-3 text-sm">
@@ -354,18 +398,6 @@ export default function ExpensesPage() {
                                 </option>
                               ))}
                             </SelectNative>
-                            <button
-                              onClick={() => handleUpdateCategory(t.id)}
-                              className="p-1 text-green-600 hover:bg-green-50 rounded"
-                            >
-                              <Check className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="p-1 text-gray-400 hover:bg-gray-50 rounded"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2">
@@ -377,17 +409,69 @@ export default function ExpensesPage() {
                           </div>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm font-bold text-right">{formatCurrency(t.amount)}</td>
+                      <td className="px-4 py-3 text-sm font-bold text-right">
+                        {editingId === t.id && t.paymentMethod === "現金" ? (
+                          <Input
+                            type="number"
+                            variant="filter"
+                            value={editAmount}
+                            onChange={(e) => setEditAmount(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleUpdateTransaction(t.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            className="w-24 text-right ml-auto"
+                            step="1"
+                            autoFocus
+                          />
+                        ) : (
+                          formatCurrency(t.amount)
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-sm text-center">
-                        <button
-                          onClick={() => {
-                            setEditingId(t.id);
-                            setEditCategoryId(t.categoryId || "");
-                          }}
-                          className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center justify-center gap-1">
+                          {editingId === t.id ? (
+                            <>
+                              <button
+                                onClick={() => handleUpdateTransaction(t.id)}
+                                className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                                title="保存"
+                              >
+                                <Check className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => setEditingId(null)}
+                                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                                title="キャンセル"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setEditingId(t.id);
+                                  setEditCategoryId(t.categoryId || "");
+                                  setEditAmount(t.amount.toString());
+                                }}
+                                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                                title="編集"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              {t.paymentMethod === "現金" && (
+                                <button
+                                  onClick={() => handleDeleteTransaction(t.id)}
+                                  className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="削除"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -422,6 +506,7 @@ export default function ExpensesPage() {
           )}
         </Card>
       </main>
+      <ManualEntryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={fetchTransactions} />
     </div>
   );
 }

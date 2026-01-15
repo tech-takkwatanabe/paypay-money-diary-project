@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
-import { DollarSign, TrendingUp, Wallet, LogOut, Upload } from "lucide-react";
+import { DollarSign, TrendingUp, Wallet, LogOut, Upload, PlusCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import { getTransactionsSummary, getTransactionsAvailableYears } from "@/api/generated/transactions/transactions";
 import type {
   GetTransactionsSummary200 as SummaryResponse,
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 利用可能な年を取得
   useEffect(() => {
@@ -42,6 +44,12 @@ export default function Dashboard() {
   }, []);
 
   // サマリーデータを取得
+  const handleModalSuccess = () => {
+    if (selectedYear) {
+      fetchSummary(selectedYear);
+    }
+  };
+
   const fetchSummary = useCallback(async (year: number) => {
     setIsLoading(true);
     try {
@@ -119,6 +127,10 @@ export default function Dashboard() {
             <Upload className="h-4 w-4" />
             <span className="hidden sm:inline">CSV アップロード</span>
           </Link>
+          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+            <PlusCircle className="h-4 w-4" />
+            <span className="hidden sm:inline">手動入力</span>
+          </Button>
           <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
           <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
@@ -208,6 +220,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+      <ManualEntryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleModalSuccess} />
     </div>
   );
 }

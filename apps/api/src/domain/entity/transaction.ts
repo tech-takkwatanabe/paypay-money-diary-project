@@ -9,10 +9,11 @@ export class Transaction {
     public readonly date: Date,
     public readonly description: string,
     public readonly amount: number,
-    public readonly categoryId: string,
+    public readonly categoryId: string | null,
     public readonly categoryName: string,
     public readonly categoryColor: string,
     public readonly displayOrder: number = 0,
+    public readonly paymentMethod: string | null = null,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date
   ) {}
@@ -40,14 +41,14 @@ export class Transaction {
   /**
    * 指定されたカテゴリに属しているかどうか
    */
-  belongsToCategory(categoryId: string): boolean {
+  belongsToCategory(categoryId: string | null): boolean {
     return this.categoryId === categoryId;
   }
 
   /**
    * カテゴリを変更
    */
-  changeCategory(categoryId: string, categoryName: string, categoryColor: string): Transaction {
+  changeCategory(categoryId: string | null, categoryName: string, categoryColor: string): Transaction {
     return new Transaction(
       this.id,
       this.userId,
@@ -58,6 +59,7 @@ export class Transaction {
       categoryName,
       categoryColor,
       this.displayOrder,
+      this.paymentMethod,
       this.createdAt,
       new Date()
     );
@@ -77,6 +79,7 @@ export class Transaction {
       categoryName: this.categoryName,
       categoryColor: this.categoryColor,
       displayOrder: this.displayOrder,
+      paymentMethod: this.paymentMethod,
       createdAt: this.createdAt?.toISOString() ?? new Date().toISOString(),
       updatedAt: this.updatedAt?.toISOString() ?? new Date().toISOString(),
     };

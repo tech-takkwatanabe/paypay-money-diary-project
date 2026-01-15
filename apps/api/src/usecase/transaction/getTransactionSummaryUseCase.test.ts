@@ -34,6 +34,7 @@ describe("GetTransactionSummaryUseCase", () => {
         "Food",
         "#FF0000",
         100,
+        null,
         new Date(),
         undefined
       ),
@@ -47,6 +48,7 @@ describe("GetTransactionSummaryUseCase", () => {
         "Shop",
         "#00FF00",
         100,
+        null,
         new Date(),
         undefined
       ),

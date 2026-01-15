@@ -41,6 +41,7 @@ describe("TransactionController", () => {
       categoryName: "Food",
       categoryColor: "#FF0000",
       displayOrder: 1,
+      paymentMethod: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });

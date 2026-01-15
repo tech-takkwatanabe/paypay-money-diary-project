@@ -8,6 +8,7 @@ import {
   UploadCsvResponseSchema,
   ReCategorizeInputSchema,
   ReCategorizeResponseSchema,
+  CreateTransactionInputSchema,
 } from "@paypay-money-diary/shared";
 
 export type ListTransactionsRoute = typeof listTransactionsRoute;
@@ -184,6 +185,57 @@ export const uploadCsvRoute = createRoute({
   security: [{ Cookie: [] }],
 });
 
+export type CreateTransactionRoute = typeof createTransactionRoute;
+export const createTransactionRoute = createRoute({
+  method: "post",
+  path: "/transactions",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: CreateTransactionInputSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      content: {
+        "application/json": {
+          schema: TransactionResponseSchema,
+        },
+      },
+      description: "トランザクションを作成",
+    },
+  },
+  tags: ["Transactions"],
+  security: [{ Cookie: [] }],
+});
+
+export type DeleteTransactionRoute = typeof deleteTransactionRoute;
+export const deleteTransactionRoute = createRoute({
+  method: "delete",
+  path: "/transactions/{id}",
+  request: {
+    params: z.object({
+      id: z.uuid().openapi({ example: "550e8400-e29b-41d4-a716-446655440000" }),
+    }),
+  },
+  responses: {
+    204: {
+      description: "トランザクションを削除",
+    },
+    404: {
+      description: "トランザクションが見つかりません",
+    },
+    403: {
+      description: "権限がありません",
+    },
+  },
+  tags: ["Transactions"],
+  security: [{ Cookie: [] }],
+});
+
 // 登録用関数
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { TransactionController } from "./transactionController";
@@ -211,4 +263,6 @@ export const registerTransactionRoutes = (app: OpenAPIHono<Env>) => {
   app.openapi(reCategorizeRoute, controller.reCategorize);
   app.openapi(getAvailableYearsRoute, controller.getAvailableYears);
   app.openapi(uploadCsvRoute, controller.uploadCsv);
+  app.openapi(createTransactionRoute, controller.create);
+  app.openapi(deleteTransactionRoute, controller.delete);
 };
