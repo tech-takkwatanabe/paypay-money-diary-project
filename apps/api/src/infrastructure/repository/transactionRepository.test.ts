@@ -140,6 +140,48 @@ describe("TransactionRepository", () => {
       expect(transaction.description).toBe(input.description);
       expect(transaction.categoryName).toBe(input.categoryName);
     });
+
+    it("should insert transaction with externalTransactionId", async () => {
+      const input = {
+        userId: "user-123",
+        date: new Date(),
+        description: "PayPay Transaction",
+        amount: 1000,
+        categoryId: "cat-1",
+        categoryName: "Food",
+        categoryColor: "#FF0000",
+        displayOrder: 1,
+        externalTransactionId: "paypay-tx-12345",
+      };
+
+      const mockInsertedRow = {
+        id: "new-id",
+        userId: input.userId,
+        transactionDate: input.date,
+        merchant: input.description,
+        amount: input.amount,
+        categoryId: input.categoryId,
+        externalTransactionId: input.externalTransactionId,
+        createdAt: new Date(),
+      };
+
+      const queryChain = {
+        values: mock().mockReturnThis(),
+        returning: mock().mockImplementation(() => Promise.resolve([mockInsertedRow])),
+      };
+
+      const insertSpy = spyOn(db, "insert").mockImplementation(() => queryChain as unknown as never);
+
+      const transaction = await repository.create(input);
+
+      expect(transaction.id).toBe("new-id");
+      expect(insertSpy).toHaveBeenCalled();
+      expect(queryChain.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          externalTransactionId: "paypay-tx-12345",
+        })
+      );
+    });
   });
 
   describe("update", () => {
@@ -208,6 +250,36 @@ describe("TransactionRepository", () => {
       const years = await repository.getAvailableYears("user-123");
 
       expect(years).toEqual([2023, 2024]);
+    });
+  });
+
+  describe("existsByExternalId", () => {
+    it("should return true if transaction exists", async () => {
+      const queryChain = {
+        from: mock().mockReturnThis(),
+        where: mock().mockReturnThis(),
+        limit: mock().mockImplementation(() => Promise.resolve([{ id: "tx-123" }])),
+      };
+
+      spyOn(db, "select").mockImplementation(() => queryChain as unknown as never);
+
+      const exists = await repository.existsByExternalId("user-123", "paypay-tx-12345");
+
+      expect(exists).toBe(true);
+    });
+
+    it("should return false if transaction does not exist", async () => {
+      const queryChain = {
+        from: mock().mockReturnThis(),
+        where: mock().mockReturnThis(),
+        limit: mock().mockImplementation(() => Promise.resolve([])),
+      };
+
+      spyOn(db, "select").mockImplementation(() => queryChain as unknown as never);
+
+      const exists = await repository.existsByExternalId("user-123", "nonexistent-tx");
+
+      expect(exists).toBe(false);
     });
   });
 });

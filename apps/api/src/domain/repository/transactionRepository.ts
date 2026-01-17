@@ -67,6 +67,7 @@ export interface ITransactionRepository {
     categoryColor: string;
     displayOrder: number;
     paymentMethod?: string | null;
+    externalTransactionId?: string;
   }): Promise<Transaction>;
 
   /**
@@ -103,6 +104,7 @@ export interface ITransactionRepository {
       categoryColor: string;
       displayOrder: number;
       paymentMethod?: string | null;
+      externalTransactionId?: string;
     }>
   ): Promise<Transaction[]>;
 

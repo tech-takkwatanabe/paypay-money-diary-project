@@ -232,6 +232,7 @@ export class TransactionRepository implements ITransactionRepository {
     categoryColor: string;
     displayOrder: number;
     paymentMethod?: string | null;
+    externalTransactionId?: string;
   }): Promise<Transaction> {
     const results = await db
       .insert(expenses)
@@ -242,6 +243,7 @@ export class TransactionRepository implements ITransactionRepository {
         amount: transaction.amount,
         categoryId: transaction.categoryId,
         paymentMethod: transaction.paymentMethod,
+        externalTransactionId: transaction.externalTransactionId,
       })
       .returning();
 
@@ -404,6 +406,7 @@ export class TransactionRepository implements ITransactionRepository {
       categoryColor: string;
       displayOrder: number;
       paymentMethod?: string | null;
+      externalTransactionId?: string;
     }>
   ): Promise<Transaction[]> {
     if (transactions.length === 0) {
@@ -417,6 +420,7 @@ export class TransactionRepository implements ITransactionRepository {
       amount: t.amount,
       categoryId: t.categoryId,
       paymentMethod: t.paymentMethod,
+      externalTransactionId: t.externalTransactionId,
     }));
 
     const results = await db.insert(expenses).values(values).returning();
