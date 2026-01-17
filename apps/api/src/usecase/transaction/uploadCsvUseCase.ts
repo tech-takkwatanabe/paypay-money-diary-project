@@ -65,6 +65,7 @@ export class UploadCsvUseCase {
           categoryName: "", // リポジトリ側で補完されるか、ここでは空で渡す
           categoryColor: "",
           displayOrder: 100,
+          externalTransactionId: expense.externalTransactionId,
         });
 
         importedRows++;
