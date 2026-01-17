@@ -129,11 +129,23 @@ export default function ExpensesPage() {
 
   const handleUpdateTransaction = async (id: string) => {
     try {
-      const amount = editAmount !== "" ? parseInt(editAmount, 10) : undefined;
-      const response = await putTransactionsId(id, {
+      // 現在のトランザクションを取得
+      const currentTransaction = transactions.find((t) => t.id === id);
+      if (!currentTransaction) return;
+
+      // 現金の場合のみ金額を含める
+      const updateData: { categoryId: string; amount?: number } = {
         categoryId: editCategoryId,
-        amount: isNaN(Number(amount)) ? undefined : amount,
-      });
+      };
+
+      if (currentTransaction.paymentMethod === "現金" && editAmount !== "") {
+        const amount = parseInt(editAmount, 10);
+        if (!isNaN(amount)) {
+          updateData.amount = amount;
+        }
+      }
+
+      const response = await putTransactionsId(id, updateData);
 
       if (response.status === 200) {
         // ローカルの状態を更新
