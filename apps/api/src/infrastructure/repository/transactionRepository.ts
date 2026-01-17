@@ -227,6 +227,7 @@ export class TransactionRepository implements ITransactionRepository {
     categoryName: string;
     categoryColor: string;
     displayOrder: number;
+    externalTransactionId?: string;
   }): Promise<Transaction> {
     const results = await db
       .insert(expenses)
@@ -236,6 +237,7 @@ export class TransactionRepository implements ITransactionRepository {
         merchant: transaction.description,
         amount: transaction.amount,
         categoryId: transaction.categoryId,
+        externalTransactionId: transaction.externalTransactionId,
       })
       .returning();
 
@@ -372,6 +374,7 @@ export class TransactionRepository implements ITransactionRepository {
       categoryName: string;
       categoryColor: string;
       displayOrder: number;
+      externalTransactionId?: string;
     }>
   ): Promise<Transaction[]> {
     if (transactions.length === 0) {
@@ -384,6 +387,7 @@ export class TransactionRepository implements ITransactionRepository {
       merchant: t.description,
       amount: t.amount,
       categoryId: t.categoryId,
+      externalTransactionId: t.externalTransactionId,
     }));
 
     const results = await db.insert(expenses).values(values).returning();
