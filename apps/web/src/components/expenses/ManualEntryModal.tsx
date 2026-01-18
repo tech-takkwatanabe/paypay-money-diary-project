@@ -87,7 +87,7 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
         <DialogHeader>
           <DialogTitle>手動支出入力</DialogTitle>
           <DialogDescription>
-            手動で支出データを登録します。支払い方法は自動的に「現金」として登録されます。
+            手動で支出データを登録します。支払い方法は自動的に「手動」として登録されます。
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
