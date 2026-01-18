@@ -24,7 +24,7 @@ export class CreateTransactionUseCase {
       categoryName: category.name,
       categoryColor: category.color,
       displayOrder: category.displayOrder,
-      paymentMethod: "現金", // 手動入力は常に「現金」
+      paymentMethod: "手動",
     });
 
     return transaction.toResponse();
