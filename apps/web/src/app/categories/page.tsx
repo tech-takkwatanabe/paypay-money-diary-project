@@ -162,7 +162,12 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`「${name}」を削除しますか？\nこのカテゴリに紐づく支出は「その他」に移動されます。`)) return;
+    if (
+      !confirm(
+        `「${name}」を削除しますか？\n\n・このカテゴリに紐づく支出は「その他」に移動されます。\n・このカテゴリを使用した自動分類ルールも削除されます。`
+      )
+    )
+      return;
 
     try {
       const response = await deleteCategoriesId(id);
