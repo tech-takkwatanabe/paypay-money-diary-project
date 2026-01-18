@@ -24,13 +24,7 @@ export class DeleteCategoryUseCase {
     // 権限と削除可能性のチェック
     const _category = await this.categoryService.ensureUserCanDelete(categoryId, userId);
 
-    // 1. ルールに紐づいているか確認
-    const rules = await this.ruleRepository.findByCategoryId(categoryId, userId);
-    if (rules.length > 0) {
-      throw new Error("Cannot delete category linked to rules. Please delete or update the rules first.");
-    }
-
-    // 2. 「その他」カテゴリを取得（移行先）
+    // 1. 「その他」カテゴリを取得（移行先）
     const otherCategory = await this.categoryRepository.findByName(userId, "その他");
     if (!otherCategory) {
       throw new Error("'Other' category not found. Cannot migrate transactions.");
