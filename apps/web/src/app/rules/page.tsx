@@ -184,9 +184,6 @@ export default function RulesPage() {
     setError("");
   };
 
-  const systemRules = rules.filter((r) => r.isSystem);
-  const userRules = rules.filter((r) => !r.isSystem);
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
@@ -267,21 +264,18 @@ export default function RulesPage() {
           </Card>
         )}
 
-        {/* ユーザールール */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg">マイルール</CardTitle>
-          </CardHeader>
-          <CardContent>
+        {/* ルール一覧 */}
+        <Card>
+          <CardContent className="pt-6">
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
               </div>
-            ) : userRules.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">カスタムルールはありません</p>
+            ) : rules.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">ルールはまだありません</p>
             ) : (
               <div className="divide-y dark:divide-gray-700">
-                {userRules.map((rule) => (
+                {rules.map((rule) => (
                   <div key={rule.id} className="py-4">
                     {editingId === rule.id ? (
                       <div className="space-y-4">
@@ -365,106 +359,6 @@ export default function RulesPage() {
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* システムルール */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-lg">システムルール</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="divide-y dark:divide-gray-700">
-              {systemRules.map((rule) => (
-                <div key={rule.id} className="py-4">
-                  {editingId === rule.id ? (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input
-                          type="text"
-                          variant="filter"
-                          value={formData.keyword}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              keyword: e.target.value,
-                            })
-                          }
-                        />
-                        <SelectNative
-                          variant="filter"
-                          value={formData.categoryId}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              categoryId: e.target.value,
-                            })
-                          }
-                        >
-                          {categories.map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </option>
-                          ))}
-                        </SelectNative>
-                      </div>
-                      {error && <p className="text-sm text-red-500">{error}</p>}
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleUpdate(rule.id)}
-                          disabled={isSubmitting}
-                          className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
-                        >
-                          <Check className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={cancelEdit}
-                          className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                        >
-                          <X className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-8">
-                        <div className="min-w-[120px]">
-                          <span className="text-sm text-gray-400 block">キーワード</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{rule.keyword}</span>
-                            <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded uppercase tracking-wider">
-                              System
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <span className="text-sm text-gray-400 block">カテゴリ</span>
-                          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">
-                            {rule.categoryName}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => startEdit(rule)}
-                          className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(rule.id, rule.keyword)}
-                          className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </main>
