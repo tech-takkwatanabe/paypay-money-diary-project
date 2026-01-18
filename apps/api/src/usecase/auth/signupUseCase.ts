@@ -3,6 +3,7 @@ import { IUserRepository } from "@/domain/repository/userRepository";
 import { CreateUserInput } from "@paypay-money-diary/shared";
 import { AuthService } from "@/service/auth/authService";
 import { PasswordService } from "@/service/auth/passwordService";
+import { CategoryInitializationService } from "@/service/category/categoryInitializationService";
 import { User } from "@/domain/entity/user";
 
 /**
@@ -13,7 +14,8 @@ export class SignupUseCase {
   constructor(
     private userRepository: IUserRepository,
     private authService: AuthService,
-    private passwordService: PasswordService
+    private passwordService: PasswordService,
+    private categoryInitializationService: CategoryInitializationService
   ) {}
 
   async execute(input: CreateUserInput): Promise<User> {
@@ -36,7 +38,10 @@ export class SignupUseCase {
       uuid,
     });
 
-    // 5. Entityを返す
+    // 5. カテゴリとルールの初期化
+    await this.categoryInitializationService.initializeForUser(user.id);
+
+    // 6. Entityを返す
     return user;
   }
 }
