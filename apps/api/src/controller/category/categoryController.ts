@@ -1,11 +1,14 @@
 import { Context } from "hono";
 import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
+import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
+import { TransactionRepository } from "@/infrastructure/repository/transactionRepository";
 import { CategoryService } from "@/service/category/categoryService";
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
 import { UpdateCategoryUseCase } from "@/usecase/category/updateCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/usecase/category/deleteCategoryUseCase";
-import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
+import { ReorderCategoriesUseCase } from "@/usecase/category/reorderCategoriesUseCase";
+import { CreateCategoryInput, UpdateCategoryInput, ReorderCategoriesInput } from "@paypay-money-diary/shared";
 
 /**
  * Category Controller
@@ -101,6 +104,27 @@ export class CategoryController {
   }
 
   /**
+   * カテゴリ並び替えハンドラー
+   */
+  async reorder(c: Context) {
+    const userPayload = c.get("user");
+    if (!userPayload || !userPayload.userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const reorderCategoriesUseCase = new ReorderCategoriesUseCase();
+    const input = c.req.valid("json" as never) as ReorderCategoriesInput;
+
+    try {
+      await reorderCategoriesUseCase.execute(userPayload.userId, input.categoryIds);
+      return c.json({ message: "Categories reordered successfully" }, 200);
+    } catch (error) {
+      console.error("Reorder categories error:", error);
+      return c.json({ error: "Internal Server Error" }, 500);
+    }
+  }
+
+  /**
    * カテゴリ削除ハンドラー
    */
   async delete(c: Context) {
@@ -115,8 +139,15 @@ export class CategoryController {
     }
 
     const categoryRepository = new CategoryRepository();
+    const ruleRepository = new RuleRepository();
+    const transactionRepository = new TransactionRepository();
     const categoryService = new CategoryService(categoryRepository);
-    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, categoryService);
+    const deleteCategoryUseCase = new DeleteCategoryUseCase(
+      categoryRepository,
+      ruleRepository,
+      transactionRepository,
+      categoryService
+    );
 
     try {
       await deleteCategoryUseCase.execute(categoryId, userPayload.userId);
