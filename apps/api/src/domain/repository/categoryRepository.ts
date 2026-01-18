@@ -17,6 +17,11 @@ export interface ICategoryRepository {
   findById(id: string): Promise<Category | null>;
 
   /**
+   * ユーザーIDと名前でカテゴリを検索
+   */
+  findByName(userId: string, name: string): Promise<Category | null>;
+
+  /**
    * カテゴリを作成
    */
   create(userId: string, input: CreateCategoryInput): Promise<Category>;
