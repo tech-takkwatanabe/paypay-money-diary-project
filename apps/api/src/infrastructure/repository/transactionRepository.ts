@@ -60,6 +60,7 @@ export class TransactionRepository implements ITransactionRepository {
         categoryName: categories.name,
         categoryColor: categories.color,
         displayOrder: categories.displayOrder,
+        paymentMethod: expenses.paymentMethod,
         createdAt: expenses.createdAt,
       })
       .from(expenses)
@@ -87,6 +88,7 @@ export class TransactionRepository implements ITransactionRepository {
           row.categoryName ?? "未分類",
           row.categoryColor ?? "#CCCCCC",
           row.displayOrder ?? 100,
+          row.paymentMethod,
           row.createdAt ?? undefined,
           undefined
         )
@@ -108,6 +110,7 @@ export class TransactionRepository implements ITransactionRepository {
         categoryName: categories.name,
         categoryColor: categories.color,
         displayOrder: categories.displayOrder,
+        paymentMethod: expenses.paymentMethod,
         createdAt: expenses.createdAt,
       })
       .from(expenses)
@@ -130,6 +133,7 @@ export class TransactionRepository implements ITransactionRepository {
       row.categoryName ?? "未分類",
       row.categoryColor ?? "#CCCCCC",
       row.displayOrder ?? 100,
+      row.paymentMethod,
       row.createdAt ?? undefined,
       undefined
     );
@@ -227,6 +231,7 @@ export class TransactionRepository implements ITransactionRepository {
     categoryName: string;
     categoryColor: string;
     displayOrder: number;
+    paymentMethod?: string | null;
     externalTransactionId?: string;
   }): Promise<Transaction> {
     const results = await db
@@ -237,6 +242,7 @@ export class TransactionRepository implements ITransactionRepository {
         merchant: transaction.description,
         amount: transaction.amount,
         categoryId: transaction.categoryId,
+        paymentMethod: transaction.paymentMethod,
         externalTransactionId: transaction.externalTransactionId,
       })
       .returning();
@@ -252,6 +258,7 @@ export class TransactionRepository implements ITransactionRepository {
       transaction.categoryName,
       transaction.categoryColor,
       transaction.displayOrder,
+      row.paymentMethod,
       row.createdAt ?? undefined,
       undefined
     );
@@ -261,35 +268,59 @@ export class TransactionRepository implements ITransactionRepository {
    * トランザクションを更新
    */
   async update(id: string, input: UpdateTransactionInput): Promise<Transaction> {
-    // カテゴリ情報を取得
-    const category = await db.select().from(categories).where(eq(categories.id, input.categoryId)).limit(1);
+    // 更新データを構築
+    const updateData: { categoryId?: string; amount?: number } = {};
+    if (input.categoryId) updateData.categoryId = input.categoryId;
+    if (input.amount !== undefined) updateData.amount = input.amount;
 
-    if (category.length === 0) {
-      throw new Error("Category not found");
+    // トランザクションを更新
+    const results = await db.update(expenses).set(updateData).where(eq(expenses.id, id)).returning();
+
+    if (results.length === 0) {
+      throw new Error("Transaction not found");
     }
 
-    const results = await db
-      .update(expenses)
-      .set({
-        categoryId: input.categoryId,
-      })
-      .where(eq(expenses.id, id))
-      .returning();
-
     const row = results[0];
-    return new Transaction(
-      row.id,
-      row.userId,
-      row.transactionDate,
-      row.merchant,
-      row.amount,
-      input.categoryId,
-      category[0].name,
-      category[0].color,
-      category[0].displayOrder,
-      row.createdAt ?? undefined,
-      undefined
-    );
+
+    // カテゴリ情報を取得
+    if (row.categoryId) {
+      const category = await db.select().from(categories).where(eq(categories.id, row.categoryId)).limit(1);
+
+      if (category.length === 0) {
+        throw new Error("Category not found");
+      }
+
+      return new Transaction(
+        row.id,
+        row.userId,
+        row.transactionDate,
+        row.merchant,
+        row.amount,
+        row.categoryId,
+        category[0].name,
+        category[0].color,
+        category[0].displayOrder,
+        row.paymentMethod,
+        row.createdAt ?? undefined,
+        undefined
+      );
+    } else {
+      // 未分類の場合
+      return new Transaction(
+        row.id,
+        row.userId,
+        row.transactionDate,
+        row.merchant,
+        row.amount,
+        null,
+        "未分類",
+        "#B8B8B8",
+        100,
+        row.paymentMethod,
+        row.createdAt ?? undefined,
+        undefined
+      );
+    }
   }
 
   /**
@@ -374,6 +405,7 @@ export class TransactionRepository implements ITransactionRepository {
       categoryName: string;
       categoryColor: string;
       displayOrder: number;
+      paymentMethod?: string | null;
       externalTransactionId?: string;
     }>
   ): Promise<Transaction[]> {
@@ -387,6 +419,7 @@ export class TransactionRepository implements ITransactionRepository {
       merchant: t.description,
       amount: t.amount,
       categoryId: t.categoryId,
+      paymentMethod: t.paymentMethod,
       externalTransactionId: t.externalTransactionId,
     }));
 
@@ -404,6 +437,7 @@ export class TransactionRepository implements ITransactionRepository {
           transactions[index].categoryName,
           transactions[index].categoryColor,
           transactions[index].displayOrder,
+          row.paymentMethod,
           row.createdAt ?? undefined,
           undefined
         )

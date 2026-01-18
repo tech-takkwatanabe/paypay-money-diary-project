@@ -365,6 +365,8 @@ paths:
     post:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       requestBody:
         content:
           multipart/form-data:
@@ -410,6 +412,8 @@ paths:
     get:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -470,6 +474,7 @@ paths:
                           type: number
                         categoryId:
                           type: string
+                          nullable: true
                           format: uuid
                         categoryName:
                           type: string
@@ -477,6 +482,9 @@ paths:
                           type: string
                         displayOrder:
                           type: number
+                        paymentMethod:
+                          type: string
+                          nullable: true
                         createdAt:
                           type: string
                           format: date-time
@@ -517,10 +525,91 @@ paths:
                 required:
                   - data
                   - pagination
+    post:
+      tags:
+        - Transactions
+      security:
+        - Cookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                amount:
+                  type: integer
+                description:
+                  type: string
+                  minLength: 1
+                categoryId:
+                  type: string
+                  format: uuid
+              required:
+                - date
+                - amount
+                - description
+                - categoryId
+      responses:
+        "201":
+          description: トランザクションを作成
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  date:
+                    type: string
+                    format: date-time
+                  description:
+                    type: string
+                  amount:
+                    type: number
+                  categoryId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  categoryName:
+                    type: string
+                  categoryColor:
+                    type: string
+                  displayOrder:
+                    type: number
+                  paymentMethod:
+                    type: string
+                    nullable: true
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                required:
+                  - id
+                  - userId
+                  - date
+                  - description
+                  - amount
+                  - categoryId
+                  - categoryName
+                  - categoryColor
+                  - displayOrder
+                  - createdAt
+                  - updatedAt
   /transactions/summary:
     get:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -621,6 +710,8 @@ paths:
     get:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       responses:
         "200":
           description: 利用可能な年度を取得
@@ -639,6 +730,8 @@ paths:
     post:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       requestBody:
         content:
           application/json:
@@ -672,6 +765,8 @@ paths:
     put:
       tags:
         - Transactions
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -689,8 +784,8 @@ paths:
                 categoryId:
                   type: string
                   format: uuid
-              required:
-                - categoryId
+                amount:
+                  type: integer
       responses:
         "200":
           description: トランザクションを更新
@@ -714,6 +809,7 @@ paths:
                     type: number
                   categoryId:
                     type: string
+                    nullable: true
                     format: uuid
                   categoryName:
                     type: string
@@ -721,6 +817,9 @@ paths:
                     type: string
                   displayOrder:
                     type: number
+                  paymentMethod:
+                    type: string
+                    nullable: true
                   createdAt:
                     type: string
                     format: date-time
@@ -743,11 +842,33 @@ paths:
           description: 権限がありません
         "404":
           description: トランザクションが見つかりません
+    delete:
+      tags:
+        - Transactions
+      security:
+        - Cookie: []
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440000
+          required: true
+          name: id
+          in: path
+      responses:
+        "204":
+          description: トランザクションを削除
+        "403":
+          description: 権限がありません
+        "404":
+          description: トランザクションが見つかりません
   /categories:
     get:
       summary: カテゴリ一覧取得
       tags:
         - Categories
+      security:
+        - Cookie: []
       responses:
         "200":
           description: 取得成功
@@ -832,6 +953,8 @@ paths:
       summary: カテゴリ作成
       tags:
         - Categories
+      security:
+        - Cookie: []
       requestBody:
         content:
           application/json:
@@ -942,6 +1065,8 @@ paths:
       summary: カテゴリ更新
       tags:
         - Categories
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -1079,6 +1204,8 @@ paths:
       summary: カテゴリ削除
       tags:
         - Categories
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -1164,6 +1291,8 @@ paths:
       summary: ルール一覧取得
       tags:
         - Rules
+      security:
+        - Cookie: []
       responses:
         "200":
           description: 取得成功
@@ -1206,6 +1335,8 @@ paths:
       summary: ルール作成
       tags:
         - Rules
+      security:
+        - Cookie: []
       requestBody:
         content:
           application/json:
@@ -1259,6 +1390,8 @@ paths:
       summary: ルール更新
       tags:
         - Rules
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string
@@ -1342,6 +1475,8 @@ paths:
       summary: ルール削除
       tags:
         - Rules
+      security:
+        - Cookie: []
       parameters:
         - schema:
             type: string

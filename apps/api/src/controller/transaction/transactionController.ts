@@ -5,6 +5,8 @@ import { UpdateTransactionUseCase } from "@/usecase/transaction/updateTransactio
 import { ReCategorizeTransactionsUseCase } from "@/usecase/transaction/reCategorizeTransactionsUseCase";
 import { GetAvailableYearsUseCase } from "@/usecase/transaction/getAvailableYearsUseCase";
 import { UploadCsvUseCase } from "@/usecase/transaction/uploadCsvUseCase";
+import { CreateTransactionUseCase } from "@/usecase/transaction/createTransaction.usecase";
+import { DeleteTransactionUseCase } from "@/usecase/transaction/deleteTransactionUseCase";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 import { ICsvUploadRepository } from "@/domain/repository/csvUploadRepository";
 import { TransactionService } from "@/service/transaction/transactionService";
@@ -19,6 +21,8 @@ import {
   ReCategorizeRoute,
   GetAvailableYearsRoute,
   UploadCsvRoute,
+  CreateTransactionRoute,
+  DeleteTransactionRoute,
 } from "./transaction.routes";
 
 export class TransactionController {
@@ -130,6 +134,33 @@ export class TransactionController {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       return c.json({ error: errorMessage }, 400);
+    }
+  };
+
+  create: RouteHandler<CreateTransactionRoute, Env> = async (c) => {
+    const user = c.get("user");
+    const input = c.req.valid("json");
+    const useCase = new CreateTransactionUseCase(this.transactionRepository, this.categoryRepository);
+    const result = await useCase.execute(user.userId, input);
+    return c.json(result, 201);
+  };
+
+  delete: RouteHandler<DeleteTransactionRoute, Env> = async (c) => {
+    const user = c.get("user");
+    const { id } = c.req.valid("param");
+    const useCase = new DeleteTransactionUseCase(this.transactionRepository, this.getTransactionService());
+    try {
+      await useCase.execute(id, user.userId);
+      return c.body(null, 204);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("not found")) {
+        return c.json({ error: errorMessage }, 404);
+      }
+      if (errorMessage.includes("Forbidden")) {
+        return c.json({ error: errorMessage }, 403);
+      }
+      throw error;
     }
   };
 }

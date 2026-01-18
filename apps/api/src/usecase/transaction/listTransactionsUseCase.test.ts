@@ -23,7 +23,20 @@ describe("ListTransactionsUseCase", () => {
     const query = { page: "2", limit: "10", year: "2024" };
 
     const mockTransactions = [
-      new Transaction("1", userId, new Date(), "Store A", 1000, "cat-1", "Food", "#FF0000", 100, new Date(), undefined),
+      new Transaction(
+        "1",
+        userId,
+        new Date(),
+        "Store A",
+        1000,
+        "cat-1",
+        "Food",
+        "#FF0000",
+        100,
+        null,
+        new Date(),
+        undefined
+      ),
     ];
 
     (transactionRepository.findByUserId as Mock<typeof transactionRepository.findByUserId>).mockResolvedValue(

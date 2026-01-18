@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactions200DataItem = {
+export type PostTransactions201 = {
   id: string;
   userId: string;
   date: string;

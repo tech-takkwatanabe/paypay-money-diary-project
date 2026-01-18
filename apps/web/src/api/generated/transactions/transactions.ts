@@ -11,6 +11,8 @@ import type {
   GetTransactionsParams,
   GetTransactionsSummary200,
   GetTransactionsSummaryParams,
+  PostTransactions201,
+  PostTransactionsBody,
   PostTransactionsReCategorize200,
   PostTransactionsReCategorizeBody,
   PostTransactionsUpload201,
@@ -94,6 +96,32 @@ export const getTransactions = async (
   return customFetch<getTransactionsResponse>(getGetTransactionsUrl(params), {
     ...options,
     method: "GET",
+  });
+};
+
+export type postTransactionsResponse201 = {
+  data: PostTransactions201;
+  status: 201;
+};
+
+export type postTransactionsResponseSuccess = postTransactionsResponse201 & {
+  headers: Headers;
+};
+export type postTransactionsResponse = postTransactionsResponseSuccess;
+
+export const getPostTransactionsUrl = () => {
+  return `/transactions`;
+};
+
+export const postTransactions = async (
+  postTransactionsBody: PostTransactionsBody,
+  options?: RequestInit
+): Promise<postTransactionsResponse> => {
+  return customFetch<postTransactionsResponse>(getPostTransactionsUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(postTransactionsBody),
   });
 };
 
@@ -218,5 +246,43 @@ export const putTransactionsId = async (
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(putTransactionsIdBody),
+  });
+};
+
+export type deleteTransactionsIdResponse204 = {
+  data: void;
+  status: 204;
+};
+
+export type deleteTransactionsIdResponse403 = {
+  data: void;
+  status: 403;
+};
+
+export type deleteTransactionsIdResponse404 = {
+  data: void;
+  status: 404;
+};
+
+export type deleteTransactionsIdResponseSuccess = deleteTransactionsIdResponse204 & {
+  headers: Headers;
+};
+export type deleteTransactionsIdResponseError = (deleteTransactionsIdResponse403 | deleteTransactionsIdResponse404) & {
+  headers: Headers;
+};
+
+export type deleteTransactionsIdResponse = deleteTransactionsIdResponseSuccess | deleteTransactionsIdResponseError;
+
+export const getDeleteTransactionsIdUrl = (id: string) => {
+  return `/transactions/${id}`;
+};
+
+export const deleteTransactionsId = async (
+  id: string,
+  options?: RequestInit
+): Promise<deleteTransactionsIdResponse> => {
+  return customFetch<deleteTransactionsIdResponse>(getDeleteTransactionsIdUrl(id), {
+    ...options,
+    method: "DELETE",
   });
 };

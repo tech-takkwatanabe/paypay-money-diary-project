@@ -7,16 +7,26 @@ export const TransactionResponseSchema = z.object({
   date: z.iso.datetime(),
   description: z.string(),
   amount: z.number(),
-  categoryId: z.uuid(),
+  categoryId: z.uuid().nullable(),
   categoryName: z.string(),
   categoryColor: z.string(),
   displayOrder: z.number(),
+  paymentMethod: z.string().nullable().optional(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
 
 // リクエストDTO（更新）
 export const UpdateTransactionInputSchema = z.object({
+  categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }).optional(),
+  amount: z.number().int({ message: "金額は整数で指定してください。" }).optional(),
+});
+
+// リクエストDTO（作成）
+export const CreateTransactionInputSchema = z.object({
+  date: z.string().datetime({ message: "有効な日付を指定してください。" }),
+  amount: z.number().int({ message: "金額は整数で指定してください。" }),
+  description: z.string().min(1, { message: "店名・内容を入力してください。" }),
   categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }),
 });
 
@@ -99,3 +109,4 @@ export type AvailableYearsResponse = z.infer<typeof AvailableYearsResponseSchema
 export type UploadCsvResponse = z.infer<typeof UploadCsvResponseSchema>;
 export type ReCategorizeInput = z.infer<typeof ReCategorizeInputSchema>;
 export type ReCategorizeResponse = z.infer<typeof ReCategorizeResponseSchema>;
+export type CreateTransactionInput = z.infer<typeof CreateTransactionInputSchema>;

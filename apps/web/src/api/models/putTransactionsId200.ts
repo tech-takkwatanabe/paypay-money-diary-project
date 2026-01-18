@@ -12,10 +12,13 @@ export type PutTransactionsId200 = {
   date: string;
   description: string;
   amount: number;
-  categoryId: string;
+  /** @nullable */
+  categoryId: string | null;
   categoryName: string;
   categoryColor: string;
   displayOrder: number;
+  /** @nullable */
+  paymentMethod?: string | null;
   createdAt: string;
   updatedAt: string;
 };
