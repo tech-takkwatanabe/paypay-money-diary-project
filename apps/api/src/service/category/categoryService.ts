@@ -19,11 +19,6 @@ export class CategoryService {
       throw new Error("Category not found");
     }
 
-    // システムカテゴリは全ユーザーがアクセス可能（読み取り専用）
-    if (category.isSystemCategory()) {
-      return category;
-    }
-
     // ユーザー固有カテゴリの場合、所有者チェック
     if (!category.belongsToUser(userId)) {
       throw new Error("Unauthorized access to category");
@@ -33,32 +28,30 @@ export class CategoryService {
   }
 
   /**
-   * カテゴリが更新可能か確認（システムカテゴリは更新不可）
+   * カテゴリが更新可能か確認
    * @throws Error 更新不可能な場合
    */
   async ensureUserCanUpdate(categoryId: string, userId: string): Promise<Category> {
     const category = await this.ensureUserCanAccess(categoryId, userId);
 
-    if (category.isSystemCategory()) {
-      throw new Error("Cannot modify system category");
-    }
+    // 「その他」カテゴリは名前の変更などを制限する場合があるが、
+    // 要件では「表示順も必ず最後に表示されるようにする」とあるため、
+    // ここでは基本的なアクセスチェックのみ行う。
+    // 並び替えロジック側で「その他」を末尾に固定する。
 
     return category;
   }
 
   /**
-   * カテゴリが削除可能か確認（システムカテゴリおよびデフォルトカテゴリは削除不可）
+   * カテゴリが削除可能か確認（「その他」カテゴリは削除不可）
    * @throws Error 削除不可能な場合
    */
   async ensureUserCanDelete(categoryId: string, userId: string): Promise<Category> {
     const category = await this.ensureUserCanAccess(categoryId, userId);
 
-    if (category.isSystemCategory()) {
-      throw new Error("Cannot delete system category");
-    }
-
-    if (!category.canDelete()) {
-      throw new Error("Cannot delete default category");
+    // 「その他」カテゴリは削除不可
+    if (category.name === "その他") {
+      throw new Error("Cannot delete 'その他' category");
     }
 
     return category;
