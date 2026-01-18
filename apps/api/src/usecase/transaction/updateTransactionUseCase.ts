@@ -12,8 +12,8 @@ export class UpdateTransactionUseCase {
     // 権限チェック
     const transaction = await this.transactionService.ensureUserCanAccess(id, userId);
 
-    // 金額を更新する場合、現金のみ許可
-    if (input.amount !== undefined && transaction.paymentMethod !== "現金") {
+    // 金額を更新する場合、手動のみ許可
+    if (input.amount !== undefined && transaction.paymentMethod !== "手動") {
       throw new Error("Forbidden: Only amount of cash transactions can be updated");
     }
 
