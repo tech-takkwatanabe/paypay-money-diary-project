@@ -33,6 +33,15 @@ import type {
   GetCategories200DataItem as CategoryWithSystem,
 } from "@/api/models";
 
+/**
+ * Render the expenses page with UI for viewing and managing expenditure transactions.
+ *
+ * Provides listing with filtering (year, month, category, merchant), sorting, pagination,
+ * inline editing (category and, for manual payments, amount), deletion of manual entries,
+ * and a manual-entry modal.
+ *
+ * @returns The ExpensesPage React element.
+ */
 export default function ExpensesPage() {
   const { user, logout } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);

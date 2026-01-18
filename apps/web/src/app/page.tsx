@@ -16,6 +16,15 @@ import type {
   GetTransactionsSummary200CategoryBreakdownItem as CategoryBreakdown,
 } from "@/api/models";
 
+/**
+ * Render the dashboard UI for viewing and managing yearly expense summaries.
+ *
+ * Fetches available years on mount and loads the selected year's summary.
+ * Displays header/navigation, a year selector, KPI cards (annual total, monthly average, top category),
+ * monthly and category charts, and a manual entry modal. Also shows the current user and provides logout.
+ *
+ * @returns The React element that renders the full dashboard interface including controls, charts, and the ManualEntryModal.
+ */
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [summary, setSummary] = useState<SummaryResponse | null>(null);
