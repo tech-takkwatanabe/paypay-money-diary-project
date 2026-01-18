@@ -35,7 +35,13 @@ export const UpdateCategoryInputSchema = z.object({
   displayOrder: z.number().optional(),
 });
 
+// 並び替えリクエストDTO
+export const ReorderCategoriesInputSchema = z.object({
+  categoryIds: z.array(z.string().uuid()),
+});
+
 // 型エクスポート
 export type CategoryResponse = z.infer<typeof CategoryResponseSchema>;
 export type CreateCategoryInput = z.infer<typeof CreateCategoryInputSchema>;
 export type UpdateCategoryInput = z.infer<typeof UpdateCategoryInputSchema>;
+export type ReorderCategoriesInput = z.infer<typeof ReorderCategoriesInputSchema>;
