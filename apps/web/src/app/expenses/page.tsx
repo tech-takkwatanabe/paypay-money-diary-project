@@ -133,12 +133,12 @@ export default function ExpensesPage() {
       const currentTransaction = transactions.find((t) => t.id === id);
       if (!currentTransaction) return;
 
-      // 現金の場合のみ金額を含める
+      // 手動の場合のみ金額を含める
       const updateData: { categoryId: string; amount?: number } = {
         categoryId: editCategoryId,
       };
 
-      if (currentTransaction.paymentMethod === "現金" && editAmount !== "") {
+      if (currentTransaction.paymentMethod === "手動" && editAmount !== "") {
         const amount = parseInt(editAmount, 10);
         if (!isNaN(amount)) {
           updateData.amount = amount;
@@ -422,7 +422,7 @@ export default function ExpensesPage() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm font-bold text-right">
-                        {editingId === t.id && t.paymentMethod === "現金" ? (
+                        {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             type="number"
                             variant="filter"
@@ -472,7 +472,7 @@ export default function ExpensesPage() {
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              {t.paymentMethod === "現金" && (
+                              {t.paymentMethod === "手動" && (
                                 <button
                                   onClick={() => handleDeleteTransaction(t.id)}
                                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
