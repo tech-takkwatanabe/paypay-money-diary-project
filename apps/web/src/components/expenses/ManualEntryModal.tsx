@@ -23,6 +23,17 @@ interface ManualEntryModalProps {
   onSuccess: () => void;
 }
 
+/**
+ * Render a modal dialog to manually create an expense transaction.
+ *
+ * When opened, the component fetches available categories and preselects the first one if present.
+ * Submitting the form posts a new transaction; on a successful creation it calls `onSuccess` and closes the modal.
+ *
+ * @param isOpen - Whether the modal is visible
+ * @param onClose - Callback invoked to close the modal
+ * @param onSuccess - Callback invoked after a transaction is successfully created
+ * @returns The JSX element for the manual entry modal
+ */
 export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModalProps) {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [amount, setAmount] = useState("");
