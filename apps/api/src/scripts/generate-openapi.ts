@@ -171,7 +171,7 @@ const createTransactionDummy: RouteHandler<CreateTransactionRoute> = async (c) =
       categoryName: "食費",
       categoryColor: "#FF0000",
       displayOrder: 1,
-      paymentMethod: "現金",
+      paymentMethod: "手動",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
