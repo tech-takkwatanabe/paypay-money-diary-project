@@ -5,6 +5,7 @@ import { CreateUserInput, Email, Password } from "@paypay-money-diary/shared";
 import { User } from "@/domain/entity/user";
 import { AuthService } from "@/service/auth/authService";
 import { PasswordService } from "@/service/auth/passwordService";
+import { CategoryInitializationService } from "@/service/category/categoryInitializationService";
 
 // Mock IUserRepository
 const mockUserRepository = {
@@ -22,15 +23,27 @@ const mockPasswordService = {
   hashPassword: mock() as Mock<PasswordService["hashPassword"]>,
 } as unknown as PasswordService;
 
+const mockCategoryInitializationService = {
+  initializeForUser: mock() as Mock<CategoryInitializationService["initializeForUser"]>,
+} as unknown as CategoryInitializationService;
+
 describe("SignupUseCase", () => {
   let signupUseCase: SignupUseCase;
 
   beforeEach(() => {
-    signupUseCase = new SignupUseCase(mockUserRepository, mockAuthService, mockPasswordService);
+    signupUseCase = new SignupUseCase(
+      mockUserRepository,
+      mockAuthService,
+      mockPasswordService,
+      mockCategoryInitializationService
+    );
     mockUserRepository.findByEmail.mockClear();
     mockUserRepository.create.mockClear();
     (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockClear();
     (mockPasswordService.hashPassword as Mock<PasswordService["hashPassword"]>).mockClear();
+    (
+      mockCategoryInitializationService.initializeForUser as Mock<CategoryInitializationService["initializeForUser"]>
+    ).mockClear();
   });
 
   it("should create a new user successfully", async () => {
@@ -54,6 +67,7 @@ describe("SignupUseCase", () => {
     expect(mockAuthService.checkUserExists).toHaveBeenCalledWith(input.email);
     expect(mockPasswordService.hashPassword).toHaveBeenCalledWith(input.password);
     expect(mockUserRepository.create).toHaveBeenCalled();
+    expect(mockCategoryInitializationService.initializeForUser).toHaveBeenCalledWith(mockUser.id);
     expect(result).toBe(mockUser);
   });
 
