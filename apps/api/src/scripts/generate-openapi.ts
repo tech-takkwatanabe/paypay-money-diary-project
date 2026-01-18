@@ -50,10 +50,12 @@ import {
   createCategoryRoute,
   updateCategoryRoute,
   deleteCategoryRoute,
+  reorderCategoriesRoute,
   type GetCategoriesRoute,
   type CreateCategoryRoute,
   type UpdateCategoryRoute,
   type DeleteCategoryRoute,
+  type ReorderCategoriesRoute,
 } from "@/controller/category/category.routes";
 
 // Rule routes
@@ -224,6 +226,10 @@ const deleteCategoryDummy: RouteHandler<DeleteCategoryRoute> = async (c) => {
   return c.json({ message: "Category deleted successfully" }, 200);
 };
 
+const reorderCategoriesDummy: RouteHandler<ReorderCategoriesRoute> = async (c) => {
+  return c.json({ message: "Categories reordered successfully" }, 200);
+};
+
 // ===== Rule dummy handlers =====
 const getRulesDummy: RouteHandler<GetRulesRoute> = async (c) => {
   return c.json({ data: [] }, 200);
@@ -286,6 +292,7 @@ app.openapi(deleteTransactionRoute, deleteTransactionDummy);
 app.openapi(getCategoriesRoute, getCategoriesDummy);
 app.openapi(createCategoryRoute, createCategoryDummy);
 app.openapi(updateCategoryRoute, updateCategoryDummy);
+app.openapi(reorderCategoriesRoute, reorderCategoriesDummy);
 app.openapi(deleteCategoryRoute, deleteCategoryDummy);
 
 app.openapi(getRulesRoute, getRulesDummy);
@@ -322,5 +329,5 @@ fs.writeFileSync("openapi.yml", yamlContent);
 console.log("✅ openapi.yml を生成しました");
 console.log("📝 認証API: 5エンドポイント");
 console.log("📝 取引API: 8エンドポイント");
-console.log("📝 カテゴリAPI: 4エンドポイント");
+console.log("📝 カテゴリAPI: 5エンドポイント");
 console.log("📝 ルールAPI: 4エンドポイント");
