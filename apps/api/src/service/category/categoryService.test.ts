@@ -9,15 +9,15 @@ describe("CategoryService", () => {
   let mockCategoryRepository: ICategoryRepository;
 
   const userId = "user-1";
-  const systemCategory = new Category("system-1", "Food", "#FF0000", "food", 0, false, null);
   const userCategory = new Category("user-cat-1", "My Hobby", "#00FF00", "hobby", 1, false, userId);
   const otherUserCategory = new Category("other-cat-1", "Other Hobby", "#0000FF", "hobby", 2, false, "other-user");
-  const defaultCategory = new Category("default-1", "Others", "#CCCCCC", "others", 99, true, userId);
+  const otherCategory = new Category("other-1", "その他", "#CCCCCC", "others", 9999, false, userId);
 
   beforeEach(() => {
     mockCategoryRepository = {
       findById: mock(async (_id: string) => null),
       findByUserId: mock(async (_userId: string) => []),
+      findByName: mock(async (_userId: string, _name: string) => null),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
@@ -26,14 +26,6 @@ describe("CategoryService", () => {
   });
 
   describe("ensureUserCanAccess", () => {
-    it("should allow access to system category", async () => {
-      (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
-        systemCategory
-      );
-      const result = await categoryService.ensureUserCanAccess("system-1", userId);
-      expect(result).toBe(systemCategory);
-    });
-
     it("should allow access to own category", async () => {
       (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
         userCategory
@@ -65,17 +57,10 @@ describe("CategoryService", () => {
       const result = await categoryService.ensureUserCanUpdate("user-cat-1", userId);
       expect(result).toBe(userCategory);
     });
-
-    it("should throw error when updating system category", async () => {
-      (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
-        systemCategory
-      );
-      expect(categoryService.ensureUserCanUpdate("system-1", userId)).rejects.toThrow("Cannot modify system category");
-    });
   });
 
   describe("ensureUserCanDelete", () => {
-    it("should allow deleting own non-default category", async () => {
+    it("should allow deleting own non-other category", async () => {
       (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
         userCategory
       );
@@ -83,20 +68,11 @@ describe("CategoryService", () => {
       expect(result).toBe(userCategory);
     });
 
-    it("should throw error when deleting system category", async () => {
+    it("should throw error when deleting 'その他' category", async () => {
       (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
-        systemCategory
+        otherCategory
       );
-      expect(categoryService.ensureUserCanDelete("system-1", userId)).rejects.toThrow("Cannot delete system category");
-    });
-
-    it("should throw error when deleting default category", async () => {
-      (mockCategoryRepository.findById as Mock<(_id: string) => Promise<Category | null>>).mockResolvedValue(
-        defaultCategory
-      );
-      expect(categoryService.ensureUserCanDelete("default-1", userId)).rejects.toThrow(
-        "Cannot delete default category"
-      );
+      expect(categoryService.ensureUserCanDelete("other-1", userId)).rejects.toThrow("Cannot delete 'その他' category");
     });
   });
 });
