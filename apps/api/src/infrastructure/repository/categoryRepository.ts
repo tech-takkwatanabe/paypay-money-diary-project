@@ -1,4 +1,4 @@
-import { eq, or, isNull } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
 import { categories } from "@/db/schema";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
@@ -11,13 +11,13 @@ import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/sh
  */
 export class CategoryRepository implements ICategoryRepository {
   /**
-   * ユーザーIDでカテゴリを検索（システムカテゴリを含む）
+   * ユーザーIDでカテゴリを検索
    */
   async findByUserId(userId: string): Promise<Category[]> {
     const results = await db
       .select()
       .from(categories)
-      .where(or(isNull(categories.userId), eq(categories.userId, userId)))
+      .where(eq(categories.userId, userId))
       .orderBy(categories.displayOrder);
 
     return results.map(
@@ -31,7 +31,7 @@ export class CategoryRepository implements ICategoryRepository {
           row.isDefault,
           row.userId,
           row.createdAt ?? undefined,
-          undefined // updatedAt is not in the schema
+          row.updatedAt ?? undefined
         )
     );
   }
@@ -56,7 +56,35 @@ export class CategoryRepository implements ICategoryRepository {
       row.isDefault,
       row.userId,
       row.createdAt ?? undefined,
-      undefined
+      row.updatedAt ?? undefined
+    );
+  }
+
+  /**
+   * ユーザーIDと名前でカテゴリを検索
+   */
+  async findByName(userId: string, name: string): Promise<Category | null> {
+    const results = await db
+      .select()
+      .from(categories)
+      .where(and(eq(categories.userId, userId), eq(categories.name, name)))
+      .limit(1);
+
+    if (results.length === 0) {
+      return null;
+    }
+
+    const row = results[0];
+    return new Category(
+      row.id,
+      row.name,
+      row.color,
+      row.icon,
+      row.displayOrder,
+      row.isDefault,
+      row.userId,
+      row.createdAt ?? undefined,
+      row.updatedAt ?? undefined
     );
   }
 
@@ -86,7 +114,7 @@ export class CategoryRepository implements ICategoryRepository {
       row.isDefault,
       row.userId,
       row.createdAt ?? undefined,
-      undefined
+      row.updatedAt ?? undefined
     );
   }
 
