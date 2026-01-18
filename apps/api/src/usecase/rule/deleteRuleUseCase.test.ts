@@ -15,6 +15,7 @@ describe("DeleteRuleUseCase", () => {
     mockRuleRepository = {
       findById: mock(),
       findByUserId: mock(),
+      findByCategoryId: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
@@ -28,16 +29,14 @@ describe("DeleteRuleUseCase", () => {
   });
 
   it("should delete a rule successfully", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleService.ensureUserCanDelete as Mock<any>).mockResolvedValue(undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleRepository.delete as Mock<any>).mockResolvedValue(undefined);
+    (mockRuleService.ensureUserCanDelete as Mock<(id: string, userId: string) => Promise<void>>).mockResolvedValue(
+      undefined
+    );
+    (mockRuleRepository.delete as Mock<(id: string) => Promise<void>>).mockResolvedValue(undefined);
 
     await deleteRuleUseCase.execute(ruleId, userId);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleService.ensureUserCanDelete as Mock<any>).toHaveBeenCalledWith(ruleId, userId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleRepository.delete as Mock<any>).toHaveBeenCalledWith(ruleId);
+    expect(mockRuleService.ensureUserCanDelete).toHaveBeenCalledWith(ruleId, userId);
+    expect(mockRuleRepository.delete).toHaveBeenCalledWith(ruleId);
   });
 });
