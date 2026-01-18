@@ -17,6 +17,11 @@ export interface IRuleRepository {
   findById(id: string): Promise<Rule | null>;
 
   /**
+   * カテゴリIDでルールを検索
+   */
+  findByCategoryId(categoryId: string, userId: string): Promise<Rule[]>;
+
+  /**
    * ルールを作成
    */
   create(userId: string, input: CreateRuleInput): Promise<Rule>;
