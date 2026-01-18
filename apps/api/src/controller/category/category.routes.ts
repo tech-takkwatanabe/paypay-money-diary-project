@@ -3,6 +3,7 @@ import {
   CategoryResponseSchema,
   CreateCategoryInputSchema,
   UpdateCategoryInputSchema,
+  ReorderCategoriesInputSchema,
   SuccessMessageSchema,
   ErrorResponseSchema,
 } from "@paypay-money-diary/shared";
@@ -161,6 +162,49 @@ export const updateCategoryRoute = createRoute({
   security: [{ Cookie: [] }],
 });
 
+export const reorderCategoriesRoute = createRoute({
+  method: "patch",
+  path: "/categories/reorder",
+  summary: "カテゴリ並び替え",
+  tags: ["Categories"],
+  request: {
+    body: {
+      content: {
+        "application/json": { schema: ReorderCategoriesInputSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "並び替え成功",
+      content: {
+        "application/json": { schema: SuccessMessageSchema },
+      },
+    },
+    400: {
+      description: "バリデーションエラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    401: {
+      description: "認証エラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+    500: {
+      description: "サーバーエラー",
+      content: {
+        "application/json": { schema: ErrorResponseSchema },
+      },
+    },
+  },
+  security: [{ Cookie: [] }],
+});
+
+export type ReorderCategoriesRoute = typeof reorderCategoriesRoute;
+
 export const deleteCategoryRoute = createRoute({
   method: "delete",
   path: "/categories/{id}",
@@ -231,6 +275,9 @@ export const registerCategoryRoutes = (app: OpenAPIHono<Env>) => {
 
   // カテゴリ更新
   app.openapi(updateCategoryRoute, (c) => controller.update(c));
+
+  // カテゴリ並び替え
+  app.openapi(reorderCategoriesRoute, (c) => controller.reorder(c));
 
   // カテゴリ削除
   app.openapi(deleteCategoryRoute, (c) => controller.delete(c));
