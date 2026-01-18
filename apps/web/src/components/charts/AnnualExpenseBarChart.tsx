@@ -14,6 +14,8 @@ interface AnnualExpenseBarChartProps {
 const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
 
 export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChartProps) {
+  const hasData = data.length > 0;
+
   // 全てのカテゴリーを抽出（ユニークなリストを作成）
   const allCategories = Array.from(
     new Map(
@@ -101,6 +103,10 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
         {isLoading ? (
           <div className="w-full h-[300px] flex items-center justify-center">
             <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : !hasData ? (
+          <div className="w-full h-[300px] flex items-center justify-center text-muted-foreground">
+            まだデータがありません
           </div>
         ) : (
           <div className="w-full h-[300px]">
