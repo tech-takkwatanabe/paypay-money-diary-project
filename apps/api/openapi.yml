@@ -1286,6 +1286,75 @@ paths:
                     example: Internal Server Error
                 required:
                   - error
+  /categories/reorder:
+    patch:
+      summary: カテゴリ並び替え
+      tags:
+        - Categories
+      security:
+        - Cookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+              required:
+                - categoryIds
+      responses:
+        "200":
+          description: 並び替え成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
+                required:
+                  - message
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
   /rules:
     get:
       summary: ルール一覧取得
