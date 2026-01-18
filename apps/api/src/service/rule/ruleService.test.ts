@@ -18,6 +18,7 @@ describe("RuleService", () => {
     mockRuleRepository = {
       findById: mock(),
       findByUserId: mock(),
+      findByCategoryId: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
