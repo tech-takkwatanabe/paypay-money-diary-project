@@ -904,6 +904,8 @@ paths:
                           format: uuid
                         hasRules:
                           type: boolean
+                        hasTransactions:
+                          type: boolean
                       required:
                         - id
                         - name
@@ -914,6 +916,7 @@ paths:
                         - isSystem
                         - userId
                         - hasRules
+                        - hasTransactions
                 required:
                   - data
         "400":
@@ -1008,6 +1011,8 @@ paths:
                     format: uuid
                   hasRules:
                     type: boolean
+                  hasTransactions:
+                    type: boolean
                 required:
                   - id
                   - name
@@ -1018,6 +1023,7 @@ paths:
                   - isSystem
                   - userId
                   - hasRules
+                  - hasTransactions
         "400":
           description: バリデーションエラー
           content:

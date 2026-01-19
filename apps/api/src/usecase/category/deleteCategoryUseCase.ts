@@ -30,6 +30,13 @@ export class DeleteCategoryUseCase {
       throw new Error("Cannot delete category linked to rules. Please delete or update the rules first.");
     }
 
+    // 2. 支出データが存在するか確認
+    if (_category.hasTransactions) {
+      throw new Error(
+        "Cannot delete category with existing transactions. Please delete or re-categorize the transactions first."
+      );
+    }
+
     // 2. カテゴリを削除
     // 紐づく支出は DB の onDelete: set null によりカテゴリ未設定になる
     await this.categoryRepository.delete(categoryId);

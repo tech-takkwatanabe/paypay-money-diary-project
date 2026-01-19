@@ -45,7 +45,7 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
         >
           <Pencil className="w-4 h-4" />
         </button>
-        {category.name !== "その他" && !category.hasRules && (
+        {category.name !== "その他" && !category.hasRules && !category.hasTransactions && (
           <button
             onClick={() => onDelete(category.id, category.name)}
             className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"

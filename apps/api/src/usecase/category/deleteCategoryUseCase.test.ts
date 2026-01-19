@@ -83,4 +83,26 @@ describe("DeleteCategoryUseCase", () => {
     );
     expect(mockCategoryRepository.delete).not.toHaveBeenCalled();
   });
+
+  it("should throw error if category has transactions", async () => {
+    const categoryWithTransactions = new Category(
+      categoryId,
+      "Food",
+      "#FF0000",
+      "food",
+      0,
+      false,
+      userId,
+      undefined,
+      undefined,
+      false,
+      true // hasTransactions
+    );
+    mockCategoryService.ensureUserCanDelete = mock(async (_id: string, _userId: string) => categoryWithTransactions);
+
+    expect(useCase.execute(categoryId, userId)).rejects.toThrow(
+      "Cannot delete category with existing transactions. Please delete or re-categorize the transactions first."
+    );
+    expect(mockCategoryRepository.delete).not.toHaveBeenCalled();
+  });
 });

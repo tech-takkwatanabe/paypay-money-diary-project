@@ -18,4 +18,5 @@ export type GetCategories200DataItem = {
   /** @nullable */
   userId: string | null;
   hasRules: boolean;
+  hasTransactions: boolean;
 };

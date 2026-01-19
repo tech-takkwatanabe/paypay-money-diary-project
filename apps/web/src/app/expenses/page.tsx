@@ -142,6 +142,11 @@ export default function ExpensesPage() {
       const currentTransaction = transactions.find((t) => t.id === id);
       if (!currentTransaction) return;
 
+      if (!editCategoryId) {
+        alert("カテゴリを選択してください");
+        return;
+      }
+
       // 手動の場合のみ金額を含める
       const updateData: { categoryId: string; amount?: number } = {
         categoryId: editCategoryId,
@@ -413,6 +418,9 @@ export default function ExpensesPage() {
                               onChange={(e) => setEditCategoryId(e.target.value)}
                               className="w-fit"
                             >
+                              <option value="" disabled>
+                                カテゴリを選択
+                              </option>
                               {categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>
                                   {cat.name}
