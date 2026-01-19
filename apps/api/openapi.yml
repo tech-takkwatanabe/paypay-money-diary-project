@@ -902,6 +902,8 @@ paths:
                           type: string
                           nullable: true
                           format: uuid
+                        hasRules:
+                          type: boolean
                       required:
                         - id
                         - name
@@ -911,6 +913,7 @@ paths:
                         - isDefault
                         - isSystem
                         - userId
+                        - hasRules
                 required:
                   - data
         "400":
@@ -1003,6 +1006,8 @@ paths:
                     type: string
                     nullable: true
                     format: uuid
+                  hasRules:
+                    type: boolean
                 required:
                   - id
                   - name
@@ -1012,6 +1017,7 @@ paths:
                   - isDefault
                   - isSystem
                   - userId
+                  - hasRules
         "400":
           description: バリデーションエラー
           content:
@@ -1119,6 +1125,8 @@ paths:
                     type: string
                     nullable: true
                     format: uuid
+                  hasRules:
+                    type: boolean
                 required:
                   - id
                   - name
@@ -1128,6 +1136,7 @@ paths:
                   - isDefault
                   - isSystem
                   - userId
+                  - hasRules
         "400":
           description: バリデーションエラー
           content:
