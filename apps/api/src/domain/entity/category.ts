@@ -12,7 +12,8 @@ export class Category {
     public readonly isDefault: boolean,
     public readonly userId: string | null,
     public readonly createdAt?: Date,
-    public readonly updatedAt?: Date
+    public readonly updatedAt?: Date,
+    public readonly hasRules: boolean = false
   ) {}
 
   /**
@@ -34,7 +35,8 @@ export class Category {
    */
   canDelete(): boolean {
     // ビジネスルール: デフォルトカテゴリは削除できない
-    return !this.isDefault;
+    // ルールが紐づいているカテゴリも削除できない（ユースケースでチェックするが、エンティティとしても状態を持つ）
+    return !this.isDefault && !this.hasRules;
   }
 
   /**
@@ -50,6 +52,7 @@ export class Category {
       isDefault: this.isDefault,
       isSystem: this.isSystemCategory(),
       userId: this.userId,
+      hasRules: this.hasRules,
     };
   }
 }
