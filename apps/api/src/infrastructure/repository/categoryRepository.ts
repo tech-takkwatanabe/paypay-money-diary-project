@@ -1,6 +1,6 @@
 import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
-import { categories } from "@/db/schema";
+import { categories, categoryRules } from "@/db/schema";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { Category } from "@/domain/entity/category";
 import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
@@ -20,6 +20,14 @@ export class CategoryRepository implements ICategoryRepository {
       .where(eq(categories.userId, userId))
       .orderBy(categories.displayOrder);
 
+    // カテゴリに関連するルールを取得して、hasRules フラグを設定
+    const rules = await db
+      .select({ categoryId: categoryRules.categoryId })
+      .from(categoryRules)
+      .where(eq(categoryRules.userId, userId));
+
+    const categoryIdsWithRules = new Set(rules.map((r) => r.categoryId));
+
     return results.map(
       (row) =>
         new Category(
@@ -31,7 +39,8 @@ export class CategoryRepository implements ICategoryRepository {
           row.isDefault,
           row.userId,
           row.createdAt ?? undefined,
-          row.updatedAt ?? undefined
+          row.updatedAt ?? undefined,
+          categoryIdsWithRules.has(row.id)
         )
     );
   }
