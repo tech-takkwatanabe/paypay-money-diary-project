@@ -17,4 +17,5 @@ export type GetCategories200DataItem = {
   isSystem: boolean;
   /** @nullable */
   userId: string | null;
+  hasRules: boolean;
 };
