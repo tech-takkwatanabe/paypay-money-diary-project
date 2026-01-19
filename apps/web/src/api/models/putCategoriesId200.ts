@@ -17,4 +17,5 @@ export type PutCategoriesId200 = {
   isSystem: boolean;
   /** @nullable */
   userId: string | null;
+  hasRules: boolean;
 };
