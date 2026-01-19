@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, mock } from "bun:test";
+import { describe, it, expect, beforeEach, mock, type Mock } from "bun:test";
 import { DeleteCategoryUseCase } from "./deleteCategoryUseCase";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
@@ -64,12 +64,23 @@ describe("DeleteCategoryUseCase", () => {
     );
   });
 
-  it("should delete a category successfully after re-categorizing transactions", async () => {
+  it("should delete a category successfully", async () => {
     await useCase.execute(categoryId, userId);
 
     expect(mockCategoryService.ensureUserCanDelete).toHaveBeenCalledWith(categoryId, userId);
-    expect(mockCategoryRepository.findByName).toHaveBeenCalledWith(userId, "その他");
-    expect(mockTransactionRepository.reCategorize).toHaveBeenCalledWith(userId, categoryId, otherCategoryId);
+    expect(mockRuleRepository.findByCategoryId).toHaveBeenCalledWith(categoryId, userId);
     expect(mockCategoryRepository.delete).toHaveBeenCalledWith(categoryId);
+    expect(mockTransactionRepository.reCategorize).not.toHaveBeenCalled();
+  });
+
+  it("should throw error if category is linked to rules", async () => {
+    (
+      mockRuleRepository.findByCategoryId as unknown as Mock<(_categoryId: string, _userId: string) => Promise<Rule[]>>
+    ).mockResolvedValue([{ id: "rule-1" } as Rule]);
+
+    expect(useCase.execute(categoryId, userId)).rejects.toThrow(
+      "Cannot delete category linked to rules. Please delete or update the rules first."
+    );
+    expect(mockCategoryRepository.delete).not.toHaveBeenCalled();
   });
 });
