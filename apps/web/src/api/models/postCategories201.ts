@@ -17,4 +17,5 @@ export type PostCategories201 = {
   isSystem: boolean;
   /** @nullable */
   userId: string | null;
+  hasRules: boolean;
 };
