@@ -36,7 +36,7 @@ export class DeleteCategoryUseCase {
     }
 
     // 3. カテゴリを削除
-    // 紐づく支出は DB の onDelete: set null によりカテゴリ未設定になる
+    // 注: ルールや支出が紐づいている場合は上記のチェックでブロックされる
     await this.categoryRepository.delete(categoryId);
   }
 }
