@@ -34,9 +34,7 @@ export class ReorderCategoriesUseCase {
       }
 
       // 「その他」以外のカテゴリがすべて含まれているか確認
-      const reorderableIdSet = new Set(
-        userCategories.filter((c) => !c.isOther).map((c) => c.id)
-      );
+      const reorderableIdSet = new Set(userCategories.filter((c) => !c.isOther).map((c) => c.id));
       if (![...reorderableIdSet].every((id) => uniqueIds.has(id))) {
         // Note: The requirement is that we reorder the provided IDs.
         // If some categories are missing from the input, their order won't be updated.
