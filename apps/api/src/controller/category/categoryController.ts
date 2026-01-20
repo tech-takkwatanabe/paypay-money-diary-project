@@ -1,7 +1,6 @@
 import { Context } from "hono";
 import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
 import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
-import { TransactionRepository } from "@/infrastructure/repository/transactionRepository";
 import { CategoryService } from "@/service/category/categoryService";
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
@@ -119,6 +118,11 @@ export class CategoryController {
       await reorderCategoriesUseCase.execute(userPayload.userId, input.categoryIds);
       return c.json({ message: "Categories reordered successfully" }, 200);
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes("Unauthorized or invalid category ID")) {
+          return c.json({ error: error.message }, 400);
+        }
+      }
       console.error("Reorder categories error:", error);
       return c.json({ error: "Internal Server Error" }, 500);
     }
@@ -140,14 +144,8 @@ export class CategoryController {
 
     const categoryRepository = new CategoryRepository();
     const ruleRepository = new RuleRepository();
-    const transactionRepository = new TransactionRepository();
     const categoryService = new CategoryService(categoryRepository);
-    const deleteCategoryUseCase = new DeleteCategoryUseCase(
-      categoryRepository,
-      ruleRepository,
-      transactionRepository,
-      categoryService
-    );
+    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, ruleRepository, categoryService);
 
     try {
       await deleteCategoryUseCase.execute(categoryId, userPayload.userId);
@@ -165,6 +163,12 @@ export class CategoryController {
         }
         if (error.message === "Cannot delete default category") {
           return c.json({ error: error.message }, 403);
+        }
+        if (error.message.startsWith("Cannot delete category linked to rules")) {
+          return c.json({ error: error.message }, 400);
+        }
+        if (error.message.startsWith("Cannot delete category with existing transactions")) {
+          return c.json({ error: error.message }, 400);
         }
       }
       console.error("Delete category error:", error);
