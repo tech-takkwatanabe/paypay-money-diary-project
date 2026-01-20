@@ -43,8 +43,17 @@ export class SignupUseCase {
       await this.categoryInitializationService.initializeForUser(user.id);
     } catch (error) {
       // 初期化に失敗した場合はユーザーを削除（ロールバック）
-      await this.userRepository.delete(user.id);
-      throw error;
+      const initError = error;
+      try {
+        await this.userRepository.delete(user.id);
+      } catch (cleanupError) {
+        // ロールバック失敗時は両方のエラーを含める
+        throw new AggregateError(
+          [initError, cleanupError],
+          "Failed to initialize user and rollback failed"
+        );
+      }
+      throw initError;
     }
 
     // 6. Entityを返す
