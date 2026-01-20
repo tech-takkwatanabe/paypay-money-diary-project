@@ -201,8 +201,8 @@ export default function CategoriesPage() {
         await patchCategoriesReorder({
           categoryIds: newCategories.map((c) => c.id),
         });
-      } catch (error) {
-        console.error("Failed to reorder categories", error);
+      } catch (err) {
+        console.error("Failed to reorder categories", err);
         // 失敗した場合は元に戻す
         await fetchCategories();
       }
