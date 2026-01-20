@@ -39,7 +39,13 @@ export class SignupUseCase {
     });
 
     // 5. カテゴリとルールの初期化
-    await this.categoryInitializationService.initializeForUser(user.id);
+    try {
+      await this.categoryInitializationService.initializeForUser(user.id);
+    } catch (error) {
+      // 初期化に失敗した場合はユーザーを削除（ロールバック）
+      await this.userRepository.delete(user.id);
+      throw error;
+    }
 
     // 6. Entityを返す
     return user;
