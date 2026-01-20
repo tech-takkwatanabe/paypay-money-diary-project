@@ -199,8 +199,10 @@ const createCategoryDummy: RouteHandler<CreateCategoryRoute> = async (c) => {
       icon: null,
       displayOrder: 0,
       isDefault: false,
-      isSystem: false,
-      userId: null,
+      isOther: false,
+      userId: "",
+      hasRules: false,
+      hasTransactions: false,
     },
     201
   );
@@ -215,8 +217,10 @@ const updateCategoryDummy: RouteHandler<UpdateCategoryRoute> = async (c) => {
       icon: null,
       displayOrder: 0,
       isDefault: false,
-      isSystem: false,
-      userId: null,
+      isOther: false,
+      userId: "",
+      hasRules: false,
+      hasTransactions: false,
     },
     200
   );
