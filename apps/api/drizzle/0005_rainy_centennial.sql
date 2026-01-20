@@ -19,6 +19,8 @@ CREATE TABLE "default_category_rules" (
 );
 --> statement-breakpoint
 DROP INDEX "unique_system_category";--> statement-breakpoint
+DELETE FROM "categories" WHERE "user_id" IS NULL;--> statement-breakpoint
+DELETE FROM "category_rules" WHERE "user_id" IS NULL;--> statement-breakpoint
 ALTER TABLE "categories" ALTER COLUMN "user_id" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "categories" ALTER COLUMN "display_order" SET DEFAULT 100;--> statement-breakpoint
 ALTER TABLE "category_rules" ALTER COLUMN "user_id" SET NOT NULL;--> statement-breakpoint
