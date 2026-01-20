@@ -189,6 +189,14 @@ export default function CategoriesPage() {
       return;
     }
 
+    // 「その他」がドロップ先として選ばれた場合も処理しない
+    const overCategory = categories.find((c) => c.id === over?.id);
+    if (overCategory?.isOther) {
+      setError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
     if (over && active.id !== over.id) {
       const oldIndex = categories.findIndex((c) => c.id === active.id);
       const newIndex = categories.findIndex((c) => c.id === over.id);
