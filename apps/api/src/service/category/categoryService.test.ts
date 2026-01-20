@@ -9,9 +9,36 @@ describe("CategoryService", () => {
   let mockCategoryRepository: ICategoryRepository;
 
   const userId = "user-1";
-  const userCategory = new Category("user-cat-1", "My Hobby", "#00FF00", "hobby", 1, false, userId);
-  const otherUserCategory = new Category("other-cat-1", "Other Hobby", "#0000FF", "hobby", 2, false, "other-user");
-  const otherCategory = new Category("other-1", "その他", "#CCCCCC", "others", 9999, false, userId);
+  const userCategory = new Category({
+    id: "user-cat-1",
+    name: "My Hobby",
+    color: "#00FF00",
+    icon: "hobby",
+    displayOrder: 1,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
+  const otherUserCategory = new Category({
+    id: "other-cat-1",
+    name: "Other Hobby",
+    color: "#0000FF",
+    icon: "hobby",
+    displayOrder: 2,
+    isDefault: false,
+    isOther: false,
+    userId: "other-user",
+  });
+  const otherCategory = new Category({
+    id: "other-1",
+    name: "その他",
+    color: "#CCCCCC",
+    icon: "others",
+    displayOrder: 9999,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
 
   beforeEach(() => {
     mockCategoryRepository = {
