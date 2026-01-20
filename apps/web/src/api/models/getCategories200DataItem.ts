@@ -14,9 +14,8 @@ export type GetCategories200DataItem = {
   icon: string | null;
   displayOrder: number;
   isDefault: boolean;
-  isSystem: boolean;
-  /** @nullable */
-  userId: string | null;
+  isOther: boolean;
+  userId: string;
   hasRules: boolean;
   hasTransactions: boolean;
 };

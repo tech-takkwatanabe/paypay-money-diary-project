@@ -7,5 +7,6 @@
  */
 
 export type PatchCategoriesReorderBody = {
+  /** @minItems 1 */
   categoryIds: string[];
 };
