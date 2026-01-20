@@ -58,6 +58,7 @@ const categoriesData = [
     icon: "circle-dot",
     displayOrder: 999,
     isDefault: true,
+    isOther: true,
   },
 ];
 
@@ -116,6 +117,11 @@ async function seed() {
           defaultCategoryId: categoryId,
           priority: 0,
         });
+      } else {
+        await db
+          .update(defaultCategoryRules)
+          .set({ defaultCategoryId: categoryId, priority: 0 })
+          .where(eq(defaultCategoryRules.id, existingRule[0].id));
       }
     }
   }
