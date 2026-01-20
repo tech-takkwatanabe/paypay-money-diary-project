@@ -13,12 +13,22 @@ describe("UpdateCategoryUseCase", () => {
   const userId = "user-1";
   const categoryId = "cat-1";
   const input: UpdateCategoryInput = { name: "Updated Name" };
-  const updatedCategory = new Category(categoryId, "Updated Name", "#FF0000", "star", 0, false, userId);
+  const updatedCategory = new Category({
+    id: categoryId,
+    name: "Updated Name",
+    color: "#FF0000",
+    icon: "star",
+    displayOrder: 0,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
 
   beforeEach(() => {
     mockCategoryRepository = {
       findById: mock(async (_id: string) => null),
       findByUserId: mock(async (_userId: string) => []),
+      findByName: mock(async (_userId: string, _name: string) => null),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
@@ -43,9 +53,22 @@ describe("UpdateCategoryUseCase", () => {
 
   it("should throw error when category name is duplicated", async () => {
     (
-      mockCategoryRepository.update as Mock<(_id: string, _data: UpdateCategoryInput) => Promise<Category>>
-    ).mockRejectedValue(new Error("unique constraint violation"));
+      mockCategoryRepository.findByName as Mock<(_userId: string, _name: string) => Promise<Category | null>>
+    ).mockResolvedValue(
+      new Category({
+        id: "other-id",
+        name: "Updated Name",
+        color: "#000000",
+        icon: null,
+        displayOrder: 1,
+        isDefault: false,
+        isOther: false,
+        userId: userId,
+      })
+    );
 
-    expect(useCase.execute(categoryId, userId, input)).rejects.toThrow("Category with this name already exists");
+    await expect(useCase.execute(categoryId, userId, input)).rejects.toThrow("Category with this name already exists");
+    expect(mockCategoryRepository.findByName).toHaveBeenCalledWith(userId, input.name!);
+    expect(mockCategoryRepository.update).not.toHaveBeenCalled();
   });
 });

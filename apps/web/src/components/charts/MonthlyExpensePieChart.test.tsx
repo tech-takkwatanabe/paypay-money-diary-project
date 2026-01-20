@@ -86,8 +86,8 @@ describe("MonthlyExpensePieChart", () => {
 
   it("handles empty data with placeholder", () => {
     render(<MonthlyExpensePieChart data={[]} />);
-    const options = JSON.parse(screen.getByTestId("chart-options").textContent || "{}");
-    expect(options.labels).toEqual(["データなし"]);
+    expect(screen.getByText("まだデータがありません")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-chart")).not.toBeInTheDocument();
   });
 
   it("creates series data from category totalAmount", () => {
@@ -146,13 +146,6 @@ describe("MonthlyExpensePieChart", () => {
     const seriesData = JSON.parse(screen.getByTestId("chart-series").textContent || "[]");
 
     expect(seriesData).toEqual([50000]);
-  });
-
-  it("disables data labels when no data", () => {
-    render(<MonthlyExpensePieChart data={[]} />);
-    const options = JSON.parse(screen.getByTestId("chart-options").textContent || "{}");
-
-    expect(options.dataLabels.enabled).toBe(false);
   });
 
   it("enables data labels when data exists", () => {

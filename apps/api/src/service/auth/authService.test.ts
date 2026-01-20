@@ -27,6 +27,7 @@ describe("AuthService", () => {
       findByEmail: findByEmailMock,
       findById: mock(async (_id: string) => testUser),
       create: mock(async () => testUser),
+      delete: mock(async (_id: string) => {}),
     } as IUserRepository;
 
     const mockPasswordService = {

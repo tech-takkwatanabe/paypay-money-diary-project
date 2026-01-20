@@ -26,6 +26,7 @@ describe("CreateRuleUseCase", () => {
     mockRuleRepository = {
       findById: mock(),
       findByUserId: mock(),
+      findByCategoryId: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
@@ -34,8 +35,9 @@ describe("CreateRuleUseCase", () => {
   });
 
   it("should create a rule successfully", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleRepository.create as Mock<any>).mockResolvedValue(mockRule);
+    (mockRuleRepository.create as Mock<(_userId: string, _data: CreateRuleInput) => Promise<Rule>>).mockResolvedValue(
+      mockRule
+    );
 
     const result = await createRuleUseCase.execute(userId, input);
 
@@ -43,7 +45,6 @@ describe("CreateRuleUseCase", () => {
     expect(result.keyword).toBe(mockRule.keyword);
     expect(result.categoryId).toBe(mockRule.categoryId);
     expect(result.categoryName).toBe(mockRule.categoryName);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleRepository.create as Mock<any>).toHaveBeenCalledWith(userId, input);
+    expect(mockRuleRepository.create).toHaveBeenCalledWith(userId, input);
   });
 });

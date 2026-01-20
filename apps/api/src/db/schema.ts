@@ -11,7 +11,6 @@ import {
   unique,
   index,
 } from "drizzle-orm/pg-core";
-import { isNull } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
@@ -35,37 +34,65 @@ export const csvUploads = pgTable("csv_uploads", {
   status: varchar("status", { length: 20 }).notNull().default("pending"),
 });
 
+export const defaultCategories = pgTable("default_categories", {
+  id: pgUuid("id").defaultRandom().primaryKey(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  color: varchar("color", { length: 7 }).notNull(),
+  icon: varchar("icon", { length: 50 }),
+  displayOrder: integer("display_order").notNull().default(100),
+  isDefault: boolean("is_default").notNull().default(false),
+  isOther: boolean("is_other").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const defaultCategoryRules = pgTable("default_category_rules", {
+  id: pgUuid("id").defaultRandom().primaryKey(),
+  keyword: varchar("keyword", { length: 100 }).notNull().unique(),
+  defaultCategoryId: pgUuid("default_category_id")
+    .notNull()
+    .references(() => defaultCategories.id, { onDelete: "cascade" }),
+  priority: integer("priority").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const categories = pgTable(
   "categories",
   {
     id: pgUuid("id").defaultRandom().primaryKey(),
-    userId: char("user_id", { length: 36 }).references(() => users.uuid, {
-      onDelete: "cascade",
-    }),
+    userId: char("user_id", { length: 36 })
+      .notNull()
+      .references(() => users.uuid, {
+        onDelete: "cascade",
+      }),
     name: varchar("name", { length: 50 }).notNull(),
     color: varchar("color", { length: 7 }).notNull(),
     icon: varchar("icon", { length: 50 }),
     displayOrder: integer("display_order").notNull().default(100),
     isDefault: boolean("is_default").notNull().default(false),
+    isOther: boolean("is_other").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
     unique("unique_category_per_user").on(table.userId, table.name),
-    index("unique_system_category").on(table.name).where(isNull(table.userId)),
+    index("idx_categories_user").on(table.userId),
   ]
 );
 
 export const categoryRules = pgTable("category_rules", {
   id: pgUuid("id").defaultRandom().primaryKey(),
-  userId: char("user_id", { length: 36 }).references(() => users.uuid, {
-    onDelete: "cascade",
-  }),
+  userId: char("user_id", { length: 36 })
+    .notNull()
+    .references(() => users.uuid, {
+      onDelete: "cascade",
+    }),
   keyword: varchar("keyword", { length: 100 }).notNull(),
   categoryId: pgUuid("category_id")
     .notNull()
     .references(() => categories.id, { onDelete: "cascade" }),
   priority: integer("priority").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const expenses = pgTable(
@@ -87,6 +114,7 @@ export const expenses = pgTable(
     paymentMethod: varchar("payment_method", { length: 100 }),
     externalTransactionId: varchar("external_transaction_id", { length: 50 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
     unique("unique_user_transaction").on(table.userId, table.externalTransactionId),

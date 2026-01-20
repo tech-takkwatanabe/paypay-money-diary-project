@@ -16,6 +16,11 @@ import type {
   GetCategories400,
   GetCategories401,
   GetCategories500,
+  PatchCategoriesReorder200,
+  PatchCategoriesReorder400,
+  PatchCategoriesReorder401,
+  PatchCategoriesReorder500,
+  PatchCategoriesReorderBody,
   PostCategories201,
   PostCategories400,
   PostCategories401,
@@ -266,5 +271,59 @@ export const deleteCategoriesId = async (id: string, options?: RequestInit): Pro
   return customFetch<deleteCategoriesIdResponse>(getDeleteCategoriesIdUrl(id), {
     ...options,
     method: "DELETE",
+  });
+};
+
+/**
+ * @summary カテゴリ並び替え
+ */
+export type patchCategoriesReorderResponse200 = {
+  data: PatchCategoriesReorder200;
+  status: 200;
+};
+
+export type patchCategoriesReorderResponse400 = {
+  data: PatchCategoriesReorder400;
+  status: 400;
+};
+
+export type patchCategoriesReorderResponse401 = {
+  data: PatchCategoriesReorder401;
+  status: 401;
+};
+
+export type patchCategoriesReorderResponse500 = {
+  data: PatchCategoriesReorder500;
+  status: 500;
+};
+
+export type patchCategoriesReorderResponseSuccess = patchCategoriesReorderResponse200 & {
+  headers: Headers;
+};
+export type patchCategoriesReorderResponseError = (
+  | patchCategoriesReorderResponse400
+  | patchCategoriesReorderResponse401
+  | patchCategoriesReorderResponse500
+) & {
+  headers: Headers;
+};
+
+export type patchCategoriesReorderResponse =
+  | patchCategoriesReorderResponseSuccess
+  | patchCategoriesReorderResponseError;
+
+export const getPatchCategoriesReorderUrl = () => {
+  return `/categories/reorder`;
+};
+
+export const patchCategoriesReorder = async (
+  patchCategoriesReorderBody: PatchCategoriesReorderBody,
+  options?: RequestInit
+): Promise<patchCategoriesReorderResponse> => {
+  return customFetch<patchCategoriesReorderResponse>(getPatchCategoriesReorderUrl(), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(patchCategoriesReorderBody),
   });
 };

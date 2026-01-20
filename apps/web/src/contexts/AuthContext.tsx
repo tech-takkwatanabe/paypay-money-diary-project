@@ -53,6 +53,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // 初回マウント時にユーザー情報を取得
   useEffect(() => {
     const initAuth = async () => {
+      // ログイン・サインアップ画面では初期チェックをスキップして 401 エラーを回避
+      const isAuthPage = window.location.pathname === "/login" || window.location.pathname === "/signup";
+      if (isAuthPage) {
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       await refreshUser();
       setIsLoading(false);

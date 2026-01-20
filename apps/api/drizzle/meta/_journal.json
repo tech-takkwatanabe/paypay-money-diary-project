@@ -36,6 +36,34 @@
       "when": 1766200020235,
       "tag": "0004_bitter_brother_voodoo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1768746077753,
+      "tag": "0005_rainy_centennial",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1768747334298,
+      "tag": "0006_unknown_infant_terrible",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1768864630529,
+      "tag": "0007_clumsy_snowbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1737376800000,
+      "tag": "0008_fix_other_category",
+      "breakpoints": true
     }
   ]
 }

@@ -24,12 +24,35 @@ describe("CategoryRepository", () => {
 
   describe("findByUserId", () => {
     it("should return categories if found", async () => {
+      const selectCalls: number[] = [];
+
       spyOn(db, "select").mockImplementation(() => {
+        selectCalls.push(1);
+        const callIndex = selectCalls.length;
+
+        if (callIndex === 1) {
+          // First select: categories
+          const chain = {
+            from: mock().mockReturnThis(),
+            where: mock().mockReturnThis(),
+            orderBy: mock().mockImplementation(() => Promise.resolve([mockCategoryData])),
+          };
+          return chain as unknown as never;
+        } else if (callIndex === 2) {
+          // Second select: categoryRules
+          const chain = {
+            from: mock().mockReturnThis(),
+            where: mock().mockImplementation(() => Promise.resolve([])),
+          };
+          return chain as unknown as never;
+        }
+        return {} as never;
+      });
+
+      spyOn(db, "selectDistinct").mockImplementation(() => {
         const chain = {
           from: mock().mockReturnThis(),
-          where: mock().mockReturnThis(),
-          orderBy: mock().mockImplementation(() => Promise.resolve([mockCategoryData])),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) => resolve([mockCategoryData])),
+          where: mock().mockImplementation(() => Promise.resolve([])),
         };
         return chain as unknown as never;
       });
@@ -39,15 +62,40 @@ describe("CategoryRepository", () => {
       expect(categories[0]).toBeInstanceOf(Category);
       expect(categories[0].id).toBe(mockCategoryData.id);
       expect(categories[0].name).toBe(mockCategoryData.name);
+      expect(categories[0].hasRules).toBe(false);
+      expect(categories[0].hasTransactions).toBe(false);
     });
 
     it("should return empty array if not found", async () => {
+      const selectCalls: number[] = [];
+
       spyOn(db, "select").mockImplementation(() => {
+        selectCalls.push(1);
+        const callIndex = selectCalls.length;
+
+        if (callIndex === 1) {
+          // First select: categories
+          const chain = {
+            from: mock().mockReturnThis(),
+            where: mock().mockReturnThis(),
+            orderBy: mock().mockImplementation(() => Promise.resolve([])),
+          };
+          return chain as unknown as never;
+        } else if (callIndex === 2) {
+          // Second select: categoryRules
+          const chain = {
+            from: mock().mockReturnThis(),
+            where: mock().mockImplementation(() => Promise.resolve([])),
+          };
+          return chain as unknown as never;
+        }
+        return {} as never;
+      });
+
+      spyOn(db, "selectDistinct").mockImplementation(() => {
         const chain = {
           from: mock().mockReturnThis(),
-          where: mock().mockReturnThis(),
-          orderBy: mock().mockImplementation(() => Promise.resolve([])),
-          then: mock().mockImplementation((resolve: (val: unknown) => void) => resolve([])),
+          where: mock().mockImplementation(() => Promise.resolve([])),
         };
         return chain as unknown as never;
       });

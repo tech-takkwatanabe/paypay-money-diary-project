@@ -20,6 +20,7 @@ describe("UpdateRuleUseCase", () => {
     mockRuleRepository = {
       findById: mock(),
       findByUserId: mock(),
+      findByCategoryId: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
@@ -33,18 +34,18 @@ describe("UpdateRuleUseCase", () => {
   });
 
   it("should update a rule successfully", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleService.ensureUserCanUpdate as Mock<any>).mockResolvedValue(undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleRepository.update as Mock<any>).mockResolvedValue(mockRule);
+    (mockRuleService.ensureUserCanUpdate as Mock<(id: string, userId: string) => Promise<void>>).mockResolvedValue(
+      undefined
+    );
+    (mockRuleRepository.update as Mock<(id: string, data: UpdateRuleInput) => Promise<Rule>>).mockResolvedValue(
+      mockRule
+    );
 
     const result = await updateRuleUseCase.execute(ruleId, userId, input);
 
     expect(result.id).toBe(mockRule.id);
     expect(result.keyword).toBe(mockRule.keyword);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleService.ensureUserCanUpdate as Mock<any>).toHaveBeenCalledWith(ruleId, userId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleRepository.update as Mock<any>).toHaveBeenCalledWith(ruleId, input);
+    expect(mockRuleService.ensureUserCanUpdate).toHaveBeenCalledWith(ruleId, userId);
+    expect(mockRuleRepository.update).toHaveBeenCalledWith(ruleId, input);
   });
 });

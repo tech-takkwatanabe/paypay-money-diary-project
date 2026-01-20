@@ -112,4 +112,9 @@ export interface ITransactionRepository {
    * 外部取引IDでトランザクションが存在するか確認
    */
   existsByExternalId(userId: string, externalId: string): Promise<boolean>;
+
+  /**
+   * カテゴリを一括変更
+   */
+  reCategorize(userId: string, fromCategoryId: string, toCategoryId: string): Promise<number>;
 }

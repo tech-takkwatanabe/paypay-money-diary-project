@@ -14,7 +14,8 @@ export type PutCategoriesId200 = {
   icon: string | null;
   displayOrder: number;
   isDefault: boolean;
-  isSystem: boolean;
-  /** @nullable */
-  userId: string | null;
+  isOther: boolean;
+  userId: string;
+  hasRules: boolean;
+  hasTransactions: boolean;
 };

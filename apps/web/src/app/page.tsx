@@ -43,10 +43,15 @@ export default function Dashboard() {
           // 最新の年をデフォルト選択
           if (response.data.years.length > 0) {
             setSelectedYear(response.data.years[0]);
+          } else {
+            setIsLoading(false);
           }
+        } else {
+          setIsLoading(false);
         }
       } catch (_error) {
         console.error("Failed to fetch available years");
+        setIsLoading(false);
       }
     };
     fetchYears();

@@ -1,4 +1,4 @@
-import { eq, or, isNull } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { db } from "@/db";
 import { categoryRules, categories } from "@/db/schema";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
@@ -11,7 +11,7 @@ import { CreateRuleInput, UpdateRuleInput } from "@paypay-money-diary/shared";
  */
 export class RuleRepository implements IRuleRepository {
   /**
-   * ユーザーIDでルールを検索（優先度順）
+   * ユーザーIDでルールを検索（作成日降順）
    */
   async findByUserId(userId: string): Promise<Rule[]> {
     const results = await db
@@ -22,12 +22,13 @@ export class RuleRepository implements IRuleRepository {
         categoryId: categoryRules.categoryId,
         priority: categoryRules.priority,
         createdAt: categoryRules.createdAt,
+        updatedAt: categoryRules.updatedAt,
         categoryName: categories.name,
       })
       .from(categoryRules)
       .leftJoin(categories, eq(categoryRules.categoryId, categories.id))
-      .where(or(eq(categoryRules.userId, userId), isNull(categoryRules.userId)))
-      .orderBy(categoryRules.priority, categoryRules.keyword);
+      .where(eq(categoryRules.userId, userId))
+      .orderBy(desc(categoryRules.createdAt));
 
     return results.map(
       (row) =>
@@ -38,7 +39,7 @@ export class RuleRepository implements IRuleRepository {
           row.categoryId,
           row.priority,
           row.createdAt ?? undefined,
-          undefined,
+          row.updatedAt ?? undefined,
           row.categoryName
         )
     );
@@ -56,6 +57,7 @@ export class RuleRepository implements IRuleRepository {
         categoryId: categoryRules.categoryId,
         priority: categoryRules.priority,
         createdAt: categoryRules.createdAt,
+        updatedAt: categoryRules.updatedAt,
         categoryName: categories.name,
       })
       .from(categoryRules)
@@ -75,8 +77,43 @@ export class RuleRepository implements IRuleRepository {
       row.categoryId,
       row.priority,
       row.createdAt ?? undefined,
-      undefined,
+      row.updatedAt ?? undefined,
       row.categoryName
+    );
+  }
+
+  /**
+   * カテゴリIDでルールを検索
+   */
+  async findByCategoryId(categoryId: string, userId: string): Promise<Rule[]> {
+    const results = await db
+      .select({
+        id: categoryRules.id,
+        userId: categoryRules.userId,
+        keyword: categoryRules.keyword,
+        categoryId: categoryRules.categoryId,
+        priority: categoryRules.priority,
+        createdAt: categoryRules.createdAt,
+        updatedAt: categoryRules.updatedAt,
+        categoryName: categories.name,
+      })
+      .from(categoryRules)
+      .leftJoin(categories, eq(categoryRules.categoryId, categories.id))
+      .where(and(eq(categoryRules.categoryId, categoryId), eq(categoryRules.userId, userId)))
+      .orderBy(desc(categoryRules.createdAt));
+
+    return results.map(
+      (row) =>
+        new Rule(
+          row.id,
+          row.userId,
+          row.keyword,
+          row.categoryId,
+          row.priority,
+          row.createdAt ?? undefined,
+          row.updatedAt ?? undefined,
+          row.categoryName
+        )
     );
   }
 
@@ -110,6 +147,7 @@ export class RuleRepository implements IRuleRepository {
     if (input.keyword !== undefined) updateData.keyword = input.keyword;
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId;
     if (input.priority !== undefined) updateData.priority = input.priority;
+    updateData.updatedAt = new Date();
 
     await db.update(categoryRules).set(updateData).where(eq(categoryRules.id, id));
 

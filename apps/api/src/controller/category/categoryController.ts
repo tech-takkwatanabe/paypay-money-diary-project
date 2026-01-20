@@ -1,11 +1,13 @@
 import { Context } from "hono";
 import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
+import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
 import { CategoryService } from "@/service/category/categoryService";
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
 import { UpdateCategoryUseCase } from "@/usecase/category/updateCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/usecase/category/deleteCategoryUseCase";
-import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
+import { ReorderCategoriesUseCase } from "@/usecase/category/reorderCategoriesUseCase";
+import { CreateCategoryInput, UpdateCategoryInput, ReorderCategoriesInput } from "@paypay-money-diary/shared";
 
 /**
  * Category Controller
@@ -101,6 +103,39 @@ export class CategoryController {
   }
 
   /**
+   * カテゴリ並び替えハンドラー
+   */
+  async reorder(c: Context) {
+    const userPayload = c.get("user");
+    if (!userPayload || !userPayload.userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const reorderCategoriesUseCase = new ReorderCategoriesUseCase();
+    const input = c.req.valid("json" as never) as ReorderCategoriesInput;
+
+    try {
+      await reorderCategoriesUseCase.execute(userPayload.userId, input.categoryIds);
+      return c.json({ message: "Categories reordered successfully" }, 200);
+    } catch (error) {
+      if (error instanceof Error) {
+        // バリデーションエラーの検知
+        if (
+          error.message.includes("Unauthorized or invalid category ID") ||
+          error.message.includes("Duplicate") ||
+          error.message.includes("Missing") ||
+          error.message.includes("Reorder list must include") ||
+          error.message.includes("Cannot reorder 'Others' category")
+        ) {
+          return c.json({ error: error.message }, 400);
+        }
+      }
+      console.error("Reorder categories error:", error);
+      return c.json({ error: "Internal Server Error" }, 500);
+    }
+  }
+
+  /**
    * カテゴリ削除ハンドラー
    */
   async delete(c: Context) {
@@ -115,8 +150,9 @@ export class CategoryController {
     }
 
     const categoryRepository = new CategoryRepository();
+    const ruleRepository = new RuleRepository();
     const categoryService = new CategoryService(categoryRepository);
-    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, categoryService);
+    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, ruleRepository, categoryService);
 
     try {
       await deleteCategoryUseCase.execute(categoryId, userPayload.userId);
@@ -134,6 +170,15 @@ export class CategoryController {
         }
         if (error.message === "Cannot delete default category") {
           return c.json({ error: error.message }, 403);
+        }
+        if (error.message === "Cannot delete 'その他' category") {
+          return c.json({ error: error.message }, 403);
+        }
+        if (error.message.startsWith("Cannot delete category linked to rules")) {
+          return c.json({ error: error.message }, 400);
+        }
+        if (error.message.startsWith("Cannot delete category with existing transactions")) {
+          return c.json({ error: error.message }, 400);
         }
       }
       console.error("Delete category error:", error);

@@ -896,12 +896,14 @@ paths:
                           type: number
                         isDefault:
                           type: boolean
-                        isSystem:
+                        isOther:
                           type: boolean
                         userId:
                           type: string
-                          nullable: true
-                          format: uuid
+                        hasRules:
+                          type: boolean
+                        hasTransactions:
+                          type: boolean
                       required:
                         - id
                         - name
@@ -909,8 +911,10 @@ paths:
                         - icon
                         - displayOrder
                         - isDefault
-                        - isSystem
+                        - isOther
                         - userId
+                        - hasRules
+                        - hasTransactions
                 required:
                   - data
         "400":
@@ -997,12 +1001,14 @@ paths:
                     type: number
                   isDefault:
                     type: boolean
-                  isSystem:
+                  isOther:
                     type: boolean
                   userId:
                     type: string
-                    nullable: true
-                    format: uuid
+                  hasRules:
+                    type: boolean
+                  hasTransactions:
+                    type: boolean
                 required:
                   - id
                   - name
@@ -1010,8 +1016,10 @@ paths:
                   - icon
                   - displayOrder
                   - isDefault
-                  - isSystem
+                  - isOther
                   - userId
+                  - hasRules
+                  - hasTransactions
         "400":
           description: バリデーションエラー
           content:
@@ -1113,12 +1121,14 @@ paths:
                     type: number
                   isDefault:
                     type: boolean
-                  isSystem:
+                  isOther:
                     type: boolean
                   userId:
                     type: string
-                    nullable: true
-                    format: uuid
+                  hasRules:
+                    type: boolean
+                  hasTransactions:
+                    type: boolean
                 required:
                   - id
                   - name
@@ -1126,8 +1136,10 @@ paths:
                   - icon
                   - displayOrder
                   - isDefault
-                  - isSystem
+                  - isOther
                   - userId
+                  - hasRules
+                  - hasTransactions
         "400":
           description: バリデーションエラー
           content:
@@ -1264,6 +1276,77 @@ paths:
                   - error
         "404":
           description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+  /categories/reorder:
+    patch:
+      summary: カテゴリ並び替え
+      tags:
+        - Categories
+      security:
+        - Cookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  minItems: 1
+                  uniqueItems: true
+                  items:
+                    type: string
+                    format: uuid
+              required:
+                - categoryIds
+      responses:
+        "200":
+          description: 並び替え成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
+                required:
+                  - message
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server Error
+                required:
+                  - error
+        "401":
+          description: 認証エラー
           content:
             application/json:
               schema:

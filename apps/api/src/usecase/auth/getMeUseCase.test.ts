@@ -9,6 +9,7 @@ const mockUserRepository = {
   findByEmail: mock() as Mock<IUserRepository["findByEmail"]>,
   findById: mock() as Mock<IUserRepository["findById"]>,
   create: mock() as Mock<IUserRepository["create"]>,
+  delete: mock() as Mock<IUserRepository["delete"]>,
 } satisfies IUserRepository;
 
 describe("GetMeUseCase", () => {

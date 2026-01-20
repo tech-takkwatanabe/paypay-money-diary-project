@@ -14,6 +14,8 @@ interface AnnualExpenseBarChartProps {
 const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
 
 export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChartProps) {
+  const hasData = data.some((m) => (m.categories ?? []).some((c) => (c.amount ?? 0) > 0));
+
   // 全てのカテゴリーを抽出（ユニークなリストを作成）
   const allCategories = Array.from(
     new Map(
@@ -93,17 +95,21 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
   }));
 
   return (
-    <Card className="w-full h-full min-h-[400px]">
+    <Card className="w-full h-full min-h-100">
       <CardHeader>
         <CardTitle>年間支出推移</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="w-full h-[300px] flex items-center justify-center">
+          <div className="w-full h-75 flex items-center justify-center">
             <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
           </div>
+        ) : !hasData ? (
+          <div className="w-full h-75 flex items-center justify-center text-muted-foreground">
+            まだデータがありません
+          </div>
         ) : (
-          <div className="w-full h-[300px]">
+          <div className="w-full h-75">
             <Chart options={options} series={series} type="bar" height="100%" />
           </div>
         )}

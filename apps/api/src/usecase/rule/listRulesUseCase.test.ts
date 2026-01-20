@@ -23,6 +23,7 @@ describe("ListRulesUseCase", () => {
     mockRuleRepository = {
       findById: mock(),
       findByUserId: mock(),
+      findByCategoryId: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
@@ -31,8 +32,7 @@ describe("ListRulesUseCase", () => {
   });
 
   it("should return rules for the user", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mockRuleRepository.findByUserId as Mock<any>).mockResolvedValue([mockRule]);
+    (mockRuleRepository.findByUserId as Mock<(userId: string) => Promise<Rule[]>>).mockResolvedValue([mockRule]);
 
     const result = await listRulesUseCase.execute(userId);
 
@@ -41,7 +41,6 @@ describe("ListRulesUseCase", () => {
     expect(result[0].keyword).toBe(mockRule.keyword);
     expect(result[0].categoryId).toBe(mockRule.categoryId);
     expect(result[0].categoryName).toBe(mockRule.categoryName);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(mockRuleRepository.findByUserId as Mock<any>).toHaveBeenCalledWith(userId);
+    expect(mockRuleRepository.findByUserId).toHaveBeenCalledWith(userId);
   });
 });

@@ -16,20 +16,22 @@ describe("CreateCategoryUseCase", () => {
     displayOrder: 10,
   };
 
-  const createdCategory = new Category(
-    "new-id",
-    input.name,
-    input.color,
-    input.icon ?? null,
-    input.displayOrder ?? 0,
-    false,
-    userId
-  );
+  const createdCategory = new Category({
+    id: "new-id",
+    name: input.name,
+    color: input.color,
+    icon: input.icon ?? null,
+    displayOrder: input.displayOrder ?? 0,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
 
   beforeEach(() => {
     mockCategoryRepository = {
       findById: mock(async (_id: string) => null),
       findByUserId: mock(async (_userId: string) => []),
+      findByName: mock(async (_userId: string, _name: string) => null),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),

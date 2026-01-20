@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Lock } from "lucide-react";
+import { ArrowLeft, Plus, X, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +11,27 @@ import {
   postCategories,
   putCategoriesId,
   deleteCategoriesId,
+  patchCategoriesReorder,
 } from "@/api/generated/categories/categories";
-import type { GetCategories200DataItem as CategoryWithSystem } from "@/api/models";
+import type { GetCategories200DataItem as Category } from "@/api/models";
+
+// dnd-kit imports
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { SortableCategoryItem } from "./SortableCategoryItem";
 
 // プリセットカラー
 const PRESET_COLORS = [
@@ -45,7 +64,7 @@ interface CategoryFormData {
 }
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -55,7 +74,16 @@ export default function CategoriesPage() {
     icon: "",
   });
   const [error, setError] = useState("");
+  const [dragError, setDragError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // dnd-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const fetchCategories = async () => {
     try {
@@ -145,11 +173,74 @@ export default function CategoriesPage() {
         alert(response.data.error);
       }
     } catch (_error) {
-      alert("削除に失敗しました");
+      alert(
+        "削除に失敗しました。このカテゴリを使用したルールまたは支出がある場合は、先にルールの変更や支出の付け替えを行ってください。"
+      );
     }
   };
 
-  const startEdit = (category: CategoryWithSystem) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    // 「その他」がドラッグされた場合は処理しない
+    const activeCategory = categories.find((c) => c.id === active.id);
+    if (activeCategory?.isOther) {
+      setDragError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setDragError(""), 3000);
+      return;
+    }
+
+    // 「その他」がドロップ先として選ばれた場合も処理しない
+    const overCategory = categories.find((c) => c.id === over?.id);
+    if (overCategory?.isOther) {
+      setDragError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setDragError(""), 3000);
+      return;
+    }
+
+    if (over && active.id !== over.id) {
+      const oldIndex = categories.findIndex((c) => c.id === active.id);
+      const newIndex = categories.findIndex((c) => c.id === over.id);
+
+      // 「その他」が移動されないように、または「その他」の位置を考慮
+      const newCategories = arrayMove(categories, oldIndex, newIndex);
+
+      // 「その他」を常に末尾にする
+      const otherIndex = newCategories.findIndex((c) => c.isOther);
+      if (otherIndex !== -1 && otherIndex !== newCategories.length - 1) {
+        const other = newCategories.splice(otherIndex, 1)[0];
+        newCategories.push(other);
+      }
+
+      setCategories(newCategories);
+
+      try {
+        // 「その他」を除外して API に送信
+        const reorderableIds = newCategories.filter((c) => !c.isOther).map((c) => c.id);
+
+        const response = await patchCategoriesReorder({
+          categoryIds: reorderableIds,
+        });
+
+        // non-2xx レスポンスをチェック
+        if (response.status < 200 || response.status >= 300) {
+          const message =
+            "data" in response && "error" in response.data ? response.data.error : "並び替えに失敗しました";
+          throw new Error(message);
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "並び替えに失敗しました";
+        setDragError(errorMessage);
+        console.error("Failed to reorder categories", err);
+        // 失敗した場合は元に戻す
+        await fetchCategories();
+        // 3秒後にエラーメッセージを消す
+        setTimeout(() => setDragError(""), 3000);
+      }
+    }
+  };
+
+  const startEdit = (category: Category) => {
     setEditingId(category.id);
     setFormData({
       name: category.name,
@@ -173,10 +264,6 @@ export default function CategoriesPage() {
     setError("");
   };
 
-  // システムカテゴリとユーザーカテゴリを分離
-  const systemCategories = categories.filter((c) => c.isSystem);
-  const userCategories = categories.filter((c) => !c.isSystem);
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
@@ -198,7 +285,7 @@ export default function CategoriesPage() {
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリ管理</h1>
-          <p className="text-gray-500 dark:text-gray-400">支出のカテゴリを管理します</p>
+          <p className="text-gray-500 dark:text-gray-400">支出のカテゴリを管理します（ドラッグで並び替え可能）</p>
         </div>
 
         {/* 新規作成フォーム */}
@@ -249,106 +336,71 @@ export default function CategoriesPage() {
           </Card>
         )}
 
-        {/* ユーザーカテゴリ */}
+        {/* カテゴリ一覧 */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-lg">マイカテゴリ</CardTitle>
+            <CardTitle className="text-lg">カテゴリ一覧</CardTitle>
           </CardHeader>
           <CardContent>
+            {dragError && <p className="text-sm text-red-500 mb-4">{dragError}</p>}
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
               </div>
-            ) : userCategories.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">カスタムカテゴリはありません</p>
+            ) : categories.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">カテゴリはありません</p>
             ) : (
-              <div className="divide-y dark:divide-gray-700">
-                {userCategories.map((category) => (
-                  <div key={category.id} className="py-4">
-                    {editingId === category.id ? (
-                      <div className="space-y-4">
-                        <div className="flex gap-4">
-                          <Input
-                            type="text"
-                            variant="filter"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          />
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {PRESET_COLORS.map((color) => (
-                            <button
-                              key={color}
-                              onClick={() => setFormData({ ...formData, color })}
-                              className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                        {error && <p className="text-sm text-red-500">{error}</p>}
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleUpdate(category.id)}
-                            disabled={isSubmitting}
-                            className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
-                          >
-                            <Check className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={cancelEdit}
-                            className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                          >
-                            <X className="w-5 h-5" />
-                          </button>
-                        </div>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={categories.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+                  <div className="divide-y dark:divide-gray-700">
+                    {categories.map((category) => (
+                      <div key={category.id}>
+                        {editingId === category.id ? (
+                          <div className="py-4 space-y-4">
+                            <div className="flex gap-4">
+                              <Input
+                                type="text"
+                                variant="filter"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                              />
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {PRESET_COLORS.map((color) => (
+                                <button
+                                  key={color}
+                                  onClick={() => setFormData({ ...formData, color })}
+                                  className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                            {error && <p className="text-sm text-red-500">{error}</p>}
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleUpdate(category.id)}
+                                disabled={isSubmitting}
+                                className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
+                              >
+                                <Check className="w-5 h-5" />
+                              </button>
+                              <button
+                                onClick={cancelEdit}
+                                className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <SortableCategoryItem category={category} onEdit={startEdit} onDelete={handleDelete} />
+                        )}
                       </div>
-                    ) : (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
-                          <span className="font-medium">{category.name}</span>
-                        </div>
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => startEdit(category)}
-                            className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(category.id, category.name)}
-                            className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
-          </CardContent>
-        </Card>
-
-        {/* システムカテゴリ */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-lg">システムカテゴリ</CardTitle>
-              <Lock className="w-4 h-4 text-gray-400" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="divide-y dark:divide-gray-700">
-              {systemCategories.map((category) => (
-                <div key={category.id} className="py-4 flex items-center gap-3">
-                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
-                  <span className="font-medium">{category.name}</span>
-                  <span className="text-xs text-gray-400">(編集不可)</span>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </main>

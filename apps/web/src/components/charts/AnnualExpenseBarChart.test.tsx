@@ -95,7 +95,8 @@ describe("AnnualExpenseBarChart", () => {
 
   it("handles empty data correctly", () => {
     render(<AnnualExpenseBarChart data={[]} />);
-    expect(screen.getByTestId("mock-chart")).toBeInTheDocument();
+    expect(screen.getByText("まだデータがありません")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-chart")).not.toBeInTheDocument();
   });
 
   it("creates series data for all categories", () => {

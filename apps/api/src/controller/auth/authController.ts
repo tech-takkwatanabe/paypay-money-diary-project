@@ -10,6 +10,7 @@ import { SignupUseCase } from "@/usecase/auth/signupUseCase";
 import { GetMeUseCase } from "@/usecase/auth/getMeUseCase";
 import { RefreshUseCase } from "@/usecase/auth/refreshUseCase";
 import { LogoutUseCase } from "@/usecase/auth/logoutUseCase";
+import { CategoryInitializationService } from "@/service/category/categoryInitializationService";
 import { CreateUserInput, LoginInput } from "@paypay-money-diary/shared";
 import { setAuthCookies, clearAuthCookies } from "@/infrastructure/auth/cookie";
 
@@ -26,7 +27,13 @@ export class AuthController {
     const userRepository = new UserRepository();
     const passwordService = new PasswordService();
     const authService = new AuthService(userRepository, passwordService);
-    const signupUseCase = new SignupUseCase(userRepository, authService, passwordService);
+    const categoryInitializationService = new CategoryInitializationService();
+    const signupUseCase = new SignupUseCase(
+      userRepository,
+      authService,
+      passwordService,
+      categoryInitializationService
+    );
 
     // 入力はzValidatorミドルウェアで検証済み
     const input = c.req.valid("json" as never) as CreateUserInput;

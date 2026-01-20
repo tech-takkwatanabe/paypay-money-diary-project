@@ -94,7 +94,7 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>手動支出入力</DialogTitle>
           <DialogDescription>

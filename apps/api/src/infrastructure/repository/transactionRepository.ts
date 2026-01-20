@@ -1,4 +1,4 @@
-import { eq, and, sql, gte, lt, desc, ilike, or, isNull } from "drizzle-orm";
+import { eq, and, sql, gte, lt, desc, ilike } from "drizzle-orm";
 import { db } from "@/db";
 import { expenses, categories, categoryRules } from "@/db/schema";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
@@ -62,6 +62,7 @@ export class TransactionRepository implements ITransactionRepository {
         displayOrder: categories.displayOrder,
         paymentMethod: expenses.paymentMethod,
         createdAt: expenses.createdAt,
+        updatedAt: expenses.updatedAt,
       })
       .from(expenses)
       .leftJoin(categories, eq(expenses.categoryId, categories.id))
@@ -90,7 +91,7 @@ export class TransactionRepository implements ITransactionRepository {
           row.displayOrder ?? 100,
           row.paymentMethod,
           row.createdAt ?? undefined,
-          undefined
+          row.updatedAt ?? undefined
         )
     );
   }
@@ -112,6 +113,7 @@ export class TransactionRepository implements ITransactionRepository {
         displayOrder: categories.displayOrder,
         paymentMethod: expenses.paymentMethod,
         createdAt: expenses.createdAt,
+        updatedAt: expenses.updatedAt,
       })
       .from(expenses)
       .leftJoin(categories, eq(expenses.categoryId, categories.id))
@@ -135,7 +137,7 @@ export class TransactionRepository implements ITransactionRepository {
       row.displayOrder ?? 100,
       row.paymentMethod,
       row.createdAt ?? undefined,
-      undefined
+      row.updatedAt ?? undefined
     );
   }
 
@@ -260,7 +262,7 @@ export class TransactionRepository implements ITransactionRepository {
       transaction.displayOrder,
       row.paymentMethod,
       row.createdAt ?? undefined,
-      undefined
+      row.updatedAt ?? undefined
     );
   }
 
@@ -269,9 +271,10 @@ export class TransactionRepository implements ITransactionRepository {
    */
   async update(id: string, input: UpdateTransactionInput): Promise<Transaction> {
     // 更新データを構築
-    const updateData: { categoryId?: string; amount?: number } = {};
+    const updateData: { categoryId?: string; amount?: number; updatedAt?: Date } = {};
     if (input.categoryId) updateData.categoryId = input.categoryId;
     if (input.amount !== undefined) updateData.amount = input.amount;
+    updateData.updatedAt = new Date();
 
     // トランザクションを更新
     const results = await db.update(expenses).set(updateData).where(eq(expenses.id, id)).returning();
@@ -302,7 +305,7 @@ export class TransactionRepository implements ITransactionRepository {
         category[0].displayOrder,
         row.paymentMethod,
         row.createdAt ?? undefined,
-        undefined
+        row.updatedAt ?? undefined
       );
     } else {
       // 未分類の場合
@@ -318,7 +321,7 @@ export class TransactionRepository implements ITransactionRepository {
         100,
         row.paymentMethod,
         row.createdAt ?? undefined,
-        undefined
+        row.updatedAt ?? undefined
       );
     }
   }
@@ -353,7 +356,7 @@ export class TransactionRepository implements ITransactionRepository {
     const rules = await db
       .select()
       .from(categoryRules)
-      .where(or(eq(categoryRules.userId, userId), isNull(categoryRules.userId)))
+      .where(eq(categoryRules.userId, userId))
       .orderBy(desc(categoryRules.priority));
 
     if (rules.length === 0) {
@@ -439,7 +442,7 @@ export class TransactionRepository implements ITransactionRepository {
           transactions[index].displayOrder,
           row.paymentMethod,
           row.createdAt ?? undefined,
-          undefined
+          row.updatedAt ?? undefined
         )
     );
   }
@@ -455,5 +458,18 @@ export class TransactionRepository implements ITransactionRepository {
       .limit(1);
 
     return results.length > 0;
+  }
+
+  /**
+   * カテゴリを一括変更
+   */
+  async reCategorize(userId: string, fromCategoryId: string, toCategoryId: string): Promise<number> {
+    const results = await db
+      .update(expenses)
+      .set({ categoryId: toCategoryId, updatedAt: new Date() })
+      .where(and(eq(expenses.userId, userId), eq(expenses.categoryId, fromCategoryId)))
+      .returning({ id: expenses.id });
+
+    return results.length;
   }
 }

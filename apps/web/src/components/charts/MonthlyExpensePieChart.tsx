@@ -26,14 +26,14 @@ const defaultColors = [
 ];
 
 export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieChartProps) {
-  const chartData =
-    data.length > 0
-      ? data.map((item, index) => ({
-          name: item.categoryName,
-          value: item.totalAmount,
-          color: item.categoryColor || defaultColors[index % defaultColors.length],
-        }))
-      : [{ name: "データなし", value: 1, color: "#e5e7eb" }];
+  const hasData = data.length > 0;
+  const chartData = hasData
+    ? data.map((item, index) => ({
+        name: item.categoryName,
+        value: item.totalAmount,
+        color: item.categoryColor || defaultColors[index % defaultColors.length],
+      }))
+    : [];
 
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -46,7 +46,7 @@ export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieCha
       position: "bottom",
     },
     dataLabels: {
-      enabled: data.length > 0,
+      enabled: hasData,
       formatter: (val: number) => `${val.toFixed(0)}%`,
     },
     tooltip: {
@@ -61,25 +61,26 @@ export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieCha
         },
       },
     },
-    noData: {
-      text: "データがありません",
-    },
   };
 
   const series = chartData.map((item) => item.value);
 
   return (
-    <Card className="w-full h-full min-h-[400px]">
+    <Card className="w-full h-full min-h-100">
       <CardHeader>
         <CardTitle>カテゴリ別支出</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="w-full h-[300px] flex items-center justify-center">
+          <div className="w-full h-75 flex items-center justify-center">
             <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
           </div>
+        ) : !hasData ? (
+          <div className="w-full h-75 flex items-center justify-center text-muted-foreground">
+            まだデータがありません
+          </div>
         ) : (
-          <div className="w-full h-[300px]">
+          <div className="w-full h-75">
             <Chart options={options} series={series} type="donut" height="100%" />
           </div>
         )}

@@ -1,4 +1,5 @@
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
+import { IRuleRepository } from "@/domain/repository/ruleRepository";
 import { CategoryService } from "@/service/category/categoryService";
 
 /**
@@ -8,6 +9,7 @@ import { CategoryService } from "@/service/category/categoryService";
 export class DeleteCategoryUseCase {
   constructor(
     private readonly categoryRepository: ICategoryRepository,
+    private readonly ruleRepository: IRuleRepository,
     private readonly categoryService: CategoryService
   ) {}
 
@@ -18,8 +20,23 @@ export class DeleteCategoryUseCase {
    */
   async execute(categoryId: string, userId: string): Promise<void> {
     // 権限と削除可能性のチェック
-    await this.categoryService.ensureUserCanDelete(categoryId, userId);
+    const _category = await this.categoryService.ensureUserCanDelete(categoryId, userId);
 
+    // 1. ルールに紐づいているか確認
+    const rules = await this.ruleRepository.findByCategoryId(categoryId, userId);
+    if (rules.length > 0) {
+      throw new Error("Cannot delete category linked to rules. Please delete or update the rules first.");
+    }
+
+    // 2. 支出データが存在するか確認
+    if (_category.hasTransactions) {
+      throw new Error(
+        "Cannot delete category with existing transactions. Please delete or re-categorize the transactions first."
+      );
+    }
+
+    // 3. カテゴリを削除
+    // 注: ルールや支出が紐づいている場合は上記のチェックでブロックされる
     await this.categoryRepository.delete(categoryId);
   }
 }
