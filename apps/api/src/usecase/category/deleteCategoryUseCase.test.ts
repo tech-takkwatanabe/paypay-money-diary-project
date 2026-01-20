@@ -2,18 +2,15 @@ import { describe, it, expect, beforeEach, mock, type Mock } from "bun:test";
 import { DeleteCategoryUseCase } from "./deleteCategoryUseCase";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
-import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 import { CategoryService } from "@/service/category/categoryService";
 import { Category } from "@/domain/entity/category";
 import { Rule } from "@/domain/entity/rule";
-import { Transaction } from "@/domain/entity/transaction";
 import { CreateCategoryInput, UpdateCategoryInput, CreateRuleInput, UpdateRuleInput } from "@paypay-money-diary/shared";
 
 describe("DeleteCategoryUseCase", () => {
   let useCase: DeleteCategoryUseCase;
   let mockCategoryRepository: ICategoryRepository;
   let mockRuleRepository: IRuleRepository;
-  let mockTransactionRepository: ITransactionRepository;
   let mockCategoryService: CategoryService;
 
   const userId = "user-1";
@@ -57,20 +54,6 @@ describe("DeleteCategoryUseCase", () => {
       update: mock(async (_id: string, _data: UpdateRuleInput) => ({}) as Rule),
       delete: mock(async (_id: string) => {}),
     };
-    mockTransactionRepository = {
-      findByUserId: mock(async () => []),
-      countByUserId: mock(async () => 0),
-      sumByUserId: mock(async () => 0),
-      findById: mock(async () => null),
-      create: mock(async () => ({}) as Transaction),
-      update: mock(async () => ({}) as Transaction),
-      delete: mock(async () => {}),
-      getAvailableYears: mock(async () => []),
-      reCategorizeByRules: mock(async () => 0),
-      createMany: mock(async () => []),
-      existsByExternalId: mock(async () => false),
-      reCategorize: mock(async () => 0),
-    };
     mockCategoryService = new CategoryService(mockCategoryRepository);
     mockCategoryService.ensureUserCanDelete = mock(async (_id: string, _userId: string) => category);
 
@@ -83,7 +66,6 @@ describe("DeleteCategoryUseCase", () => {
     expect(mockCategoryService.ensureUserCanDelete).toHaveBeenCalledWith(categoryId, userId);
     expect(mockRuleRepository.findByCategoryId).toHaveBeenCalledWith(categoryId, userId);
     expect(mockCategoryRepository.delete).toHaveBeenCalledWith(categoryId);
-    expect(mockTransactionRepository.reCategorize).not.toHaveBeenCalled();
   });
 
   it("should throw error if category is linked to rules", async () => {
