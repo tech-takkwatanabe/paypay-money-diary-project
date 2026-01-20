@@ -30,6 +30,7 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
       <div className="flex items-center gap-3">
         <button
           className="p-1 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing"
+          aria-label="ドラッグして並び替え"
           {...attributes}
           {...listeners}
         >
