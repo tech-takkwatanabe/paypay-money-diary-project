@@ -16,15 +16,16 @@ describe("CreateCategoryUseCase", () => {
     displayOrder: 10,
   };
 
-  const createdCategory = new Category(
-    "new-id",
-    input.name,
-    input.color,
-    input.icon ?? null,
-    input.displayOrder ?? 0,
-    false,
-    userId
-  );
+  const createdCategory = new Category({
+    id: "new-id",
+    name: input.name,
+    color: input.color,
+    icon: input.icon ?? null,
+    displayOrder: input.displayOrder ?? 0,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
 
   beforeEach(() => {
     mockCategoryRepository = {
