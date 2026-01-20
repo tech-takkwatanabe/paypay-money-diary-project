@@ -198,8 +198,13 @@ export default function CategoriesPage() {
       setCategories(newCategories);
 
       try {
+        // 「その他」を除外して API に送信
+        const reorderableIds = newCategories
+          .filter((c) => !c.isOther)
+          .map((c) => c.id);
+        
         await patchCategoriesReorder({
-          categoryIds: newCategories.map((c) => c.id),
+          categoryIds: reorderableIds,
         });
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "並び替えに失敗しました";
