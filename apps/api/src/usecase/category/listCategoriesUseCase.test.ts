@@ -9,7 +9,18 @@ describe("ListCategoriesUseCase", () => {
   let mockCategoryRepository: ICategoryRepository;
 
   const userId = "user-1";
-  const categories = [new Category("1", "Food", "#FF0000", "food", 0, false, userId)];
+  const categories = [
+    new Category({
+      id: "1",
+      name: "Food",
+      color: "#FF0000",
+      icon: "food",
+      displayOrder: 0,
+      isDefault: false,
+      isOther: false,
+      userId: userId,
+    }),
+  ];
 
   beforeEach(() => {
     mockCategoryRepository = {
