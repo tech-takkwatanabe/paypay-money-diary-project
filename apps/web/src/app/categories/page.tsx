@@ -189,7 +189,7 @@ export default function CategoriesPage() {
       const newCategories = arrayMove(categories, oldIndex, newIndex);
 
       // 「その他」を常に末尾にする
-      const otherIndex = newCategories.findIndex((c) => c.name === "その他");
+      const otherIndex = newCategories.findIndex((c) => c.isOther);
       if (otherIndex !== -1 && otherIndex !== newCategories.length - 1) {
         const other = newCategories.splice(otherIndex, 1)[0];
         newCategories.push(other);
@@ -202,9 +202,13 @@ export default function CategoriesPage() {
           categoryIds: newCategories.map((c) => c.id),
         });
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "並び替えに失敗しました";
+        setError(errorMessage);
         console.error("Failed to reorder categories", err);
         // 失敗した場合は元に戻す
         await fetchCategories();
+        // 3秒後にエラーメッセージを消す
+        setTimeout(() => setError(""), 3000);
       }
     }
   };
