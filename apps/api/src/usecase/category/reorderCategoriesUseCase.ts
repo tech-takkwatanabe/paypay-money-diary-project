@@ -34,11 +34,10 @@ export class ReorderCategoriesUseCase {
       }
 
       // 「その他」以外のカテゴリがすべて含まれているか確認
-      const reorderableIds = userCategories.filter((c) => !c.isOther).map((c) => c.id);
-      // categoryIdsに含まれるIDのうち、reorderableIdsに含まれるものの数をカウント
-      const includedReorderableCount = categoryIds.filter((id) => reorderableIds.includes(id)).length;
-
-      if (includedReorderableCount !== reorderableIds.length) {
+      const reorderableIdSet = new Set(
+        userCategories.filter((c) => !c.isOther).map((c) => c.id)
+      );
+      if (![...reorderableIdSet].every((id) => uniqueIds.has(id))) {
         // Note: The requirement is that we reorder the provided IDs.
         // If some categories are missing from the input, their order won't be updated.
         // However, the review comment suggested: "Reorder list must include all categories except 'その他'".
@@ -51,13 +50,14 @@ export class ReorderCategoriesUseCase {
       // categoryIdsに含まれていない場合や、途中に含まれている場合でも
       // 最終的に最大値を割り当てる。
 
+      const now = new Date();
       let order = 1;
       for (const id of categoryIds) {
         const cat = userCategories.find((c) => c.id === id);
         if (cat && !cat.isOther) {
           await tx
             .update(categories)
-            .set({ displayOrder: order++ })
+            .set({ displayOrder: order++, updatedAt: now })
             .where(and(eq(categories.id, id), eq(categories.userId, userId)));
         }
       }
@@ -66,7 +66,7 @@ export class ReorderCategoriesUseCase {
       if (otherCategory) {
         await tx
           .update(categories)
-          .set({ displayOrder: 9999 })
+          .set({ displayOrder: 9999, updatedAt: now })
           .where(and(eq(categories.id, otherCategory.id), eq(categories.userId, userId)));
       }
     });
