@@ -74,6 +74,7 @@ export default function CategoriesPage() {
     icon: "",
   });
   const [error, setError] = useState("");
+  const [dragError, setDragError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // dnd-kit sensors
@@ -184,16 +185,16 @@ export default function CategoriesPage() {
     // 「その他」がドラッグされた場合は処理しない
     const activeCategory = categories.find((c) => c.id === active.id);
     if (activeCategory?.isOther) {
-      setError("「その他」カテゴリは並び替えできません");
-      setTimeout(() => setError(""), 3000);
+      setDragError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setDragError(""), 3000);
       return;
     }
 
     // 「その他」がドロップ先として選ばれた場合も処理しない
     const overCategory = categories.find((c) => c.id === over?.id);
     if (overCategory?.isOther) {
-      setError("「その他」カテゴリは並び替えできません");
-      setTimeout(() => setError(""), 3000);
+      setDragError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setDragError(""), 3000);
       return;
     }
 
@@ -217,17 +218,24 @@ export default function CategoriesPage() {
         // 「その他」を除外して API に送信
         const reorderableIds = newCategories.filter((c) => !c.isOther).map((c) => c.id);
 
-        await patchCategoriesReorder({
+        const response = await patchCategoriesReorder({
           categoryIds: reorderableIds,
         });
+
+        // non-2xx レスポンスをチェック
+        if (response.status < 200 || response.status >= 300) {
+          const message =
+            "data" in response && "error" in response.data ? response.data.error : "並び替えに失敗しました";
+          throw new Error(message);
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "並び替えに失敗しました";
-        setError(errorMessage);
+        setDragError(errorMessage);
         console.error("Failed to reorder categories", err);
         // 失敗した場合は元に戻す
         await fetchCategories();
         // 3秒後にエラーメッセージを消す
-        setTimeout(() => setError(""), 3000);
+        setTimeout(() => setDragError(""), 3000);
       }
     }
   };
@@ -334,6 +342,7 @@ export default function CategoriesPage() {
             <CardTitle className="text-lg">カテゴリ一覧</CardTitle>
           </CardHeader>
           <CardContent>
+            {dragError && <p className="text-sm text-red-500 mb-4">{dragError}</p>}
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />

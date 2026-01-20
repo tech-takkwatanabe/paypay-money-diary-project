@@ -171,6 +171,9 @@ export class CategoryController {
         if (error.message === "Cannot delete default category") {
           return c.json({ error: error.message }, 403);
         }
+        if (error.message === "Cannot delete 'その他' category") {
+          return c.json({ error: error.message }, 403);
+        }
         if (error.message.startsWith("Cannot delete category linked to rules")) {
           return c.json({ error: error.message }, 400);
         }

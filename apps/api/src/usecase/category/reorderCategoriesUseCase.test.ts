@@ -40,41 +40,18 @@ describe("ReorderCategoriesUseCase", () => {
   });
 
   it("should throw error when 'Others' category is included in reorder request", async () => {
-    try {
-      await useCase.execute("user-1", ["cat-3", "cat-1", "cat-2"]);
-      throw new Error("Should have thrown an error");
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).toContain("Cannot reorder 'Others' category");
-      } else {
-        throw error;
-      }
-    }
+    await expect(useCase.execute("user-1", ["cat-3", "cat-1", "cat-2"])).rejects.toThrow(
+      /Cannot reorder 'Others' category/
+    );
   });
 
   it("should throw error when reorder list does not include all reorderable categories", async () => {
-    try {
-      await useCase.execute("user-1", ["cat-1"]); // Missing cat-2
-      throw new Error("Should have thrown an error");
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).toContain("Reorder list must include all categories except");
-      } else {
-        throw error;
-      }
-    }
+    await expect(useCase.execute("user-1", ["cat-1"])).rejects.toThrow(
+      /Reorder list must include all categories except/
+    );
   });
 
   it("should throw error for duplicate IDs", async () => {
-    try {
-      await useCase.execute("user-1", ["cat-1", "cat-1", "cat-2"]);
-      throw new Error("Should have thrown an error");
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).toContain("Duplicate");
-      } else {
-        throw error;
-      }
-    }
+    await expect(useCase.execute("user-1", ["cat-1", "cat-1", "cat-2"])).rejects.toThrow(/Duplicate/);
   });
 });
