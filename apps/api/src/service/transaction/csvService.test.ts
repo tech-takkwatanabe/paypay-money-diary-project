@@ -16,9 +16,42 @@ describe("CsvService", () => {
   const now = new Date();
 
   const mockCategories = [
-    new Category("cat-1", "Shopping", "#FF0000", null, 0, false, mockUserId, now, now),
-    new Category("cat-2", "Food", "#00FF00", null, 1, false, mockUserId, now, now),
-    new Category("cat-3", "その他", "#CCCCCC", null, 2, true, mockUserId, now, now),
+    new Category({
+      id: "cat-1",
+      name: "Shopping",
+      color: "#FF0000",
+      icon: null,
+      displayOrder: 0,
+      isDefault: false,
+      isOther: false,
+      userId: mockUserId,
+      createdAt: now,
+      updatedAt: now,
+    }),
+    new Category({
+      id: "cat-2",
+      name: "Food",
+      color: "#00FF00",
+      icon: null,
+      displayOrder: 1,
+      isDefault: false,
+      isOther: false,
+      userId: mockUserId,
+      createdAt: now,
+      updatedAt: now,
+    }),
+    new Category({
+      id: "cat-3",
+      name: "その他",
+      color: "#CCCCCC",
+      icon: null,
+      displayOrder: 2,
+      isDefault: false,
+      isOther: true,
+      userId: mockUserId,
+      createdAt: now,
+      updatedAt: now,
+    }),
   ];
 
   const mockRules = [
