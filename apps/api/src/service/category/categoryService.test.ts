@@ -36,7 +36,7 @@ describe("CategoryService", () => {
     icon: "others",
     displayOrder: 9999,
     isDefault: false,
-    isOther: false,
+    isOther: true,
     userId: userId,
   });
 
