@@ -41,6 +41,7 @@ export const defaultCategories = pgTable("default_categories", {
   icon: varchar("icon", { length: 50 }),
   displayOrder: integer("display_order").notNull().default(100),
   isDefault: boolean("is_default").notNull().default(false),
+  isOther: boolean("is_other").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -68,6 +69,7 @@ export const categories = pgTable(
     icon: varchar("icon", { length: 50 }),
     displayOrder: integer("display_order").notNull().default(100),
     isDefault: boolean("is_default").notNull().default(false),
+    isOther: boolean("is_other").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
