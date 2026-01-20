@@ -48,10 +48,7 @@ export class SignupUseCase {
         await this.userRepository.delete(user.id);
       } catch (cleanupError) {
         // ロールバック失敗時は両方のエラーを含める
-        throw new AggregateError(
-          [initError, cleanupError],
-          "Failed to initialize user and rollback failed"
-        );
+        throw new AggregateError([initError, cleanupError], "Failed to initialize user and rollback failed");
       }
       throw initError;
     }
