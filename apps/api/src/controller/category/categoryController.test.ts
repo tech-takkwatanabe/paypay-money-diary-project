@@ -6,6 +6,7 @@ import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase"
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
 import { UpdateCategoryUseCase } from "@/usecase/category/updateCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/usecase/category/deleteCategoryUseCase";
+import { ReorderCategoriesUseCase } from "@/usecase/category/reorderCategoriesUseCase";
 import { Category } from "@/domain/entity/category";
 
 describe("CategoryController", () => {
@@ -139,6 +140,78 @@ describe("CategoryController", () => {
 
       expect(res.status).toBe(404);
       expect(await res.json()).toEqual({ error: "Category not found" });
+    });
+  });
+
+  describe("PATCH /categories/reorder", () => {
+    it("should reorder categories successfully", async () => {
+      const categoryIds = ["cat-1", "cat-2", "cat-3"];
+      const spy = spyOn(ReorderCategoriesUseCase.prototype, "execute").mockResolvedValue(undefined);
+
+      const res = await app.request("/categories/reorder", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryIds }),
+      });
+
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual({ message: "Categories reordered successfully" });
+      expect(spy).toHaveBeenCalledWith(mockUserId, categoryIds);
+    });
+
+    it("should return 400 for duplicate category IDs", async () => {
+      const categoryIds = ["cat-1", "cat-2", "cat-1"];
+      spyOn(ReorderCategoriesUseCase.prototype, "execute").mockRejectedValue(
+        new Error("Duplicate category IDs in reorder request")
+      );
+
+      const res = await app.request("/categories/reorder", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryIds }),
+      });
+
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({
+        error: "Duplicate category IDs in reorder request",
+      });
+    });
+
+    it("should return 400 for missing required categories", async () => {
+      const categoryIds = ["cat-1"];
+      spyOn(ReorderCategoriesUseCase.prototype, "execute").mockRejectedValue(
+        new Error("Reorder list must include all categories except 'Others'")
+      );
+
+      const res = await app.request("/categories/reorder", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryIds }),
+      });
+
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({
+        error: "Reorder list must include all categories except 'Others'",
+      });
+    });
+
+    it("should return 401 when unauthorized", async () => {
+      const res = await app.request("/categories/reorder", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryIds: ["cat-1"] }),
+      });
+
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "Unauthorized" });
     });
   });
 });
