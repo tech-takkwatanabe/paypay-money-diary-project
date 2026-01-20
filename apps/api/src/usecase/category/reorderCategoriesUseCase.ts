@@ -33,6 +33,11 @@ export class ReorderCategoriesUseCase {
         throw new Error("Duplicate category IDs in reorder request");
       }
 
+      // 「その他」がリストに含まれていないかチェック
+      if (otherCategory && uniqueIds.has(otherCategory.id)) {
+        throw new Error("Cannot reorder 'Others' category - it must always be at the end");
+      }
+
       // 「その他」以外のカテゴリがすべて含まれているか確認
       const reorderableIdSet = new Set(userCategories.filter((c) => !c.isOther).map((c) => c.id));
       if (![...reorderableIdSet].every((id) => uniqueIds.has(id))) {

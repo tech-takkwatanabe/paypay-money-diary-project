@@ -199,10 +199,8 @@ export default function CategoriesPage() {
 
       try {
         // 「その他」を除外して API に送信
-        const reorderableIds = newCategories
-          .filter((c) => !c.isOther)
-          .map((c) => c.id);
-        
+        const reorderableIds = newCategories.filter((c) => !c.isOther).map((c) => c.id);
+
         await patchCategoriesReorder({
           categoryIds: reorderableIds,
         });
