@@ -271,9 +271,10 @@ export class TransactionRepository implements ITransactionRepository {
    */
   async update(id: string, input: UpdateTransactionInput): Promise<Transaction> {
     // 更新データを構築
-    const updateData: { categoryId?: string; amount?: number } = {};
+    const updateData: { categoryId?: string; amount?: number; updatedAt?: Date } = {};
     if (input.categoryId) updateData.categoryId = input.categoryId;
     if (input.amount !== undefined) updateData.amount = input.amount;
+    updateData.updatedAt = new Date();
 
     // トランザクションを更新
     const results = await db.update(expenses).set(updateData).where(eq(expenses.id, id)).returning();
@@ -465,7 +466,7 @@ export class TransactionRepository implements ITransactionRepository {
   async reCategorize(userId: string, fromCategoryId: string, toCategoryId: string): Promise<number> {
     const results = await db
       .update(expenses)
-      .set({ categoryId: toCategoryId })
+      .set({ categoryId: toCategoryId, updatedAt: new Date() })
       .where(and(eq(expenses.userId, userId), eq(expenses.categoryId, fromCategoryId)))
       .returning({ id: expenses.id });
 
