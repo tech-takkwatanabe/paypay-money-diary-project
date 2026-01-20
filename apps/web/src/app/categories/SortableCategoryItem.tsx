@@ -12,7 +12,10 @@ interface SortableCategoryItemProps {
 }
 
 export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCategoryItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: category.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: category.id,
+    disabled: category.isOther, // 「その他」はドラッグ不可
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -28,14 +31,20 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
       className={`flex items-center justify-between py-4 bg-white dark:bg-gray-800 ${isDragging ? "shadow-lg rounded-lg border" : ""}`}
     >
       <div className="flex items-center gap-3">
-        <button
-          className="p-1 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing"
-          aria-label="ドラッグして並び替え"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="w-5 h-5" />
-        </button>
+        {!category.isOther ? (
+          <button
+            className="p-1 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing"
+            aria-label="ドラッグして並び替え"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="w-5 h-5" />
+          </button>
+        ) : (
+          <div className="p-1 text-gray-300 cursor-not-allowed">
+            <GripVertical className="w-5 h-5" />
+          </div>
+        )}
         <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
         <span className="font-medium">{category.name}</span>
       </div>
