@@ -12,6 +12,7 @@ const mockUserRepository = {
   findByEmail: mock() as Mock<IUserRepository["findByEmail"]>,
   findById: mock() as Mock<IUserRepository["findById"]>,
   create: mock() as Mock<IUserRepository["create"]>,
+  delete: mock() as Mock<IUserRepository["delete"]>,
 } satisfies IUserRepository;
 
 // Mock Services
@@ -39,6 +40,7 @@ describe("SignupUseCase", () => {
     );
     mockUserRepository.findByEmail.mockClear();
     mockUserRepository.create.mockClear();
+    mockUserRepository.delete.mockClear();
     (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockClear();
     (mockPasswordService.hashPassword as Mock<PasswordService["hashPassword"]>).mockClear();
     (
@@ -85,5 +87,30 @@ describe("SignupUseCase", () => {
     expect(signupUseCase.execute(input)).rejects.toThrow("User already exists");
     expect(mockAuthService.checkUserExists).toHaveBeenCalledWith(input.email);
     expect(mockUserRepository.create).not.toHaveBeenCalled();
+    expect(mockCategoryInitializationService.initializeForUser).not.toHaveBeenCalled();
+  });
+
+  it("should rollback user creation if initialization fails", async () => {
+    // Arrange
+    const input: CreateUserInput = {
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123",
+    };
+
+    const mockUser = new User("uuid-123", input.name, Email.create(input.email), Password.create("hashed_password"));
+
+    (mockAuthService.checkUserExists as Mock<AuthService["checkUserExists"]>).mockResolvedValue(false);
+    (mockPasswordService.hashPassword as Mock<PasswordService["hashPassword"]>).mockResolvedValue("hashed_password");
+    (mockUserRepository.create as Mock<IUserRepository["create"]>).mockResolvedValue(mockUser);
+    (
+      mockCategoryInitializationService.initializeForUser as Mock<CategoryInitializationService["initializeForUser"]>
+    ).mockRejectedValue(new Error("Initialization failed"));
+
+    // Act & Assert
+    await expect(signupUseCase.execute(input)).rejects.toThrow("Initialization failed");
+    expect(mockUserRepository.create).toHaveBeenCalled();
+    expect(mockCategoryInitializationService.initializeForUser).toHaveBeenCalledWith(mockUser.id);
+    expect(mockUserRepository.delete).toHaveBeenCalledWith(mockUser.id);
   });
 });
