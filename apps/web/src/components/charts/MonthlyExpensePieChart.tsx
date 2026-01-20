@@ -61,29 +61,26 @@ export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieCha
         },
       },
     },
-    noData: {
-      text: "データがありません",
-    },
   };
 
   const series = chartData.map((item) => item.value);
 
   return (
-    <Card className="w-full h-full min-h-[400px]">
+    <Card className="w-full h-full min-h-100">
       <CardHeader>
         <CardTitle>カテゴリ別支出</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="w-full h-[300px] flex items-center justify-center">
+          <div className="w-full h-75 flex items-center justify-center">
             <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : !hasData ? (
-          <div className="w-full h-[300px] flex items-center justify-center text-muted-foreground">
+          <div className="w-full h-75 flex items-center justify-center text-muted-foreground">
             まだデータがありません
           </div>
         ) : (
-          <div className="w-full h-[300px]">
+          <div className="w-full h-75">
             <Chart options={options} series={series} type="donut" height="100%" />
           </div>
         )}
