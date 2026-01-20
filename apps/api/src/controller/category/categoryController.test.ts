@@ -13,7 +13,16 @@ describe("CategoryController", () => {
   const mockUserId = "user-123";
   const mockUserEmail = "test@example.com";
 
-  const mockCategory = new Category("cat-1", "Food", "#FF0000", "food", 0, false, mockUserId);
+  const mockCategory = new Category({
+    id: "cat-1",
+    name: "Food",
+    color: "#FF0000",
+    icon: "food",
+    displayOrder: 0,
+    isDefault: false,
+    isOther: false,
+    userId: mockUserId,
+  });
 
   beforeEach(() => {
     app = new OpenAPIHono<Env>();
