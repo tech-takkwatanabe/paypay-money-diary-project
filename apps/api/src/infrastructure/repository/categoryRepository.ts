@@ -183,7 +183,9 @@ export class CategoryRepository implements ICategoryRepository {
    * カテゴリを更新
    */
   async update(id: string, input: UpdateCategoryInput): Promise<Category> {
-    const updateData: Record<string, unknown> = {};
+    const updateData: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
 
     if (input.name !== undefined) updateData.name = input.name;
     if (input.color !== undefined) updateData.color = input.color;
@@ -203,7 +205,7 @@ export class CategoryRepository implements ICategoryRepository {
       isOther: row.isOther,
       userId: row.userId,
       createdAt: row.createdAt ?? undefined,
-      updatedAt: undefined,
+      updatedAt: row.updatedAt ?? undefined,
     });
   }
 
