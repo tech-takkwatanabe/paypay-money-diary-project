@@ -56,7 +56,7 @@ const categoriesData = [
     name: "その他",
     color: "#9c9c9c",
     icon: "circle-dot",
-    displayOrder: 999,
+    displayOrder: 9999,
     isDefault: true,
     isOther: true,
   },
