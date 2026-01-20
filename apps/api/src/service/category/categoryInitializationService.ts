@@ -1,6 +1,8 @@
 import { db } from "@/db";
 import { defaultCategories, defaultCategoryRules, categories, categoryRules } from "@/db/schema";
 
+import { eq } from "drizzle-orm";
+
 /**
  * Category Initialization Service
  * 新規ユーザー向けにデフォルトカテゴリとルールをコピーして初期化する
@@ -12,11 +14,18 @@ export class CategoryInitializationService {
    */
   async initializeForUser(userId: string): Promise<void> {
     await db.transaction(async (tx) => {
+      const existing = await tx
+        .select({ id: categories.id })
+        .from(categories)
+        .where(eq(categories.userId, userId))
+        .limit(1);
+      if (existing.length > 0) return;
+
       // 1. デフォルトカテゴリを取得
       const defaults = await tx.select().from(defaultCategories);
 
       // 2. ユーザー用カテゴリとしてコピー
-      // カテゴリ名から新しいIDへのマッピングを保持（ルールの紐付け用）
+      // デフォルトカテゴリIDから新しいIDへのマッピングを保持（ルールの紐付け用）
       const categoryIdMap = new Map<string, string>();
 
       for (const df of defaults) {
@@ -29,6 +38,7 @@ export class CategoryInitializationService {
             icon: df.icon,
             displayOrder: df.displayOrder,
             isDefault: df.isDefault,
+            isOther: df.isOther,
           })
           .returning();
 
