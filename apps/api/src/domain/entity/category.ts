@@ -2,6 +2,21 @@
  * Category Entity
  * ドメイン層のカテゴリエンティティ
  */
+interface CategoryProps {
+  id: string;
+  name: string;
+  color: string;
+  icon: string | null;
+  displayOrder: number;
+  isDefault: boolean;
+  isOther: boolean;
+  userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  hasRules?: boolean;
+  hasTransactions?: boolean;
+}
+
 export class Category {
   public readonly id: string;
   public readonly name: string;
@@ -9,43 +24,26 @@ export class Category {
   public readonly icon: string | null;
   public readonly displayOrder: number;
   public readonly isDefault: boolean;
-  public readonly userId: string | null;
+  public readonly isOther: boolean;
+  public readonly userId: string;
   public readonly createdAt?: Date;
   public readonly updatedAt?: Date;
   public readonly hasRules: boolean;
   public readonly hasTransactions: boolean;
 
-  constructor(
-    id: string,
-    name: string,
-    color: string,
-    icon: string | null,
-    displayOrder: number,
-    isDefault: boolean,
-    userId: string | null,
-    createdAt?: Date,
-    updatedAt?: Date,
-    hasRules: boolean = false,
-    hasTransactions: boolean = false
-  ) {
-    this.id = id;
-    this.name = name;
-    this.color = color;
-    this.icon = icon;
-    this.displayOrder = displayOrder;
-    this.isDefault = isDefault;
-    this.userId = userId;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.hasRules = hasRules;
-    this.hasTransactions = hasTransactions;
-  }
-
-  /**
-   * システムカテゴリかどうか
-   */
-  isSystemCategory(): boolean {
-    return this.userId === null;
+  constructor(props: CategoryProps) {
+    this.id = props.id;
+    this.name = props.name;
+    this.color = props.color;
+    this.icon = props.icon;
+    this.displayOrder = props.displayOrder;
+    this.isDefault = props.isDefault;
+    this.isOther = props.isOther;
+    this.userId = props.userId;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.hasRules = props.hasRules ?? false;
+    this.hasTransactions = props.hasTransactions ?? false;
   }
 
   /**
@@ -76,7 +74,7 @@ export class Category {
       icon: this.icon,
       displayOrder: this.displayOrder,
       isDefault: this.isDefault,
-      isSystem: this.isSystemCategory(),
+      isOther: this.isOther,
       userId: this.userId,
       hasRules: this.hasRules,
       hasTransactions: this.hasTransactions,
