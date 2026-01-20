@@ -147,6 +147,7 @@ export class RuleRepository implements IRuleRepository {
     if (input.keyword !== undefined) updateData.keyword = input.keyword;
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId;
     if (input.priority !== undefined) updateData.priority = input.priority;
+    updateData.updatedAt = new Date();
 
     await db.update(categoryRules).set(updateData).where(eq(categoryRules.id, id));
 
