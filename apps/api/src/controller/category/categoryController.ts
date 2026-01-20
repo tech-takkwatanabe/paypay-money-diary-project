@@ -124,7 +124,8 @@ export class CategoryController {
           error.message.includes("Unauthorized or invalid category ID") ||
           error.message.includes("Duplicate") ||
           error.message.includes("Missing") ||
-          error.message.includes("Reorder list must include")
+          error.message.includes("Reorder list must include") ||
+          error.message.includes("Cannot reorder 'Others' category")
         ) {
           return c.json({ error: error.message }, 400);
         }

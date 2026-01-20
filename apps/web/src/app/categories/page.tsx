@@ -181,6 +181,14 @@ export default function CategoriesPage() {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
+    // 「その他」がドラッグされた場合は処理しない
+    const activeCategory = categories.find((c) => c.id === active.id);
+    if (activeCategory?.isOther) {
+      setError("「その他」カテゴリは並び替えできません");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
     if (over && active.id !== over.id) {
       const oldIndex = categories.findIndex((c) => c.id === active.id);
       const newIndex = categories.findIndex((c) => c.id === over.id);
