@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNotNull } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, categoryRules, expenses } from "@/db/schema";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
@@ -31,29 +31,28 @@ export class CategoryRepository implements ICategoryRepository {
     // カテゴリに関連する支出を取得して、hasTransactions フラグを設定
     // expensesテーブルから、このユーザーの支出で使用されているカテゴリIDを取得
     const expensesList = await db
-      .select({ categoryId: expenses.categoryId })
+      .selectDistinct({ categoryId: expenses.categoryId })
       .from(expenses)
-      .where(eq(expenses.userId, userId));
+      .where(and(eq(expenses.userId, userId), isNotNull(expenses.categoryId)));
 
-    const categoryIdsWithTransactions = new Set(
-      expensesList.map((e) => e.categoryId).filter((id): id is string => id !== null)
-    );
+    const categoryIdsWithTransactions = new Set(expensesList.map((e) => e.categoryId as string));
 
     return results.map(
       (row) =>
-        new Category(
-          row.id,
-          row.name,
-          row.color,
-          row.icon,
-          row.displayOrder,
-          row.isDefault,
-          row.userId,
-          row.createdAt ?? undefined,
-          row.updatedAt ?? undefined,
-          categoryIdsWithRules.has(row.id),
-          categoryIdsWithTransactions.has(row.id)
-        )
+        new Category({
+          id: row.id,
+          name: row.name,
+          color: row.color,
+          icon: row.icon,
+          displayOrder: row.displayOrder,
+          isDefault: row.isDefault,
+          isOther: row.isOther,
+          userId: row.userId,
+          createdAt: row.createdAt ?? undefined,
+          updatedAt: row.updatedAt ?? undefined,
+          hasRules: categoryIdsWithRules.has(row.id),
+          hasTransactions: categoryIdsWithTransactions.has(row.id),
+        })
     );
   }
 
@@ -68,17 +67,37 @@ export class CategoryRepository implements ICategoryRepository {
     }
 
     const row = results[0];
-    return new Category(
-      row.id,
-      row.name,
-      row.color,
-      row.icon,
-      row.displayOrder,
-      row.isDefault,
-      row.userId,
-      row.createdAt ?? undefined,
-      row.updatedAt ?? undefined
-    );
+
+    // hasRules check
+    const rules = await db
+      .select({ id: categoryRules.id })
+      .from(categoryRules)
+      .where(eq(categoryRules.categoryId, id))
+      .limit(1);
+    const hasRules = rules.length > 0;
+
+    // hasTransactions check
+    const transactions = await db
+      .select({ id: expenses.id })
+      .from(expenses)
+      .where(eq(expenses.categoryId, id))
+      .limit(1);
+    const hasTransactions = transactions.length > 0;
+
+    return new Category({
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      icon: row.icon,
+      displayOrder: row.displayOrder,
+      isDefault: row.isDefault,
+      isOther: row.isOther,
+      userId: row.userId,
+      createdAt: row.createdAt ?? undefined,
+      updatedAt: row.updatedAt ?? undefined,
+      hasRules,
+      hasTransactions,
+    });
   }
 
   /**
@@ -96,17 +115,37 @@ export class CategoryRepository implements ICategoryRepository {
     }
 
     const row = results[0];
-    return new Category(
-      row.id,
-      row.name,
-      row.color,
-      row.icon,
-      row.displayOrder,
-      row.isDefault,
-      row.userId,
-      row.createdAt ?? undefined,
-      row.updatedAt ?? undefined
-    );
+
+    // hasRules check
+    const rules = await db
+      .select({ id: categoryRules.id })
+      .from(categoryRules)
+      .where(eq(categoryRules.categoryId, row.id))
+      .limit(1);
+    const hasRules = rules.length > 0;
+
+    // hasTransactions check
+    const transactions = await db
+      .select({ id: expenses.id })
+      .from(expenses)
+      .where(eq(expenses.categoryId, row.id))
+      .limit(1);
+    const hasTransactions = transactions.length > 0;
+
+    return new Category({
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      icon: row.icon,
+      displayOrder: row.displayOrder,
+      isDefault: row.isDefault,
+      isOther: row.isOther,
+      userId: row.userId,
+      createdAt: row.createdAt ?? undefined,
+      updatedAt: row.updatedAt ?? undefined,
+      hasRules,
+      hasTransactions,
+    });
   }
 
   /**
@@ -126,17 +165,18 @@ export class CategoryRepository implements ICategoryRepository {
       .returning();
 
     const row = results[0];
-    return new Category(
-      row.id,
-      row.name,
-      row.color,
-      row.icon,
-      row.displayOrder,
-      row.isDefault,
-      row.userId,
-      row.createdAt ?? undefined,
-      row.updatedAt ?? undefined
-    );
+    return new Category({
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      icon: row.icon,
+      displayOrder: row.displayOrder,
+      isDefault: row.isDefault,
+      isOther: row.isOther,
+      userId: row.userId,
+      createdAt: row.createdAt ?? undefined,
+      updatedAt: row.updatedAt ?? undefined,
+    });
   }
 
   /**
@@ -153,17 +193,18 @@ export class CategoryRepository implements ICategoryRepository {
     const results = await db.update(categories).set(updateData).where(eq(categories.id, id)).returning();
 
     const row = results[0];
-    return new Category(
-      row.id,
-      row.name,
-      row.color,
-      row.icon,
-      row.displayOrder,
-      row.isDefault,
-      row.userId,
-      row.createdAt ?? undefined,
-      undefined
-    );
+    return new Category({
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      icon: row.icon,
+      displayOrder: row.displayOrder,
+      isDefault: row.isDefault,
+      isOther: row.isOther,
+      userId: row.userId,
+      createdAt: row.createdAt ?? undefined,
+      updatedAt: undefined,
+    });
   }
 
   /**
