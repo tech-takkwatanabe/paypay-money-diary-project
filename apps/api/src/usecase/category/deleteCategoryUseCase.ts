@@ -1,6 +1,5 @@
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
-import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 import { CategoryService } from "@/service/category/categoryService";
 
 /**
@@ -11,7 +10,6 @@ export class DeleteCategoryUseCase {
   constructor(
     private readonly categoryRepository: ICategoryRepository,
     private readonly ruleRepository: IRuleRepository,
-    private readonly transactionRepository: ITransactionRepository,
     private readonly categoryService: CategoryService
   ) {}
 
@@ -37,7 +35,7 @@ export class DeleteCategoryUseCase {
       );
     }
 
-    // 2. カテゴリを削除
+    // 3. カテゴリを削除
     // 紐づく支出は DB の onDelete: set null によりカテゴリ未設定になる
     await this.categoryRepository.delete(categoryId);
   }
