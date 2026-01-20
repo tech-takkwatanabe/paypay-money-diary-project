@@ -18,13 +18,32 @@ export class ReorderCategoriesUseCase {
       const userCategories = await tx.select().from(categories).where(eq(categories.userId, userId));
 
       const userCategoryIds = new Set(userCategories.map((c) => c.id));
-      const otherCategory = userCategories.find((c) => c.name === "その他");
+      const otherCategory = userCategories.find((c) => c.isOther);
 
       // 送信されたIDがすべてユーザーのものであることを確認
       for (const id of categoryIds) {
         if (!userCategoryIds.has(id)) {
           throw new Error(`Unauthorized or invalid category ID: ${id}`);
         }
+      }
+
+      // 重複チェック
+      const uniqueIds = new Set(categoryIds);
+      if (uniqueIds.size !== categoryIds.length) {
+        throw new Error("Duplicate category IDs in reorder request");
+      }
+
+      // 「その他」以外のカテゴリがすべて含まれているか確認
+      const reorderableIds = userCategories.filter((c) => !c.isOther).map((c) => c.id);
+      // categoryIdsに含まれるIDのうち、reorderableIdsに含まれるものの数をカウント
+      const includedReorderableCount = categoryIds.filter((id) => reorderableIds.includes(id)).length;
+
+      if (includedReorderableCount !== reorderableIds.length) {
+        // Note: The requirement is that we reorder the provided IDs.
+        // If some categories are missing from the input, their order won't be updated.
+        // However, the review comment suggested: "Reorder list must include all categories except 'その他'".
+        // Let's implement strict validation as suggested.
+        throw new Error("Reorder list must include all categories except 'Others'");
       }
 
       // 2. 表示順を更新
@@ -35,7 +54,7 @@ export class ReorderCategoriesUseCase {
       let order = 1;
       for (const id of categoryIds) {
         const cat = userCategories.find((c) => c.id === id);
-        if (cat && cat.name !== "その他") {
+        if (cat && !cat.isOther) {
           await tx
             .update(categories)
             .set({ displayOrder: order++ })
