@@ -20,11 +20,6 @@ export class ReorderCategoriesUseCase {
       const userCategoryIds = new Set(userCategories.map((c) => c.id));
       const otherCategory = userCategories.find((c) => c.isOther);
 
-      // デバッグログ
-      console.log("[ReorderCategoriesUseCase] Input categoryIds:", categoryIds);
-      console.log("[ReorderCategoriesUseCase] otherCategory:", otherCategory ? { id: otherCategory.id, isOther: otherCategory.isOther } : "not found");
-      console.log("[ReorderCategoriesUseCase] All user categories:", userCategories.map((c) => ({ id: c.id, isOther: c.isOther, displayOrder: c.displayOrder })));
-
       // 送信されたIDがすべてユーザーのものであることを確認
       for (const id of categoryIds) {
         if (!userCategoryIds.has(id)) {
@@ -57,14 +52,12 @@ export class ReorderCategoriesUseCase {
       }
 
       // 2. 表示順を更新
-      // 「その他」は常に最後に表示されるようにするため、
-      // categoryIdsに含まれていない場合や、途中に含まれている場合でも
-      // 最終的に最大値を割り当てる。
-
+      // 「その他」は絶対に更新しない - 常にdisplayOrder: 9999のままにする
       const now = new Date();
       let order = 1;
       for (const id of categoryIds) {
         const cat = userCategories.find((c) => c.id === id);
+        // 「その他」を除外して更新
         if (cat && !cat.isOther) {
           await tx
             .update(categories)
@@ -72,14 +65,7 @@ export class ReorderCategoriesUseCase {
             .where(and(eq(categories.id, id), eq(categories.userId, userId)));
         }
       }
-
-      // 3. 「その他」を末尾に固定
-      if (otherCategory) {
-        await tx
-          .update(categories)
-          .set({ displayOrder: 9999, updatedAt: now })
-          .where(and(eq(categories.id, otherCategory.id), eq(categories.userId, userId)));
-      }
+      // Note: 「その他」は一切更新しない。既にdisplayOrder: 9999で固定されている
     });
   }
 }

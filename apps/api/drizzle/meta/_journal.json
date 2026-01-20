@@ -57,6 +57,13 @@
       "when": 1768864630529,
       "tag": "0007_clumsy_snowbird",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1737376800000,
+      "tag": "0008_fix_other_category",
+      "breakpoints": true
     }
   ]
 }
