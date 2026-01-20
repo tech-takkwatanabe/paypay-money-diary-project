@@ -20,6 +20,11 @@ export class ReorderCategoriesUseCase {
       const userCategoryIds = new Set(userCategories.map((c) => c.id));
       const otherCategory = userCategories.find((c) => c.isOther);
 
+      // デバッグログ
+      console.log("[ReorderCategoriesUseCase] Input categoryIds:", categoryIds);
+      console.log("[ReorderCategoriesUseCase] otherCategory:", otherCategory ? { id: otherCategory.id, isOther: otherCategory.isOther } : "not found");
+      console.log("[ReorderCategoriesUseCase] All user categories:", userCategories.map((c) => ({ id: c.id, isOther: c.isOther, displayOrder: c.displayOrder })));
+
       // 送信されたIDがすべてユーザーのものであることを確認
       for (const id of categoryIds) {
         if (!userCategoryIds.has(id)) {
@@ -35,8 +40,11 @@ export class ReorderCategoriesUseCase {
 
       // 「その他」がリストに含まれていないかチェック
       if (otherCategory && uniqueIds.has(otherCategory.id)) {
+        console.log("[ReorderCategoriesUseCase] ERROR: 'Others' category included in request!", otherCategory.id);
         throw new Error("Cannot reorder 'Others' category - it must always be at the end");
       }
+
+      console.log("[ReorderCategoriesUseCase] Validation passed. Proceeding with reorder.");
 
       // 「その他」以外のカテゴリがすべて含まれているか確認
       const reorderableIdSet = new Set(userCategories.filter((c) => !c.isOther).map((c) => c.id));
