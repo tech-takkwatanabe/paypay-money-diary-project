@@ -35,11 +35,8 @@ export class ReorderCategoriesUseCase {
 
       // 「その他」がリストに含まれていないかチェック
       if (otherCategory && uniqueIds.has(otherCategory.id)) {
-        console.log("[ReorderCategoriesUseCase] ERROR: 'Others' category included in request!", otherCategory.id);
         throw new Error("Cannot reorder 'Others' category - it must always be at the end");
       }
-
-      console.log("[ReorderCategoriesUseCase] Validation passed. Proceeding with reorder.");
 
       // 「その他」以外のカテゴリがすべて含まれているか確認
       const reorderableIdSet = new Set(userCategories.filter((c) => !c.isOther).map((c) => c.id));
