@@ -19,8 +19,26 @@ describe("DeleteCategoryUseCase", () => {
   const userId = "user-1";
   const categoryId = "cat-1";
   const otherCategoryId = "other-cat-id";
-  const category = new Category(categoryId, "Food", "#FF0000", "food", 0, false, userId);
-  const otherCategory = new Category(otherCategoryId, "その他", "#CCCCCC", "others", 9999, false, userId);
+  const category = new Category({
+    id: categoryId,
+    name: "Food",
+    color: "#FF0000",
+    icon: "food",
+    displayOrder: 0,
+    isDefault: false,
+    isOther: false,
+    userId: userId,
+  });
+  const otherCategory = new Category({
+    id: otherCategoryId,
+    name: "その他",
+    color: "#CCCCCC",
+    icon: "others",
+    displayOrder: 9999,
+    isDefault: false,
+    isOther: true,
+    userId: userId,
+  });
 
   beforeEach(() => {
     mockCategoryRepository = {
@@ -56,12 +74,7 @@ describe("DeleteCategoryUseCase", () => {
     mockCategoryService = new CategoryService(mockCategoryRepository);
     mockCategoryService.ensureUserCanDelete = mock(async (_id: string, _userId: string) => category);
 
-    useCase = new DeleteCategoryUseCase(
-      mockCategoryRepository,
-      mockRuleRepository,
-      mockTransactionRepository,
-      mockCategoryService
-    );
+    useCase = new DeleteCategoryUseCase(mockCategoryRepository, mockRuleRepository, mockCategoryService);
   });
 
   it("should delete a category successfully", async () => {
@@ -85,19 +98,17 @@ describe("DeleteCategoryUseCase", () => {
   });
 
   it("should throw error if category has transactions", async () => {
-    const categoryWithTransactions = new Category(
-      categoryId,
-      "Food",
-      "#FF0000",
-      "food",
-      0,
-      false,
-      userId,
-      undefined,
-      undefined,
-      false,
-      true // hasTransactions
-    );
+    const categoryWithTransactions = new Category({
+      id: categoryId,
+      name: "Food",
+      color: "#FF0000",
+      icon: "food",
+      displayOrder: 0,
+      isDefault: false,
+      isOther: false,
+      userId: userId,
+      hasTransactions: true,
+    });
     mockCategoryService.ensureUserCanDelete = mock(async (_id: string, _userId: string) => categoryWithTransactions);
 
     expect(useCase.execute(categoryId, userId)).rejects.toThrow(
