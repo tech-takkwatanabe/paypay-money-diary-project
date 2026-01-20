@@ -24,7 +24,7 @@ export class UpdateCategoryUseCase {
     await this.categoryService.ensureUserCanUpdate(categoryId, userId);
 
     // 名前重複チェック
-    if (input.name) {
+    if (input.name !== undefined) {
       const existing = await this.categoryRepository.findByName(userId, input.name);
       if (existing && existing.id !== categoryId) {
         throw new Error("Category with this name already exists");
