@@ -119,7 +119,13 @@ export class CategoryController {
       return c.json({ message: "Categories reordered successfully" }, 200);
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message.includes("Unauthorized or invalid category ID")) {
+        // バリデーションエラーの検知
+        if (
+          error.message.includes("Unauthorized or invalid category ID") ||
+          error.message.includes("Duplicate") ||
+          error.message.includes("Missing") ||
+          error.message.includes("Reorder list must include")
+        ) {
           return c.json({ error: error.message }, 400);
         }
       }
