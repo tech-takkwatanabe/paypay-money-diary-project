@@ -31,7 +31,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SortableCategoryItem } from "./SortableCategoryItem";
+import { SortableCategoryItem } from "@/components/categories/SortableCategoryItem";
 
 // プリセットカラー
 const PRESET_COLORS = [
