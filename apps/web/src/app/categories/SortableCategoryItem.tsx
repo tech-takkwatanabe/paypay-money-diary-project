@@ -49,12 +49,14 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
         <span className="font-medium">{category.name}</span>
       </div>
       <div className="flex gap-1">
-        <button
-          onClick={() => onEdit(category)}
-          className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-        >
-          <Pencil className="w-4 h-4" />
-        </button>
+        {!category.isOther && (
+          <button
+            onClick={() => onEdit(category)}
+            className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+          >
+            <Pencil className="w-4 h-4" />
+          </button>
+        )}
         {!category.isDefault && !category.hasRules && !category.hasTransactions && (
           <button
             onClick={() => onDelete(category.id, category.name)}
