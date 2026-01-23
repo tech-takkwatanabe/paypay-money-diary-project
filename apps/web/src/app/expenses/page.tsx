@@ -103,6 +103,8 @@ export default function ExpensesPage() {
         month: selectedMonth || undefined,
         categoryId: selectedCategory || undefined,
         search: merchantSearch || undefined,
+        sortBy,
+        sortOrder,
       });
 
       if (response.status === 200 && "data" in response) {
@@ -116,7 +118,7 @@ export default function ExpensesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, selectedYear, selectedMonth, selectedCategory, merchantSearch]);
+  }, [currentPage, selectedYear, selectedMonth, selectedCategory, merchantSearch, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchTransactions();
