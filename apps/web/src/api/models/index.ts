@@ -32,6 +32,8 @@ export * from "./getTransactions200DataItem";
 export * from "./getTransactions200Pagination";
 export * from "./getTransactionsAvailableYears200";
 export * from "./getTransactionsParams";
+export * from "./getTransactionsSortBy";
+export * from "./getTransactionsSortOrder";
 export * from "./getTransactionsSummary200";
 export * from "./getTransactionsSummary200CategoryBreakdownItem";
 export * from "./getTransactionsSummary200MonthlyBreakdownItem";

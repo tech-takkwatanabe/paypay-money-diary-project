@@ -1,4 +1,4 @@
-import { eq, and, sql, gte, lt, desc, ilike } from "drizzle-orm";
+import { eq, and, sql, gte, lt, desc, asc, ilike } from "drizzle-orm";
 import { db } from "@/db";
 import { expenses, categories, categoryRules } from "@/db/schema";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
@@ -24,6 +24,8 @@ export class TransactionRepository implements ITransactionRepository {
         page: number;
         limit: number;
       };
+      sortBy?: "date" | "amount";
+      sortOrder?: "asc" | "desc";
     }
   ): Promise<Transaction[]> {
     const conditions = [eq(expenses.userId, userId)];
@@ -69,13 +71,19 @@ export class TransactionRepository implements ITransactionRepository {
       .where(and(...conditions))
       .$dynamic();
 
+    // ソート
+    const sortBy = options?.sortBy || "date";
+    const sortOrder = options?.sortOrder || "desc";
+    const sortColumn = sortBy === "amount" ? expenses.amount : expenses.transactionDate;
+    const orderFn = sortOrder === "desc" ? desc : asc;
+
     // ページネーション
     if (options?.pagination) {
       const offset = (options.pagination.page - 1) * options.pagination.limit;
       query = query.limit(options.pagination.limit).offset(offset);
     }
 
-    const results = await query.orderBy(desc(expenses.transactionDate));
+    const results = await query.orderBy(orderFn(sortColumn));
 
     return results.map(
       (row) =>

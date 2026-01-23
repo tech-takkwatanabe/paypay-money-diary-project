@@ -20,6 +20,8 @@ export interface ITransactionRepository {
         page: number;
         limit: number;
       };
+      sortBy?: "date" | "amount";
+      sortOrder?: "asc" | "desc";
     }
   ): Promise<Transaction[]>;
 

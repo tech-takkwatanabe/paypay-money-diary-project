@@ -5,6 +5,8 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
+import type { GetTransactionsSortBy } from "./getTransactionsSortBy";
+import type { GetTransactionsSortOrder } from "./getTransactionsSortOrder";
 
 export type GetTransactionsParams = {
   year?: string;
@@ -13,4 +15,6 @@ export type GetTransactionsParams = {
   search?: string;
   page?: string;
   limit?: string;
+  sortBy?: GetTransactionsSortBy;
+  sortOrder?: GetTransactionsSortOrder;
 };

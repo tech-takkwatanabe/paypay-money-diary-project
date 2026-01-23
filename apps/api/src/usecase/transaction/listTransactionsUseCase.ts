@@ -14,6 +14,8 @@ export class ListTransactionsUseCase {
       categoryId: query.categoryId,
       search: query.search,
       pagination: { page, limit },
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
     };
 
     const transactions = await this.transactionRepository.findByUserId(userId, options);
