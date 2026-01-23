@@ -38,6 +38,8 @@ export const TransactionListQuerySchema = z.object({
   search: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional(),
+  sortBy: z.enum(["date", "amount"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
 });
 
 // トランザクション集計レスポンス
