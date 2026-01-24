@@ -215,8 +215,8 @@ describe("CategoryInitializationService", () => {
         createMockCategory("user-cat-" + dc.id, userId, dc.name, dc.color, dc.icon ?? "default")
       );
 
-      const categoryFindByUserIdMock: Mock<(userId: string) => Promise<Category[]>> = mock(async () =>
-        existingCategories
+      const categoryFindByUserIdMock: Mock<(userId: string) => Promise<Category[]>> = mock(
+        async () => existingCategories
       );
       mockCategoryRepository.findByUserId = categoryFindByUserIdMock;
 

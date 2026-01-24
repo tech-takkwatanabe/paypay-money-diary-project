@@ -20,7 +20,7 @@ export class CategoryInitializationService {
    * ユーザーのカテゴリとルールを初期化（べき等）
    * @param userId ユーザーのUUID
    * @throws Error カテゴリの取得または作成に失敗した場合
-   * 
+   *
    * 注: 部分初期化からの安全な再開を保証するため、べき等実装を採用
    * 既存カテゴリとデフォルトカテゴリを比較し、不足しているもののみを作成
    */
@@ -89,10 +89,7 @@ export class CategoryInitializationService {
    * @param userId ユーザーのUUID
    * @param categoryIdMap デフォルトカテゴリIDから新しいIDへのマッピング（オプション）
    */
-  private async ensureRulesExist(
-    userId: string,
-    categoryIdMap?: Map<string, string>
-  ): Promise<void> {
+  private async ensureRulesExist(userId: string, categoryIdMap?: Map<string, string>): Promise<void> {
     // デフォルトルールを取得
     const defaultRules = await this.defaultCategoryRuleRepository.findAll();
 
