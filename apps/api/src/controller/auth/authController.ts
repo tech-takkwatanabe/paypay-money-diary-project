@@ -2,15 +2,19 @@ import { Context } from "hono";
 import { getCookie } from "hono/cookie";
 import { UserRepository } from "@/infrastructure/repository/userRepository";
 import { RedisTokenRepository } from "@/infrastructure/repository/tokenRepository";
+import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
+import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
+import { DefaultCategoryRepository } from "@/infrastructure/repository/defaultCategoryRepository";
+import { DefaultCategoryRuleRepository } from "@/infrastructure/repository/defaultCategoryRuleRepository";
 import { PasswordService } from "@/service/auth/passwordService";
 import { TokenService } from "@/service/auth/tokenService";
 import { AuthService } from "@/service/auth/authService";
+import { CategoryInitializationService } from "@/service/category/categoryInitializationService";
 import { LoginUseCase } from "@/usecase/auth/loginUseCase";
 import { SignupUseCase } from "@/usecase/auth/signupUseCase";
 import { GetMeUseCase } from "@/usecase/auth/getMeUseCase";
 import { RefreshUseCase } from "@/usecase/auth/refreshUseCase";
 import { LogoutUseCase } from "@/usecase/auth/logoutUseCase";
-import { CategoryInitializationService } from "@/service/category/categoryInitializationService";
 import { CreateUserInput, LoginInput } from "@paypay-money-diary/shared";
 import { setAuthCookies, clearAuthCookies } from "@/infrastructure/auth/cookie";
 
@@ -27,7 +31,16 @@ export class AuthController {
     const userRepository = new UserRepository();
     const passwordService = new PasswordService();
     const authService = new AuthService(userRepository, passwordService);
-    const categoryInitializationService = new CategoryInitializationService();
+    const categoryRepository = new CategoryRepository();
+    const ruleRepository = new RuleRepository();
+    const defaultCategoryRepository = new DefaultCategoryRepository();
+    const defaultCategoryRuleRepository = new DefaultCategoryRuleRepository();
+    const categoryInitializationService = new CategoryInitializationService(
+      categoryRepository,
+      ruleRepository,
+      defaultCategoryRepository,
+      defaultCategoryRuleRepository
+    );
     const signupUseCase = new SignupUseCase(
       userRepository,
       authService,
