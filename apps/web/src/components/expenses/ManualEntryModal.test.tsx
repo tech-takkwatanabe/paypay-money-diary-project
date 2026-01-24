@@ -68,8 +68,11 @@ describe("ManualEntryModal", () => {
     });
   });
 
-  it("calls onClose when cancel button is clicked", () => {
+  it("calls onClose when cancel button is clicked", async () => {
     render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+
+    // Wait for categories to load to avoid act warning
+    await waitFor(() => expect(screen.getByText("Food")).toBeInTheDocument());
 
     fireEvent.click(screen.getByText("キャンセル"));
     expect(mockOnClose).toHaveBeenCalled();
@@ -121,6 +124,9 @@ describe("ManualEntryModal", () => {
   });
 
   it("shows error message on submission failure", async () => {
+    // Suppress console.error for expected failure
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
     vi.mocked(postTransactions).mockResolvedValue({
       status: 400,
       data: { message: "Error" },
@@ -139,9 +145,14 @@ describe("ManualEntryModal", () => {
     await waitFor(() => {
       expect(screen.getByText("保存に失敗しました。入力内容を確認してください。")).toBeInTheDocument();
     });
+
+    consoleSpy.mockRestore();
   });
 
   it("shows error message on API exception", async () => {
+    // Suppress console.error for expected failure
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
     vi.mocked(postTransactions).mockRejectedValue(new Error("Network error"));
 
     render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
@@ -156,5 +167,7 @@ describe("ManualEntryModal", () => {
     await waitFor(() => {
       expect(screen.getByText("エラーが発生しました。")).toBeInTheDocument();
     });
+
+    consoleSpy.mockRestore();
   });
 });
