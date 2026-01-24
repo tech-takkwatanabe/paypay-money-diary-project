@@ -108,7 +108,7 @@ describe("SignupUseCase", () => {
     ).mockRejectedValue(new Error("Initialization failed"));
 
     // Act & Assert
-    await expect(signupUseCase.execute(input)).rejects.toThrow("Initialization failed");
+    expect(signupUseCase.execute(input)).rejects.toThrow("Initialization failed");
     expect(mockUserRepository.create).toHaveBeenCalled();
     expect(mockCategoryInitializationService.initializeForUser).toHaveBeenCalledWith(mockUser.id);
     expect(mockUserRepository.delete).toHaveBeenCalledWith(mockUser.id);
