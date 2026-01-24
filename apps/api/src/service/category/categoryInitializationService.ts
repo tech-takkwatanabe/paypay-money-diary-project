@@ -3,7 +3,7 @@ import { IRuleRepository } from "@/domain/repository/ruleRepository";
 import { IDefaultCategoryRepository } from "@/domain/repository/defaultCategoryRepository";
 import { IDefaultCategoryRuleRepository } from "@/domain/repository/defaultCategoryRuleRepository";
 import { Category } from "@/domain/entity/category";
-import { CreateCategoryInput, CreateRuleInput } from "@paypay-money-diary/shared";
+import { InternalCreateCategoryInput, CreateRuleInput } from "@paypay-money-diary/shared";
 
 /**
  * Category Initialization Service
@@ -47,7 +47,7 @@ export class CategoryInitializationService {
         categoryIdMap.set(defaultCategory.id, existingCategory.id);
       } else {
         // 存在しない場合は作成
-        const createInput: CreateCategoryInput = {
+        const createInput: InternalCreateCategoryInput = {
           name: defaultCategory.name,
           color: defaultCategory.color,
           icon: defaultCategory.icon,
@@ -56,7 +56,7 @@ export class CategoryInitializationService {
           isOther: defaultCategory.isOther,
         };
 
-        const createdCategory = await this.categoryRepository.create(userId, createInput);
+        const createdCategory = await this.categoryRepository.createInternal(userId, createInput);
         categoryIdMap.set(defaultCategory.id, createdCategory.id);
       }
     }
