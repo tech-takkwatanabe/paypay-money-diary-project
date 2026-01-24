@@ -52,6 +52,8 @@ export class CategoryInitializationService {
           color: defaultCategory.color,
           icon: defaultCategory.icon,
           displayOrder: defaultCategory.displayOrder,
+          isDefault: true,
+          isOther: defaultCategory.isOther,
         };
 
         const createdCategory = await this.categoryRepository.create(userId, createInput);
@@ -82,25 +84,23 @@ export class CategoryInitializationService {
   /**
    * ルールが揃っているか確認し、不足しているものを作成
    * @param userId ユーザーのUUID
-   * @param categoryIdMap デフォルトカテゴリIDから新しいIDへのマッピング（オプション）
+   * @param categoryIdMap デフォルトカテゴリIDから新しいIDへのマッピング
    */
-  private async ensureRulesExist(userId: string, categoryIdMap?: Map<string, string>): Promise<void> {
+  private async ensureRulesExist(userId: string, categoryIdMap: Map<string, string>): Promise<void> {
     // デフォルトルールを取得
     const defaultRules = await this.defaultCategoryRuleRepository.findAll();
 
-    // マッピングが提供されていない場合は、既存カテゴリから構築
-    let mapping = categoryIdMap;
-    if (!mapping) {
-      mapping = await this.buildCategoryIdMap(userId);
-    }
-
     // ルールを作成（既存するかどうかはリポジトリ層で事前チェック）
     for (const defaultRule of defaultRules) {
-      const newCategoryId = mapping.get(defaultRule.defaultCategoryId);
+      const newCategoryId = categoryIdMap.get(defaultRule.defaultCategoryId);
       if (!newCategoryId) {
-        console.warn(
-          `[CategoryInitializationService] Skipping rule "${defaultRule.keyword}": default category ID "${defaultRule.defaultCategoryId}" not found in mapping`
-        );
+        console.warn("[CategoryInitializationService]", {
+          action: "skipping_rule",
+          userId,
+          keyword: defaultRule.keyword,
+          defaultCategoryId: defaultRule.defaultCategoryId,
+          reason: "default_category_not_found_in_mapping",
+        });
         continue;
       }
 
@@ -121,29 +121,5 @@ export class CategoryInitializationService {
       await this.ruleRepository.create(userId, createRuleInput);
     }
   }
-
-  /**
-   * デフォルトカテゴリIDから新しいカテゴリIDへのマッピングを構築
-   * @param userId ユーザーのUUID
-   * @returns マッピング
-   */
-  private async buildCategoryIdMap(userId: string): Promise<Map<string, string>> {
-    const mapping = new Map<string, string>();
-    const existingCategories = await this.categoryRepository.findByUserId(userId);
-    const defaultCategories = await this.defaultCategoryRepository.findAll();
-
-    // isDefault=trueのカテゴリのみを対象
-    const existingDefaultCategories = existingCategories.filter((cat) => cat.isDefault === true);
-
-    for (const defaultCategory of defaultCategories) {
-      // nameとisOtherの複合キーで既存カテゴリを特定
-      const existingCategory = this.findMatchingExistingCategory(existingDefaultCategories, defaultCategory);
-
-      if (existingCategory) {
-        mapping.set(defaultCategory.id, existingCategory.id);
-      }
-    }
-
-    return mapping;
-  }
 }
+

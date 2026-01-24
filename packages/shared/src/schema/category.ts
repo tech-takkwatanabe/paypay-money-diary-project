@@ -22,6 +22,8 @@ export const CreateCategoryInputSchema = z.object({
   }),
   icon: z.string().nullable().optional(),
   displayOrder: z.number().optional(),
+  isDefault: z.boolean().optional(),
+  isOther: z.boolean().optional(),
 });
 
 // リクエストDTO（更新）

@@ -3,7 +3,7 @@ DELETE FROM category_rules
 WHERE id NOT IN (
   SELECT DISTINCT ON (user_id, keyword) id
   FROM category_rules
-  ORDER BY user_id, keyword, created_at DESC
+  ORDER BY user_id, keyword, created_at DESC, id DESC
 );
 --> statement-breakpoint
 -- Add unique constraint on category_rules table for (user_id, keyword) pair

@@ -160,7 +160,8 @@ export class CategoryRepository implements ICategoryRepository {
         color: input.color,
         icon: input.icon ?? null,
         displayOrder: input.displayOrder ?? 0,
-        isDefault: false,
+        isDefault: input.isDefault ?? false,
+        isOther: input.isOther ?? false,
       })
       .returning();
 
