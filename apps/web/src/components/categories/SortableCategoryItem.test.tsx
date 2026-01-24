@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SortableCategoryItem } from "./SortableCategoryItem";
 import type { GetCategories200DataItem as Category } from "@/api/models";
@@ -40,6 +40,11 @@ describe("SortableCategoryItem", () => {
 
   const mockOnEdit = vi.fn();
   const mockOnDelete = vi.fn();
+
+  beforeEach(() => {
+    mockOnEdit.mockClear();
+    mockOnDelete.mockClear();
+  });
 
   it("renders category name and color correctly", () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);

@@ -79,7 +79,7 @@ describe("Dialog Component", () => {
       <Dialog>
         <DialogTrigger className="custom-trigger">Open</DialogTrigger>
         <DialogContent className="custom-content">
-          <DialogHeader className="custom-header">
+          <DialogHeader className="custom-header" data-testid="dialog-header">
             <DialogTitle className="custom-title">Title</DialogTitle>
             <DialogDescription className="custom-description">Description</DialogDescription>
           </DialogHeader>
@@ -94,7 +94,7 @@ describe("Dialog Component", () => {
     fireEvent.click(trigger);
 
     expect(screen.getByRole("dialog")).toHaveClass("custom-content");
-    expect(screen.getByText("Title").parentElement).toHaveClass("custom-header");
+    expect(screen.getByTestId("dialog-header")).toHaveClass("custom-header");
     expect(screen.getByText("Title")).toHaveClass("custom-title");
     expect(screen.getByText("Description")).toHaveClass("custom-description");
     expect(screen.getByText("Footer")).toHaveClass("custom-footer");

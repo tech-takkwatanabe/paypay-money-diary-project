@@ -64,7 +64,7 @@ export class CategoryInitializationService {
 
 以下のインターフェースをドメイン層に追加:
 
-```
+```text
 apps/api/src/domain/repository/
   ├── defaultCategoryRepository.ts
   └── defaultCategoryRuleRepository.ts
@@ -74,7 +74,7 @@ apps/api/src/domain/repository/
 
 以下の実装をインフラストラクチャ層に追加:
 
-```
+```text
 apps/api/src/infrastructure/repository/
   ├── defaultCategoryRepository.ts
   └── defaultCategoryRuleRepository.ts
@@ -115,7 +115,7 @@ const categoryInitializationService = new CategoryInitializationService(
 
 ### テスト実行結果
 
-```
+```text
 ✓ 11 pass
 ✓ 0 fail
 ✓ 40 expect() calls
@@ -123,7 +123,7 @@ const categoryInitializationService = new CategoryInitializationService(
 
 ## アーキテクチャ改善
 
-```
+```text
 コントローラー層
      ↓
 ユースケース層 (SignupUseCase)

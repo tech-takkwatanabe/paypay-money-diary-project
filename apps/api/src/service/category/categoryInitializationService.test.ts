@@ -210,12 +210,14 @@ describe("CategoryInitializationService", () => {
     });
 
     it("should not initialize if user already has categories", async () => {
-      // Arrange
-      const existingCategory = createMockCategory("user-cat-1", userId, "My Category", "#FF0000", "test");
+      // Arrange: ユーザーがすべてのデフォルトカテゴリを持っている場合
+      const existingCategories: Category[] = defaultCategoriesData.map((dc) =>
+        createMockCategory("user-cat-" + dc.id, userId, dc.name, dc.color, dc.icon ?? "default")
+      );
 
-      const categoryFindByUserIdMock: Mock<(userId: string) => Promise<Category[]>> = mock(async () => [
-        existingCategory,
-      ]);
+      const categoryFindByUserIdMock: Mock<(userId: string) => Promise<Category[]>> = mock(async () =>
+        existingCategories
+      );
       mockCategoryRepository.findByUserId = categoryFindByUserIdMock;
 
       // Act
@@ -223,10 +225,10 @@ describe("CategoryInitializationService", () => {
 
       // Assert
       expect(mockCategoryRepository.findByUserId).toHaveBeenCalledWith(userId);
-      expect(mockDefaultCategoryRepository.findAll).not.toHaveBeenCalled();
-      expect(mockDefaultCategoryRuleRepository.findAll).not.toHaveBeenCalled();
+      // 完全にそろっている場合、新規カテゴリ作成は呼ばれず、ルール確認のみ実行される
       expect(mockCategoryRepository.create).not.toHaveBeenCalled();
-      expect(mockRuleRepository.create).not.toHaveBeenCalled();
+      // ルール確認のためにデフォルトルールを取得しようとする
+      expect(mockDefaultCategoryRuleRepository.findAll).toHaveBeenCalled();
     });
 
     it("should handle empty default categories gracefully", async () => {
@@ -596,12 +598,7 @@ describe("CategoryInitializationService", () => {
       mockCategoryRepository.findByUserId = errorMock;
 
       // Act & Assert
-      try {
-        await service.initializeForUser(userId);
-        expect(true).toBe(false); // Should not reach here
-      } catch (error) {
-        expect((error as Error).message).toContain("Database error");
-      }
+      await expect(service.initializeForUser(userId)).rejects.toThrow("Database error");
     });
   });
 });
