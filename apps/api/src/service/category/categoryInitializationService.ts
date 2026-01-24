@@ -58,7 +58,7 @@ export class CategoryInitializationService {
       }
     }
 
-    // 6. ルールを確認・作成
+    // 5. ルールを確認・作成
     await this.ensureRulesExist(userId, categoryIdMap);
   }
 
