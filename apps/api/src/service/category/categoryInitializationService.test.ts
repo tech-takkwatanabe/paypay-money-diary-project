@@ -123,6 +123,7 @@ describe("CategoryInitializationService", () => {
       findById: mock(async () => null),
       findByName: mock(async () => null),
       create: categoryCreateMock,
+      createInternal: categoryCreateMock,
       update: mock(async () => createMockCategory("id", "uid", "n", "c", "i")),
       delete: mock(async () => {}),
     };
@@ -175,7 +176,7 @@ describe("CategoryInitializationService", () => {
       expect(mockCategoryRepository.findByUserId).toHaveBeenCalledWith(userId);
       expect(mockDefaultCategoryRepository.findAll).toHaveBeenCalled();
       expect(mockDefaultCategoryRuleRepository.findAll).toHaveBeenCalled();
-      expect(mockCategoryRepository.create).toHaveBeenCalledTimes(defaultCategoriesData.length);
+      expect(mockCategoryRepository.createInternal).toHaveBeenCalledTimes(defaultCategoriesData.length);
       expect(mockRuleRepository.create).toHaveBeenCalledTimes(defaultRulesData.length);
     });
 
@@ -204,7 +205,7 @@ describe("CategoryInitializationService", () => {
 
       // Assert
       expect(mockCategoryRepository.findByUserId).toHaveBeenCalledWith(userId);
-      expect(mockCategoryRepository.create).not.toHaveBeenCalled();
+      expect(mockCategoryRepository.createInternal).not.toHaveBeenCalled();
       // ルール確認のためにデフォルトルールを取得
       expect(mockDefaultCategoryRuleRepository.findAll).toHaveBeenCalled();
     });
@@ -233,7 +234,7 @@ describe("CategoryInitializationService", () => {
       await service.initializeForUser(userId);
 
       // Assert
-      expect(mockCategoryRepository.create).not.toHaveBeenCalled();
+      expect(mockCategoryRepository.createInternal).not.toHaveBeenCalled();
       expect(mockRuleRepository.create).not.toHaveBeenCalled();
     });
 
