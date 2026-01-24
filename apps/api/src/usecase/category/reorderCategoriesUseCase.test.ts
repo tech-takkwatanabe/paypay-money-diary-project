@@ -40,18 +40,14 @@ describe("ReorderCategoriesUseCase", () => {
   });
 
   it("should throw error when 'Others' category is included in reorder request", async () => {
-    await expect(useCase.execute("user-1", ["cat-3", "cat-1", "cat-2"])).rejects.toThrow(
-      /Cannot reorder 'Others' category/
-    );
+    expect(useCase.execute("user-1", ["cat-3", "cat-1", "cat-2"])).rejects.toThrow(/Cannot reorder 'Others' category/);
   });
 
   it("should throw error when reorder list does not include all reorderable categories", async () => {
-    await expect(useCase.execute("user-1", ["cat-1"])).rejects.toThrow(
-      /Reorder list must include all categories except/
-    );
+    expect(useCase.execute("user-1", ["cat-1"])).rejects.toThrow(/Reorder list must include all categories except/);
   });
 
   it("should throw error for duplicate IDs", async () => {
-    await expect(useCase.execute("user-1", ["cat-1", "cat-1", "cat-2"])).rejects.toThrow(/Duplicate/);
+    expect(useCase.execute("user-1", ["cat-1", "cat-1", "cat-2"])).rejects.toThrow(/Duplicate/);
   });
 });
