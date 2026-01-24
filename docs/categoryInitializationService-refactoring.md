@@ -1,12 +1,15 @@
 # CategoryInitializationService リファクタリング
 
 ## 概要
+
 `CategoryInitializationService` を依存性注入パターンに対応させ、テスト可能でメンテナンス性の高い設計に改善しました。
 
 ## 主な変更点
 
 ### 1. サービスの依存性注入化
+
 **変更前:**
+
 ```typescript
 export class CategoryInitializationService {
   async initializeForUser(userId: string): Promise<void> {
@@ -18,6 +21,7 @@ export class CategoryInitializationService {
 ```
 
 **変更後:**
+
 ```typescript
 export class CategoryInitializationService {
   constructor(
@@ -34,6 +38,7 @@ export class CategoryInitializationService {
 ```
 
 **利点:**
+
 - 依存関係が明示的
 - テストでのモック化が容易
 - 疎結合な設計
@@ -41,12 +46,14 @@ export class CategoryInitializationService {
 ### 2. リポジトリの追加
 
 #### DefaultCategoryRepository
+
 - `DefaultCategoryRepository` インターフェース作成
 - デフォルトカテゴリのデータアクセスを抽象化
 - `findAll()`: すべてのデフォルトカテゴリを取得
 - `findById()`: IDでカテゴリを検索
 
 #### DefaultCategoryRuleRepository
+
 - `DefaultCategoryRuleRepository` インターフェース作成
 - デフォルトカテゴリルールのデータアクセスを抽象化
 - `findAll()`: すべてのデフォルトルールを取得
@@ -56,6 +63,7 @@ export class CategoryInitializationService {
 ### 3. ドメイン層の整備
 
 以下のインターフェースをドメイン層に追加:
+
 ```
 apps/api/src/domain/repository/
   ├── defaultCategoryRepository.ts
@@ -65,6 +73,7 @@ apps/api/src/domain/repository/
 ### 4. インフラストラクチャ層の実装
 
 以下の実装をインフラストラクチャ層に追加:
+
 ```
 apps/api/src/infrastructure/repository/
   ├── defaultCategoryRepository.ts
@@ -105,6 +114,7 @@ const categoryInitializationService = new CategoryInitializationService(
 11. **リポジトリエラーの処理** - エラーが適切に伝搬される
 
 ### テスト実行結果
+
 ```
 ✓ 11 pass
 ✓ 0 fail
@@ -136,6 +146,7 @@ const categoryInitializationService = new CategoryInitializationService(
 ## 今後の拡張
 
 この構造により、以下の拡張が容易になります:
+
 - キャッシング層の追加
 - 複数のリポジトリ実装の切り替え
 - トランザクション管理の一元化

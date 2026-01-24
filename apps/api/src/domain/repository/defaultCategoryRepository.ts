@@ -21,9 +21,7 @@ export interface IDefaultCategoryRepository {
   /**
    * デフォルトカテゴリをIDで検索
    */
-  findById(
-    id: string
-  ): Promise<{
+  findById(id: string): Promise<{
     id: string;
     name: string;
     color: string;

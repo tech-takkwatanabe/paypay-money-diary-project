@@ -38,9 +38,7 @@ export class DefaultCategoryRepository implements IDefaultCategoryRepository {
   /**
    * デフォルトカテゴリをIDで検索
    */
-  async findById(
-    id: string
-  ): Promise<{
+  async findById(id: string): Promise<{
     id: string;
     name: string;
     color: string;

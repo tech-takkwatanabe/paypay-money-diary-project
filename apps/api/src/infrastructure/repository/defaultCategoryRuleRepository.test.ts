@@ -502,9 +502,7 @@ describe("DefaultCategoryRuleRepository", () => {
     });
 
     it("should only return rules for the specified category", async () => {
-      const rulesForCat1 = [
-        { ...mockDefaultRuleData, defaultCategoryId: "default-cat-1" },
-      ];
+      const rulesForCat1 = [{ ...mockDefaultRuleData, defaultCategoryId: "default-cat-1" }];
 
       spyOn(db, "select").mockImplementation(() => {
         const chain = {
