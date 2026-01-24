@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { SortableCategoryItem } from "./SortableCategoryItem";
 import type { GetCategories200DataItem as Category } from "@/api/models";
 
@@ -68,11 +69,11 @@ describe("SortableCategoryItem", () => {
     expect(screen.getByText("その他")).toBeInTheDocument();
   });
 
-  it("calls onEdit when edit button is clicked", () => {
+  it("calls onEdit when edit button is clicked", async () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
     const editBtn = screen.getByRole("button", { name: "編集" });
-    fireEvent.click(editBtn);
+    await userEvent.click(editBtn);
     expect(mockOnEdit).toHaveBeenCalledWith(mockCategory);
   });
 
@@ -83,11 +84,11 @@ describe("SortableCategoryItem", () => {
     expect(screen.queryByRole("button", { name: "編集" })).not.toBeInTheDocument();
   });
 
-  it("calls onDelete when delete button is clicked", () => {
+  it("calls onDelete when delete button is clicked", async () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
     const deleteBtn = screen.getByRole("button", { name: "削除" });
-    fireEvent.click(deleteBtn);
+    await userEvent.click(deleteBtn);
     expect(mockOnDelete).toHaveBeenCalledWith(mockCategory.id, mockCategory.name);
   });
 
