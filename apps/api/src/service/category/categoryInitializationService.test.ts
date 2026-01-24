@@ -331,20 +331,8 @@ describe("CategoryInitializationService", () => {
       ];
 
       const existingRules = [
-        createMockRule(
-          "existing-rule-1",
-          userId,
-          defaultRulesData[0].keyword,
-          "cat-1",
-          defaultRulesData[0].priority
-        ),
-        createMockRule(
-          "existing-rule-2",
-          userId,
-          defaultRulesData[1].keyword,
-          "cat-2",
-          defaultRulesData[1].priority
-        ),
+        createMockRule("existing-rule-1", userId, defaultRulesData[0].keyword, "cat-1", defaultRulesData[0].priority),
+        createMockRule("existing-rule-2", userId, defaultRulesData[1].keyword, "cat-2", defaultRulesData[1].priority),
       ];
 
       const categoryFindByUserIdMock: Mock<(userId: string) => Promise<Category[]>> = mock(

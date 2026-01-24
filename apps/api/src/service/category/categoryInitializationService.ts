@@ -39,9 +39,7 @@ export class CategoryInitializationService {
 
     for (const defaultCategory of defaultCategories) {
       // isOtherフラグで既存のデフォルトカテゴリを特定
-      const existingCategory = existingDefaultCategories.find(
-        (cat) => cat.isOther === defaultCategory.isOther
-      );
+      const existingCategory = existingDefaultCategories.find((cat) => cat.isOther === defaultCategory.isOther);
 
       if (existingCategory) {
         // 既に存在する場合はIDをマッピング
@@ -69,10 +67,7 @@ export class CategoryInitializationService {
    * @param userId ユーザーのUUID
    * @param categoryIdMap デフォルトカテゴリIDから新しいIDへのマッピング（オプション）
    */
-  private async ensureRulesExist(
-    userId: string,
-    categoryIdMap?: Map<string, string>
-  ): Promise<void> {
+  private async ensureRulesExist(userId: string, categoryIdMap?: Map<string, string>): Promise<void> {
     // デフォルトルールを取得
     const defaultRules = await this.defaultCategoryRuleRepository.findAll();
 
@@ -125,9 +120,7 @@ export class CategoryInitializationService {
 
     for (const defaultCategory of defaultCategories) {
       // isOtherフラグで既存カテゴリを特定
-      const existingCategory = existingDefaultCategories.find(
-        (cat) => cat.isOther === defaultCategory.isOther
-      );
+      const existingCategory = existingDefaultCategories.find((cat) => cat.isOther === defaultCategory.isOther);
 
       if (existingCategory) {
         mapping.set(defaultCategory.id, existingCategory.id);
