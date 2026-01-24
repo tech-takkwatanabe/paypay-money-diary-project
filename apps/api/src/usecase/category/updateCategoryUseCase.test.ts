@@ -30,6 +30,7 @@ describe("UpdateCategoryUseCase", () => {
       findByUserId: mock(async (_userId: string) => []),
       findByName: mock(async (_userId: string, _name: string) => null),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
+      createInternal: mock(async (_userId: string, _data) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
     };
