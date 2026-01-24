@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
 import {
   Dialog,
   DialogTrigger,
@@ -39,12 +38,11 @@ describe("Dialog Component", () => {
     expect(screen.getByRole("button", { name: /open dialog/i })).toBeInTheDocument();
   });
 
-  it("opens dialog when trigger is clicked", async () => {
-    const user = userEvent.setup();
+  it("opens dialog when trigger is clicked", () => {
     render(<TestDialog />);
 
     const trigger = screen.getByRole("button", { name: /open dialog/i });
-    await user.click(trigger);
+    fireEvent.click(trigger);
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText("Dialog Title")).toBeInTheDocument();
@@ -52,38 +50,31 @@ describe("Dialog Component", () => {
     expect(screen.getByText("Content Body")).toBeInTheDocument();
   });
 
-  it("closes dialog when close button is clicked", async () => {
-    const user = userEvent.setup();
+  it("closes dialog when close button is clicked", () => {
     render(<TestDialog />);
 
-    await user.click(screen.getByRole("button", { name: /open dialog/i }));
+    fireEvent.click(screen.getByRole("button", { name: /open dialog/i }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
 
     const closeButton = screen.getByRole("button", { name: /cancel/i });
-    await user.click(closeButton);
+    fireEvent.click(closeButton);
 
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("closes dialog when the default X button is clicked", async () => {
-    const user = userEvent.setup();
+  it("closes dialog when the default X button is clicked", () => {
     render(<TestDialog />);
 
-    await user.click(screen.getByRole("button", { name: /open dialog/i }));
+    fireEvent.click(screen.getByRole("button", { name: /open dialog/i }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
 
     const xButton = screen.getByRole("button", { name: /close/i });
-    await user.click(xButton);
+    fireEvent.click(xButton);
 
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("applies custom class names", async () => {
-    const user = userEvent.setup();
+  it("applies custom class names", () => {
     render(
       <Dialog>
         <DialogTrigger className="custom-trigger">Open</DialogTrigger>
@@ -100,21 +91,19 @@ describe("Dialog Component", () => {
     const trigger = screen.getByRole("button", { name: /open/i });
     expect(trigger).toHaveClass("custom-trigger");
 
-    await user.click(trigger);
+    fireEvent.click(trigger);
 
     expect(screen.getByRole("dialog")).toHaveClass("custom-content");
     expect(screen.getByText("Title").parentElement).toHaveClass("custom-header");
     expect(screen.getByText("Title")).toHaveClass("custom-title");
     expect(screen.getByText("Description")).toHaveClass("custom-description");
-    // DialogFooter is a div, so we find it by text and check parent or use container
     expect(screen.getByText("Footer")).toHaveClass("custom-footer");
   });
 
-  it("handles accessibility attributes correctly", async () => {
-    const user = userEvent.setup();
+  it("handles accessibility attributes correctly", () => {
     render(<TestDialog title="Custom Title" description="Custom Description" />);
 
-    await user.click(screen.getByRole("button", { name: /open dialog/i }));
+    fireEvent.click(screen.getByRole("button", { name: /open dialog/i }));
 
     const dialog = screen.getByRole("dialog");
     const title = screen.getByText("Custom Title");
@@ -124,14 +113,13 @@ describe("Dialog Component", () => {
     expect(dialog).toHaveAttribute("aria-describedby", description.id);
   });
 
-  it("does not close when clicking inside the content", async () => {
-    const user = userEvent.setup();
+  it("does not close when clicking inside the content", () => {
     render(<TestDialog />);
 
-    await user.click(screen.getByRole("button", { name: /open dialog/i }));
+    fireEvent.click(screen.getByRole("button", { name: /open dialog/i }));
     const content = screen.getByText("Content Body");
 
-    await user.click(content);
+    fireEvent.click(content);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });
