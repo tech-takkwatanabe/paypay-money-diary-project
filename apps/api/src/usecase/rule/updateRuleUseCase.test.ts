@@ -21,6 +21,7 @@ describe("UpdateRuleUseCase", () => {
       findById: mock(),
       findByUserId: mock(),
       findByCategoryId: mock(),
+      findByUserIdAndKeyword: mock(),
       create: mock(),
       update: mock(),
       delete: mock(),
