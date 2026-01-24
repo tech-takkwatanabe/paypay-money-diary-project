@@ -118,6 +118,43 @@ export class RuleRepository implements IRuleRepository {
   }
 
   /**
+   * ユーザーIDとキーワードでルールを検索
+   */
+  async findByUserIdAndKeyword(userId: string, keyword: string): Promise<Rule | null> {
+    const results = await db
+      .select({
+        id: categoryRules.id,
+        userId: categoryRules.userId,
+        keyword: categoryRules.keyword,
+        categoryId: categoryRules.categoryId,
+        priority: categoryRules.priority,
+        createdAt: categoryRules.createdAt,
+        updatedAt: categoryRules.updatedAt,
+        categoryName: categories.name,
+      })
+      .from(categoryRules)
+      .leftJoin(categories, eq(categoryRules.categoryId, categories.id))
+      .where(and(eq(categoryRules.userId, userId), eq(categoryRules.keyword, keyword)))
+      .limit(1);
+
+    if (results.length === 0) {
+      return null;
+    }
+
+    const row = results[0];
+    return new Rule(
+      row.id,
+      row.userId,
+      row.keyword,
+      row.categoryId,
+      row.priority,
+      row.createdAt ?? undefined,
+      row.updatedAt ?? undefined,
+      row.categoryName
+    );
+  }
+
+  /**
    * ルールを作成
    */
   async create(userId: string, input: CreateRuleInput): Promise<Rule> {

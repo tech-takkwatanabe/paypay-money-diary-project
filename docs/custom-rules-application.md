@@ -1,6 +1,7 @@
 # カスタムルールの適用について
 
 ## 質問
+
 カスタムルールやカスタムカテゴリーを多数作った場合、新しく次の年のCSVをアップロードした時に、そのルールはちゃんと適用されますか？
 
 ## 回答
@@ -47,7 +48,7 @@ async assignCategories(expenses: ParsedExpense[], userId: string): Promise<Map<s
     if (result.has(expense.merchant)) continue; // 同じ店舗は1回だけ処理
 
     // 3. 店舗名にマッチするルールを検索
-    const matchedRule = rules.find((rule) => 
+    const matchedRule = rules.find((rule) =>
       expense.merchant.toLowerCase().includes(rule.keyword.toLowerCase())
     );
 
@@ -114,10 +115,11 @@ async findByUserId(userId: string): Promise<Rule[]> {
 ルールのマッチングは**大文字・小文字を区別しません**。
 
 ```typescript
-expense.merchant.toLowerCase().includes(rule.keyword.toLowerCase())
+expense.merchant.toLowerCase().includes(rule.keyword.toLowerCase());
 ```
 
 例：
+
 - ルール: `"amazon"` → 店舗名: `"Amazon.co.jp"` ✅ マッチ
 - ルール: `"STARBUCKS"` → 店舗名: `"Starbucks Coffee"` ✅ マッチ
 

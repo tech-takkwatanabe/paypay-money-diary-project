@@ -43,6 +43,7 @@ describe("DeleteCategoryUseCase", () => {
       findByUserId: mock(async (_userId: string) => []),
       findByName: mock(async (_userId: string, _name: string) => otherCategory),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
+      createInternal: mock(async (_userId: string, _data) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
     };
@@ -50,6 +51,7 @@ describe("DeleteCategoryUseCase", () => {
       findByUserId: mock(async (_userId: string) => []),
       findById: mock(async (_id: string) => null),
       findByCategoryId: mock(async (_categoryId: string, _userId: string) => []),
+      findByUserIdAndKeyword: mock(async (_userId: string, _keyword: string) => null),
       create: mock(async (_userId: string, _data: CreateRuleInput) => ({}) as Rule),
       update: mock(async (_id: string, _data: UpdateRuleInput) => ({}) as Rule),
       delete: mock(async (_id: string) => {}),

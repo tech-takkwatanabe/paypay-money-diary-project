@@ -34,7 +34,7 @@ describe("AuthContext", () => {
   });
 
   describe("Initial State", () => {
-    it("starts with loading state", () => {
+    it("starts with loading state", async () => {
       mockGetAuthMe.mockResolvedValue({ status: 401 });
 
       render(
@@ -44,6 +44,11 @@ describe("AuthContext", () => {
       );
 
       expect(screen.getByTestId("is-loading")).toHaveTextContent("true");
+
+      // Wait for the initial fetch to complete to avoid "not wrapped in act" warning
+      await waitFor(() => {
+        expect(screen.getByTestId("is-loading")).toHaveTextContent("false");
+      });
     });
 
     it("loads user on mount if authenticated", async () => {

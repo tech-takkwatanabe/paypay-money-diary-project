@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, mock, Mock } from "bun:test";
 import { ListCategoriesUseCase } from "./listCategoriesUseCase";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { Category } from "@/domain/entity/category";
-import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
+import { CreateCategoryInput, InternalCreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
 
 describe("ListCategoriesUseCase", () => {
   let useCase: ListCategoriesUseCase;
@@ -28,6 +28,7 @@ describe("ListCategoriesUseCase", () => {
       findByUserId: mock(async (_userId: string) => []),
       findByName: mock(async (_userId: string, _name: string) => null),
       create: mock(async (_userId: string, _data: CreateCategoryInput) => ({}) as Category),
+      createInternal: mock(async (_userId: string, _data: InternalCreateCategoryInput) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
     };

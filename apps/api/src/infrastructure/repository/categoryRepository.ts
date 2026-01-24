@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { categories, categoryRules, expenses } from "@/db/schema";
 import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { Category } from "@/domain/entity/category";
-import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
+import { CreateCategoryInput, InternalCreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
 
 /**
  * Category Repository Implementation
@@ -149,9 +149,20 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   /**
-   * カテゴリを作成
+   * カテゴリを作成（公開API用）
    */
   async create(userId: string, input: CreateCategoryInput): Promise<Category> {
+    return this.createInternal(userId, {
+      ...input,
+      isDefault: false,
+      isOther: false,
+    });
+  }
+
+  /**
+   * カテゴリを作成（内部用 - isDefault/isOther を含む）
+   */
+  async createInternal(userId: string, input: InternalCreateCategoryInput): Promise<Category> {
     const results = await db
       .insert(categories)
       .values({
@@ -160,7 +171,8 @@ export class CategoryRepository implements ICategoryRepository {
         color: input.color,
         icon: input.icon ?? null,
         displayOrder: input.displayOrder ?? 0,
-        isDefault: false,
+        isDefault: input.isDefault ?? false,
+        isOther: input.isOther ?? false,
       })
       .returning();
 
