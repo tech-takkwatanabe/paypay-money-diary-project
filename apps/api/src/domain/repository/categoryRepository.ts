@@ -1,5 +1,5 @@
 import { Category } from "@/domain/entity/category";
-import { CreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
+import { CreateCategoryInput, InternalCreateCategoryInput, UpdateCategoryInput } from "@paypay-money-diary/shared";
 
 /**
  * Category Repository Interface
@@ -23,8 +23,17 @@ export interface ICategoryRepository {
 
   /**
    * カテゴリを作成
+   * @param userId ユーザーID
+   * @param input カテゴリ入力（公開API用）
    */
   create(userId: string, input: CreateCategoryInput): Promise<Category>;
+
+  /**
+   * 内部用: デフォルトカテゴリを作成
+   * @param userId ユーザーID
+   * @param input カテゴリ入力（サーバー内部用 - isDefault/isOther を含む）
+   */
+  createInternal(userId: string, input: InternalCreateCategoryInput): Promise<Category>;
 
   /**
    * カテゴリを更新
