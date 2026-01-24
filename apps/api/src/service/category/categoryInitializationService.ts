@@ -40,10 +40,7 @@ export class CategoryInitializationService {
 
     for (const defaultCategory of defaultCategories) {
       // nameとisOtherの複合キーで既存のデフォルトカテゴリを特定
-      const existingCategory = this.findMatchingExistingCategory(
-        existingDefaultCategories,
-        defaultCategory
-      );
+      const existingCategory = this.findMatchingExistingCategory(existingDefaultCategories, defaultCategory);
 
       if (existingCategory) {
         // 既に存在する場合はIDをマッピング
@@ -140,10 +137,7 @@ export class CategoryInitializationService {
 
     for (const defaultCategory of defaultCategories) {
       // nameとisOtherの複合キーで既存カテゴリを特定
-      const existingCategory = this.findMatchingExistingCategory(
-        existingDefaultCategories,
-        defaultCategory
-      );
+      const existingCategory = this.findMatchingExistingCategory(existingDefaultCategories, defaultCategory);
 
       if (existingCategory) {
         mapping.set(defaultCategory.id, existingCategory.id);
