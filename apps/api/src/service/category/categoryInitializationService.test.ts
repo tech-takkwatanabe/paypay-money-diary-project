@@ -393,12 +393,13 @@ describe("CategoryInitializationService", () => {
       );
 
       mockCategoryRepository.findByUserId = categoryFindByUserIdMock;
-      mockCategoryRepository.create = categoryCreateMock;
+      mockCategoryRepository.createInternal = categoryCreateMock;
 
       // Act
       await service.initializeForUser(userId);
 
       // Assert
+      expect(mockCategoryRepository.createInternal).toHaveBeenCalledTimes(defaultCategoriesData.length);
       capturedInputs.forEach((input, idx) => {
         const defaultCat = defaultCategoriesData[idx];
         expect(input.name).toBe(defaultCat.name);
