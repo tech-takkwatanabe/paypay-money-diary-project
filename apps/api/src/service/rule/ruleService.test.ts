@@ -30,17 +30,17 @@ describe("RuleService", () => {
   describe("ensureUserCanAccess", () => {
     it("should allow access to own rule", async () => {
       (mockRuleRepository.findById as Mock<() => Promise<Rule | null>>).mockResolvedValue(ownRule);
-      await expect(ruleService.ensureUserCanAccess("rule-1", userId)).resolves.toBeUndefined();
+      expect(ruleService.ensureUserCanAccess("rule-1", userId)).resolves.toBeUndefined();
     });
 
     it("should allow access to system rule", async () => {
       (mockRuleRepository.findById as Mock<() => Promise<Rule | null>>).mockResolvedValue(systemRule);
-      await expect(ruleService.ensureUserCanAccess("rule-2", userId)).resolves.toBeUndefined();
+      expect(ruleService.ensureUserCanAccess("rule-2", userId)).resolves.toBeUndefined();
     });
 
     it("should throw error when rule not found", async () => {
       (mockRuleRepository.findById as Mock<() => Promise<Rule | null>>).mockResolvedValue(null);
-      await expect(ruleService.ensureUserCanAccess("none", userId)).rejects.toThrow("Rule not found");
+      expect(ruleService.ensureUserCanAccess("none", userId)).rejects.toThrow("Rule not found");
     });
 
     it("should throw error when accessing other user's rule", async () => {
