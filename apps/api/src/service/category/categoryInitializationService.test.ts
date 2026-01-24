@@ -418,7 +418,7 @@ describe("CategoryInitializationService", () => {
       mockCategoryRepository.findByUserId = errorMock;
 
       // Act & Assert
-      await expect(service.initializeForUser(userId)).rejects.toThrow("Database error");
+      expect(service.initializeForUser(userId)).rejects.toThrow("Database error");
     });
   });
 });
