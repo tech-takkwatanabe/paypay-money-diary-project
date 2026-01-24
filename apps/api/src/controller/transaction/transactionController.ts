@@ -5,7 +5,7 @@ import { UpdateTransactionUseCase } from "@/usecase/transaction/updateTransactio
 import { ReCategorizeTransactionsUseCase } from "@/usecase/transaction/reCategorizeTransactionsUseCase";
 import { GetAvailableYearsUseCase } from "@/usecase/transaction/getAvailableYearsUseCase";
 import { UploadCsvUseCase } from "@/usecase/transaction/uploadCsvUseCase";
-import { CreateTransactionUseCase } from "@/usecase/transaction/createTransaction.usecase";
+import { CreateTransactionUseCase } from "@/usecase/transaction/createTransactionUsecase";
 import { DeleteTransactionUseCase } from "@/usecase/transaction/deleteTransactionUseCase";
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 import { ICsvUploadRepository } from "@/domain/repository/csvUploadRepository";
