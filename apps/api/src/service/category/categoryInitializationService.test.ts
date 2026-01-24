@@ -238,7 +238,7 @@ describe("CategoryInitializationService", () => {
     });
 
     it("should create rules only for mapped categories", async () => {
-      // Arrange: 既存デフォルトカテゴリあり
+      // Arrange: 既存デフォルトカテゴリあり（両方のカテゴリをセットアップ）
       const existingCategories: Category[] = [
         createMockCategory(
           `cat-${defaultCategoriesData[0].id}`,
@@ -247,6 +247,16 @@ describe("CategoryInitializationService", () => {
           defaultCategoriesData[0].color,
           defaultCategoriesData[0].icon ?? "default",
           defaultCategoriesData[0].displayOrder,
+          true,
+          false
+        ),
+        createMockCategory(
+          `cat-${defaultCategoriesData[1].id}`,
+          userId,
+          defaultCategoriesData[1].name,
+          defaultCategoriesData[1].color,
+          defaultCategoriesData[1].icon ?? "default",
+          defaultCategoriesData[1].displayOrder,
           true,
           false
         ),
@@ -262,12 +272,15 @@ describe("CategoryInitializationService", () => {
 
       // Assert
       expect(mockRuleRepository.create).toHaveBeenCalledTimes(defaultRulesData.length);
-      // すべてのルール呼び出しで、最初のカテゴリIDが使用されることを確認
+      // すべてのルール呼び出しで、対応する正しいカテゴリIDが使用されることを確認
       const createMock = mockRuleRepository.create as Mock<(userId: string, input: CreateRuleInput) => Promise<Rule>>;
       const calls = createMock.mock?.calls || [];
       calls.forEach((call: (string | CreateRuleInput)[]) => {
         const input = call[1] as CreateRuleInput;
-        expect(input.categoryId).toBe(`cat-${defaultCategoriesData[0].id}`);
+        // 各ルールが対応するカテゴリにマッピングされていることを確認
+        const defaultRule = defaultRulesData.find((r) => r.keyword === input.keyword);
+        const expectedCategoryId = `cat-${defaultRule?.defaultCategoryId}`;
+        expect(input.categoryId).toBe(expectedCategoryId);
       });
     });
 

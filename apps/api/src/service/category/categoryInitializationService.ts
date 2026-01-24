@@ -2,6 +2,7 @@ import { ICategoryRepository } from "@/domain/repository/categoryRepository";
 import { IRuleRepository } from "@/domain/repository/ruleRepository";
 import { IDefaultCategoryRepository } from "@/domain/repository/defaultCategoryRepository";
 import { IDefaultCategoryRuleRepository } from "@/domain/repository/defaultCategoryRuleRepository";
+import { Category } from "@/domain/entity/category";
 import { CreateCategoryInput, CreateRuleInput } from "@paypay-money-diary/shared";
 
 /**
@@ -38,8 +39,11 @@ export class CategoryInitializationService {
     const categoryIdMap = new Map<string, string>();
 
     for (const defaultCategory of defaultCategories) {
-      // isOtherフラグで既存のデフォルトカテゴリを特定
-      const existingCategory = existingDefaultCategories.find((cat) => cat.isOther === defaultCategory.isOther);
+      // nameとisOtherの複合キーで既存のデフォルトカテゴリを特定
+      const existingCategory = this.findMatchingExistingCategory(
+        existingDefaultCategories,
+        defaultCategory
+      );
 
       if (existingCategory) {
         // 既に存在する場合はIDをマッピング
@@ -60,6 +64,22 @@ export class CategoryInitializationService {
 
     // 5. ルールを確認・作成
     await this.ensureRulesExist(userId, categoryIdMap);
+  }
+
+  /**
+   * 既存カテゴリとデフォルトカテゴリをマッチング
+   * nameとisOtherの複合キーで確実に一対一のマッピングを実現
+   * @param existingDefaultCategories 既存のデフォルトカテゴリ（isDefault=true）
+   * @param defaultCategory マッチング対象のデフォルトカテゴリ
+   * @returns マッチングした既存カテゴリ、存在しない場合はundefined
+   */
+  private findMatchingExistingCategory(
+    existingDefaultCategories: Category[],
+    defaultCategory: { name: string; isOther: boolean }
+  ): Category | undefined {
+    return existingDefaultCategories.find(
+      (cat) => cat.name === defaultCategory.name && cat.isOther === defaultCategory.isOther
+    );
   }
 
   /**
@@ -119,8 +139,11 @@ export class CategoryInitializationService {
     const existingDefaultCategories = existingCategories.filter((cat) => cat.isDefault === true);
 
     for (const defaultCategory of defaultCategories) {
-      // isOtherフラグで既存カテゴリを特定
-      const existingCategory = existingDefaultCategories.find((cat) => cat.isOther === defaultCategory.isOther);
+      // nameとisOtherの複合キーで既存カテゴリを特定
+      const existingCategory = this.findMatchingExistingCategory(
+        existingDefaultCategories,
+        defaultCategory
+      );
 
       if (existingCategory) {
         mapping.set(defaultCategory.id, existingCategory.id);
