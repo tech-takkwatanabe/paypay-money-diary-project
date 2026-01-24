@@ -22,8 +22,12 @@ export const CreateCategoryInputSchema = z.object({
   }),
   icon: z.string().nullable().optional(),
   displayOrder: z.number().optional(),
-  isDefault: z.boolean().optional(),
-  isOther: z.boolean().optional(),
+});
+
+// 内部用スキーマ（サーバー側のみ使用）
+export const InternalCreateCategoryInputSchema = CreateCategoryInputSchema.extend({
+  isDefault: z.boolean().default(false),
+  isOther: z.boolean().default(false),
 });
 
 // リクエストDTO（更新）
@@ -47,5 +51,6 @@ export const ReorderCategoriesInputSchema = z.object({
 // 型エクスポート
 export type CategoryResponse = z.infer<typeof CategoryResponseSchema>;
 export type CreateCategoryInput = z.infer<typeof CreateCategoryInputSchema>;
+export type InternalCreateCategoryInput = z.infer<typeof InternalCreateCategoryInputSchema>;
 export type UpdateCategoryInput = z.infer<typeof UpdateCategoryInputSchema>;
 export type ReorderCategoriesInput = z.infer<typeof ReorderCategoriesInputSchema>;
