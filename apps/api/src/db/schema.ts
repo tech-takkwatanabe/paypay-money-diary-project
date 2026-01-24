@@ -79,21 +79,25 @@ export const categories = pgTable(
   ]
 );
 
-export const categoryRules = pgTable("category_rules", {
-  id: pgUuid("id").defaultRandom().primaryKey(),
-  userId: char("user_id", { length: 36 })
-    .notNull()
-    .references(() => users.uuid, {
-      onDelete: "cascade",
-    }),
-  keyword: varchar("keyword", { length: 100 }).notNull(),
-  categoryId: pgUuid("category_id")
-    .notNull()
-    .references(() => categories.id, { onDelete: "cascade" }),
-  priority: integer("priority").notNull().default(0),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export const categoryRules = pgTable(
+  "category_rules",
+  {
+    id: pgUuid("id").defaultRandom().primaryKey(),
+    userId: char("user_id", { length: 36 })
+      .notNull()
+      .references(() => users.uuid, {
+        onDelete: "cascade",
+      }),
+    keyword: varchar("keyword", { length: 100 }).notNull(),
+    categoryId: pgUuid("category_id")
+      .notNull()
+      .references(() => categories.id, { onDelete: "cascade" }),
+    priority: integer("priority").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [unique("unique_user_keyword").on(table.userId, table.keyword)]
+);
 
 export const expenses = pgTable(
   "expenses",

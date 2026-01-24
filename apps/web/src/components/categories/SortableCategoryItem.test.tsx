@@ -50,7 +50,7 @@ describe("SortableCategoryItem", () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
     expect(screen.getByText("Food")).toBeInTheDocument();
-    const colorIndicator = screen.getByText("Food").previousSibling as HTMLElement;
+    const colorIndicator = screen.getByTestId("color-indicator");
     expect(colorIndicator).toHaveStyle({ backgroundColor: "rgb(255, 0, 0)" });
   });
 
@@ -71,64 +71,44 @@ describe("SortableCategoryItem", () => {
   it("calls onEdit when edit button is clicked", () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.getAllByRole("button");
-    const editBtn = buttons.find((b) => b.innerHTML.includes("lucide-pencil"));
-
-    if (editBtn) {
-      fireEvent.click(editBtn);
-      expect(mockOnEdit).toHaveBeenCalledWith(mockCategory);
-    } else {
-      throw new Error("Edit button not found");
-    }
+    const editBtn = screen.getByRole("button", { name: "編集" });
+    fireEvent.click(editBtn);
+    expect(mockOnEdit).toHaveBeenCalledWith(mockCategory);
   });
 
   it("hides edit button for 'Other' category", () => {
     const otherCategory = { ...mockCategory, isOther: true };
     render(<SortableCategoryItem category={otherCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.queryAllByRole("button");
-    const editBtn = buttons.find((b) => b.innerHTML.includes("lucide-pencil"));
-    expect(editBtn).toBeUndefined();
+    expect(screen.queryByRole("button", { name: "編集" })).not.toBeInTheDocument();
   });
 
   it("calls onDelete when delete button is clicked", () => {
     render(<SortableCategoryItem category={mockCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.getAllByRole("button");
-    const deleteBtn = buttons.find((b) => b.innerHTML.includes("lucide-trash2"));
-
-    if (deleteBtn) {
-      fireEvent.click(deleteBtn);
-      expect(mockOnDelete).toHaveBeenCalledWith(mockCategory.id, mockCategory.name);
-    } else {
-      throw new Error("Delete button not found");
-    }
+    const deleteBtn = screen.getByRole("button", { name: "削除" });
+    fireEvent.click(deleteBtn);
+    expect(mockOnDelete).toHaveBeenCalledWith(mockCategory.id, mockCategory.name);
   });
 
   it("hides delete button for default categories", () => {
     const defaultCategory = { ...mockCategory, isDefault: true };
     render(<SortableCategoryItem category={defaultCategory} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.queryAllByRole("button");
-    const deleteBtn = buttons.find((b) => b.innerHTML.includes("lucide-trash2"));
-    expect(deleteBtn).toBeUndefined();
+    expect(screen.queryByRole("button", { name: "削除" })).not.toBeInTheDocument();
   });
 
   it("hides delete button when category has rules", () => {
     const categoryWithRules = { ...mockCategory, hasRules: true };
     render(<SortableCategoryItem category={categoryWithRules} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.queryAllByRole("button");
-    const deleteBtn = buttons.find((b) => b.innerHTML.includes("lucide-trash2"));
-    expect(deleteBtn).toBeUndefined();
+    expect(screen.queryByRole("button", { name: "削除" })).not.toBeInTheDocument();
   });
 
   it("hides delete button when category has transactions", () => {
     const categoryWithTransactions = { ...mockCategory, hasTransactions: true };
     render(<SortableCategoryItem category={categoryWithTransactions} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    const buttons = screen.queryAllByRole("button");
-    const deleteBtn = buttons.find((b) => b.innerHTML.includes("lucide-trash2"));
-    expect(deleteBtn).toBeUndefined();
+    expect(screen.queryByRole("button", { name: "削除" })).not.toBeInTheDocument();
   });
 });

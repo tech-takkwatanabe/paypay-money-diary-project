@@ -22,7 +22,7 @@ export class CategoryInitializationService {
    * @throws Error カテゴリの取得または作成に失敗した場合
    *
    * 注: 部分初期化からの安全な再開を保証するため、べき等実装を採用
-   * 既存カテゴリとデフォルトカテゴリを比較し、不足しているもののみを作成
+   * isDefaultフラグを信頼し、デフォルトカテゴリのみを特別に扱う
    */
   async initializeForUser(userId: string): Promise<void> {
     // 1. ユーザーの既存カテゴリを取得
@@ -31,36 +31,16 @@ export class CategoryInitializationService {
     // 2. デフォルトカテゴリを取得
     const defaultCategories = await this.defaultCategoryRepository.findAll();
 
-    // 3. 既存カテゴリとデフォルトカテゴリのマッピングを構築
-    // displayOrderでソートしたデフォルトカテゴリと既存カテゴリを照合
-    const sortedDefaults = [...defaultCategories].sort((a, b) => a.displayOrder - b.displayOrder);
-    const sortedExisting = [...existingCategories].sort((a, b) => a.displayOrder - b.displayOrder);
+    // 3. isDefaultフラグでマーク済みの既存カテゴリをフィルタリング
+    const existingDefaultCategories = existingCategories.filter((cat) => cat.isDefault === true);
 
-    // 既存カテゴリが完全に揃っているか確認
-    const hasAllCategories =
-      sortedExisting.length === sortedDefaults.length &&
-      sortedExisting.every((existing, index) => {
-        const defaultCat = sortedDefaults[index];
-        return (
-          existing.name === defaultCat.name &&
-          existing.color === defaultCat.color &&
-          existing.displayOrder === defaultCat.displayOrder &&
-          existing.isOther === defaultCat.isOther
-        );
-      });
-
-    if (hasAllCategories) {
-      // すべてのカテゴリが揃っているので、ルールの確認に進む
-      return this.ensureRulesExist(userId);
-    }
-
-    // 4. 不足しているカテゴリのマッピングを作成
+    // 4. カテゴリIDのマッピングを構築（isDefault=trueのみを対象）
     const categoryIdMap = new Map<string, string>();
 
-    for (const defaultCategory of sortedDefaults) {
-      // 同じ名前と色のカテゴリが既に存在するか確認
-      const existingCategory = sortedExisting.find(
-        (cat) => cat.name === defaultCategory.name && cat.color === defaultCategory.color
+    for (const defaultCategory of defaultCategories) {
+      // isOtherフラグで既存のデフォルトカテゴリを特定
+      const existingCategory = existingDefaultCategories.find(
+        (cat) => cat.isOther === defaultCategory.isOther
       );
 
       if (existingCategory) {
@@ -80,7 +60,7 @@ export class CategoryInitializationService {
       }
     }
 
-    // 5. ルールを確認・作成
+    // 6. ルールを確認・作成
     await this.ensureRulesExist(userId, categoryIdMap);
   }
 
@@ -89,7 +69,10 @@ export class CategoryInitializationService {
    * @param userId ユーザーのUUID
    * @param categoryIdMap デフォルトカテゴリIDから新しいIDへのマッピング（オプション）
    */
-  private async ensureRulesExist(userId: string, categoryIdMap?: Map<string, string>): Promise<void> {
+  private async ensureRulesExist(
+    userId: string,
+    categoryIdMap?: Map<string, string>
+  ): Promise<void> {
     // デフォルトルールを取得
     const defaultRules = await this.defaultCategoryRuleRepository.findAll();
 
@@ -99,30 +82,31 @@ export class CategoryInitializationService {
       mapping = await this.buildCategoryIdMap(userId);
     }
 
-    // ルールを作成（既存するかどうかはリポジトリ層で処理）
+    // ルールを作成（既存するかどうかはリポジトリ層で事前チェック）
     for (const defaultRule of defaultRules) {
       const newCategoryId = mapping.get(defaultRule.defaultCategoryId);
-      if (newCategoryId) {
-        const createRuleInput: CreateRuleInput = {
-          keyword: defaultRule.keyword,
-          categoryId: newCategoryId,
-          priority: defaultRule.priority,
-        };
-
-        try {
-          await this.ruleRepository.create(userId, createRuleInput);
-        } catch (error) {
-          // ルールが既に存在する場合（unique constraint）はスキップ
-          if ((error as Error).message.includes("unique")) {
-            continue;
-          }
-          throw error;
-        }
-      } else {
+      if (!newCategoryId) {
         console.warn(
           `[CategoryInitializationService] Skipping rule "${defaultRule.keyword}": default category ID "${defaultRule.defaultCategoryId}" not found in mapping`
         );
+        continue;
       }
+
+      // 既存ルールをチェック
+      const existingRule = await this.ruleRepository.findByUserIdAndKeyword(userId, defaultRule.keyword);
+      if (existingRule) {
+        // 既にあれば作成をスキップ
+        continue;
+      }
+
+      // 新規ルールを作成
+      const createRuleInput: CreateRuleInput = {
+        keyword: defaultRule.keyword,
+        categoryId: newCategoryId,
+        priority: defaultRule.priority,
+      };
+
+      await this.ruleRepository.create(userId, createRuleInput);
     }
   }
 
@@ -136,10 +120,13 @@ export class CategoryInitializationService {
     const existingCategories = await this.categoryRepository.findByUserId(userId);
     const defaultCategories = await this.defaultCategoryRepository.findAll();
 
+    // isDefault=trueのカテゴリのみを対象
+    const existingDefaultCategories = existingCategories.filter((cat) => cat.isDefault === true);
+
     for (const defaultCategory of defaultCategories) {
-      // displayOrderと名前で既存カテゴリを特定
-      const existingCategory = existingCategories.find(
-        (cat) => cat.displayOrder === defaultCategory.displayOrder && cat.name === defaultCategory.name
+      // isOtherフラグで既存カテゴリを特定
+      const existingCategory = existingDefaultCategories.find(
+        (cat) => cat.isOther === defaultCategory.isOther
       );
 
       if (existingCategory) {

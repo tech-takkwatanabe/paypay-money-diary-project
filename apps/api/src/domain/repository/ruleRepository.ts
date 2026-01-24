@@ -22,6 +22,14 @@ export interface IRuleRepository {
   findByCategoryId(categoryId: string, userId: string): Promise<Rule[]>;
 
   /**
+   * ユーザーIDとキーワードでルールを検索
+   * @param userId ユーザーUUID
+   * @param keyword ルールのキーワード
+   * @returns ルール、存在しない場合はnull
+   */
+  findByUserIdAndKeyword(userId: string, keyword: string): Promise<Rule | null>;
+
+  /**
    * ルールを作成
    */
   create(userId: string, input: CreateRuleInput): Promise<Rule>;

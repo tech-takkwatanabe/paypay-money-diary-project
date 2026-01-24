@@ -45,13 +45,18 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
             <GripVertical className="w-5 h-5" />
           </div>
         )}
-        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
+        <div
+          data-testid="color-indicator"
+          className="w-4 h-4 rounded-full"
+          style={{ backgroundColor: category.color }}
+        />
         <span className="font-medium">{category.name}</span>
       </div>
       <div className="flex gap-1">
         {!category.isOther && (
           <button
             onClick={() => onEdit(category)}
+            aria-label="編集"
             className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
           >
             <Pencil className="w-4 h-4" />
@@ -60,6 +65,7 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
         {!category.isDefault && !category.hasRules && !category.hasTransactions && (
           <button
             onClick={() => onDelete(category.id, category.name)}
+            aria-label="削除"
             className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
           >
             <Trash2 className="w-4 h-4" />
