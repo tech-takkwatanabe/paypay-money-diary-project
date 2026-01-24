@@ -75,7 +75,7 @@ describe("LoginUseCase", () => {
     );
 
     // Act & Assert
-    await expect(loginUseCase.execute(input)).rejects.toThrow("Invalid credentials");
+    expect(loginUseCase.execute(input)).rejects.toThrow("Invalid credentials");
     expect(mockAuthService.authenticateUser).toHaveBeenCalledWith(input.email, input.password);
     expect(mockTokenService.generateTokenPair).not.toHaveBeenCalled();
   });
