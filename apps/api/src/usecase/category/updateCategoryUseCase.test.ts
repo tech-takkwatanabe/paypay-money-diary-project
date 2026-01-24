@@ -68,7 +68,7 @@ describe("UpdateCategoryUseCase", () => {
       })
     );
 
-    await expect(useCase.execute(categoryId, userId, input)).rejects.toThrow("Category with this name already exists");
+    expect(useCase.execute(categoryId, userId, input)).rejects.toThrow("Category with this name already exists");
     expect(mockCategoryRepository.findByName).toHaveBeenCalledWith(userId, input.name!);
     expect(mockCategoryRepository.update).not.toHaveBeenCalled();
   });
