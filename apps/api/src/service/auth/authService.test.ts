@@ -62,7 +62,7 @@ describe("AuthService", () => {
       findByEmailMock.mockImplementation(async () => null);
 
       // Act & Assert
-      await expect(authService.authenticateUser(email, password)).rejects.toThrow("Invalid credentials");
+      expect(authService.authenticateUser(email, password)).rejects.toThrow("Invalid credentials");
       expect(findByEmailMock).toHaveBeenCalledWith(email);
     });
 
@@ -74,7 +74,7 @@ describe("AuthService", () => {
       verifyPasswordMock.mockImplementation(async () => false);
 
       // Act & Assert
-      await expect(authService.authenticateUser(email, password)).rejects.toThrow("Invalid credentials");
+      expect(authService.authenticateUser(email, password)).rejects.toThrow("Invalid credentials");
       expect(verifyPasswordMock).toHaveBeenCalledWith(password, testUser.password.value);
     });
   });
