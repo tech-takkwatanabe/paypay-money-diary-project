@@ -71,7 +71,7 @@ describe("RefreshUseCase", () => {
     (mockTokenRepository.findOldRefreshToken as Mock<ITokenRepository["findOldRefreshToken"]>).mockResolvedValue(null);
 
     // Act & Assert
-    await expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow("Invalid refresh token");
+    expect(refreshUseCase.execute(currentRefreshToken)).rejects.toThrow("Invalid refresh token");
   });
 
   it("should refresh successfully with old token during grace period", async () => {
