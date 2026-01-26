@@ -162,8 +162,13 @@ export default function ExpensesPage() {
             updateData.amount = amount;
           }
         }
-        if (editDescription !== "" && editDescription !== currentTransaction.description) {
-          updateData.description = editDescription;
+        if (editDescription !== currentTransaction.description) {
+          const normalizedDescription = editDescription.trim();
+          if (normalizedDescription === "") {
+            alert("店名・内容を入力してください");
+            return;
+          }
+          updateData.description = normalizedDescription;
         }
       }
 
