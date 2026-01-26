@@ -66,6 +66,7 @@ export default function ExpensesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCategoryId, setEditCategoryId] = useState<string>("");
   const [editAmount, setEditAmount] = useState<string>("");
+  const [editDescription, setEditDescription] = useState<string>("");
 
   const limit = 50;
 
@@ -149,15 +150,20 @@ export default function ExpensesPage() {
         return;
       }
 
-      // 手動の場合のみ金額を含める
-      const updateData: { categoryId: string; amount?: number } = {
+      // 手動の場合のみ金額と店名・内容を含める
+      const updateData: { categoryId: string; amount?: number; description?: string } = {
         categoryId: editCategoryId,
       };
 
-      if (currentTransaction.paymentMethod === "手動" && editAmount !== "") {
-        const amount = parseInt(editAmount, 10);
-        if (!isNaN(amount)) {
-          updateData.amount = amount;
+      if (currentTransaction.paymentMethod === "手動") {
+        if (editAmount !== "") {
+          const amount = parseInt(editAmount, 10);
+          if (!isNaN(amount)) {
+            updateData.amount = amount;
+          }
+        }
+        if (editDescription !== "" && editDescription !== currentTransaction.description) {
+          updateData.description = editDescription;
         }
       }
 
@@ -410,7 +416,23 @@ export default function ExpensesPage() {
                       }`}
                     >
                       <td className="px-4 py-3 text-sm whitespace-nowrap">{formatDate(t.date)}</td>
-                      <td className="px-4 py-3 text-sm font-medium">{t.description}</td>
+                      <td className="px-4 py-3 text-sm font-medium">
+                        {editingId === t.id && t.paymentMethod === "手動" ? (
+                          <Input
+                            type="text"
+                            variant="filter"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleUpdateTransaction(t.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            className="w-full"
+                          />
+                        ) : (
+                          t.description
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-sm">
                         {editingId === t.id ? (
                           <div className="flex items-center gap-2">
@@ -485,6 +507,7 @@ export default function ExpensesPage() {
                                   setEditingId(t.id);
                                   setEditCategoryId(t.categoryId || "");
                                   setEditAmount(t.amount.toString());
+                                  setEditDescription(t.description);
                                 }}
                                 className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                                 title="編集"
