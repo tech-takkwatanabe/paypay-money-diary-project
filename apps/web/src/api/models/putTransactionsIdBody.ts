@@ -9,4 +9,6 @@
 export type PutTransactionsIdBody = {
   categoryId?: string;
   amount?: number;
+  /** @minLength 1 */
+  description?: string;
 };

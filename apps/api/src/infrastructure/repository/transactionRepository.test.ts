@@ -191,7 +191,7 @@ describe("TransactionRepository", () => {
         id: "tx-123",
         userId: "user-123",
         transactionDate: new Date(),
-        merchant: "Updated",
+        merchant: "Updated Merchant",
         amount: 1000,
         categoryId: "cat-2",
         createdAt: new Date(),
@@ -214,10 +214,14 @@ describe("TransactionRepository", () => {
       spyOn(db, "select").mockImplementation(() => selectChain as unknown as never);
       spyOn(db, "update").mockImplementation(() => updateChain as unknown as never);
 
-      const transaction = await repository.update("tx-123", { categoryId: "cat-2" });
+      const transaction = await repository.update("tx-123", {
+        categoryId: "cat-2",
+        description: "Updated Merchant",
+      });
 
       expect(transaction.categoryId).toBe("cat-2");
       expect(transaction.categoryName).toBe("Food");
+      expect(transaction.description).toBe("Updated Merchant");
     });
   });
 

@@ -20,6 +20,7 @@ export const TransactionResponseSchema = z.object({
 export const UpdateTransactionInputSchema = z.object({
   categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }).optional(),
   amount: z.number().int({ message: "金額は整数で指定してください。" }).optional(),
+  description: z.string().min(1, { message: "店名・内容を入力してください。" }).optional(),
 });
 
 // リクエストDTO（作成）

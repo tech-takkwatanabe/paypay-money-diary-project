@@ -802,6 +802,9 @@ paths:
                   format: uuid
                 amount:
                   type: integer
+                description:
+                  type: string
+                  minLength: 1
       responses:
         "200":
           description: トランザクションを更新
