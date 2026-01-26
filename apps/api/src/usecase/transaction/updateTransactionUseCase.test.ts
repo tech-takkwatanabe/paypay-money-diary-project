@@ -65,6 +65,80 @@ describe("UpdateTransactionUseCase", () => {
     expect(result.categoryId).toBe("cat-new");
   });
 
+  it("should update description for manual transaction", async () => {
+    // Arrange
+    const id = "1";
+    const userId = "user-123";
+    const input = { description: "Updated Store" };
+    const mockTransaction = new Transaction(
+      id,
+      userId,
+      new Date(),
+      "Store A",
+      1000,
+      "cat-1",
+      "Food",
+      "#000000",
+      100,
+      "手動",
+      new Date(),
+      undefined
+    );
+
+    (transactionRepository.findById as Mock<typeof transactionRepository.findById>).mockResolvedValue(mockTransaction);
+    (transactionRepository.update as Mock<typeof transactionRepository.update>).mockResolvedValue(
+      new Transaction(
+        id,
+        userId,
+        new Date(),
+        "Updated Store",
+        1000,
+        "cat-1",
+        "Food",
+        "#000000",
+        100,
+        "手動",
+        new Date(),
+        undefined
+      )
+    );
+
+    // Act
+    const result = await useCase.execute(id, userId, input);
+
+    // Assert
+    expect(transactionRepository.update).toHaveBeenCalledWith(id, input);
+    expect(result.description).toBe("Updated Store");
+  });
+
+  it("should throw error when updating description for non-manual transaction", async () => {
+    // Arrange
+    const id = "1";
+    const userId = "user-123";
+    const input = { description: "Updated Store" };
+    const mockTransaction = new Transaction(
+      id,
+      userId,
+      new Date(),
+      "Store A",
+      1000,
+      "cat-1",
+      "Food",
+      "#000000",
+      100,
+      "PayPay", // Not manual
+      new Date(),
+      undefined
+    );
+
+    (transactionRepository.findById as Mock<typeof transactionRepository.findById>).mockResolvedValue(mockTransaction);
+
+    // Act & Assert
+    expect(useCase.execute(id, userId, input)).rejects.toThrow(
+      "Forbidden: Only description of cash transactions can be updated"
+    );
+  });
+
   it("should throw error when transaction not found", async () => {
     // Arrange
     (transactionRepository.findById as Mock<typeof transactionRepository.findById>).mockResolvedValue(null);
