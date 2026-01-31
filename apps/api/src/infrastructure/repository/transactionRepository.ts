@@ -279,10 +279,17 @@ export class TransactionRepository implements ITransactionRepository {
    */
   async update(id: string, input: UpdateTransactionInput): Promise<Transaction> {
     // 更新データを構築
-    const updateData: { categoryId?: string; amount?: number; merchant?: string; updatedAt?: Date } = {};
+    const updateData: {
+      categoryId?: string;
+      amount?: number;
+      merchant?: string;
+      transactionDate?: Date;
+      updatedAt?: Date;
+    } = {};
     if (input.categoryId) updateData.categoryId = input.categoryId;
     if (input.amount !== undefined) updateData.amount = input.amount;
     if (input.description !== undefined) updateData.merchant = input.description;
+    if (input.date !== undefined) updateData.transactionDate = new Date(input.date);
     updateData.updatedAt = new Date();
 
     // トランザクションを更新

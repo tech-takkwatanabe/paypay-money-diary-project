@@ -67,6 +67,7 @@ export default function ExpensesPage() {
   const [editCategoryId, setEditCategoryId] = useState<string>("");
   const [editAmount, setEditAmount] = useState<string>("");
   const [editDescription, setEditDescription] = useState<string>("");
+  const [editDate, setEditDate] = useState<string>("");
 
   const limit = 50;
 
@@ -150,8 +151,8 @@ export default function ExpensesPage() {
         return;
       }
 
-      // 手動の場合のみ金額と店名・内容を含める
-      const updateData: { categoryId: string; amount?: number; description?: string } = {
+      // 手動の場合のみ金額と店名・内容・日付を含める
+      const updateData: { categoryId: string; amount?: number; description?: string; date?: string } = {
         categoryId: editCategoryId,
       };
 
@@ -169,6 +170,15 @@ export default function ExpensesPage() {
             return;
           }
           updateData.description = normalizedDescription;
+        }
+        // 日付の更新
+        const currentDateStr = new Date(currentTransaction.date).toISOString().split("T")[0];
+        if (editDate !== currentDateStr) {
+          if (!editDate) {
+            alert("日付を入力してください");
+            return;
+          }
+          updateData.date = new Date(editDate).toISOString();
         }
       }
 
@@ -420,7 +430,23 @@ export default function ExpensesPage() {
                         editingId === t.id ? "bg-red-50/50 dark:bg-red-900/10" : "hover:bg-muted/30"
                       }`}
                     >
-                      <td className="px-4 py-3 text-sm whitespace-nowrap">{formatDate(t.date)}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap">
+                        {editingId === t.id && t.paymentMethod === "手動" ? (
+                          <Input
+                            type="date"
+                            variant="filter"
+                            value={editDate}
+                            onChange={(e) => setEditDate(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleUpdateTransaction(t.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            className="w-32"
+                          />
+                        ) : (
+                          formatDate(t.date)
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-sm font-medium">
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
@@ -513,6 +539,8 @@ export default function ExpensesPage() {
                                   setEditCategoryId(t.categoryId || "");
                                   setEditAmount(t.amount.toString());
                                   setEditDescription(t.description);
+                                  // YYYY-MM-DD 形式に変換
+                                  setEditDate(new Date(t.date).toISOString().split("T")[0]);
                                 }}
                                 className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                                 title="編集"
