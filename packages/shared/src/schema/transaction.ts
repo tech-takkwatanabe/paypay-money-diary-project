@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@hono/zod-openapi";
 
 // レスポンスDTO
 export const TransactionResponseSchema = z.object({
@@ -21,11 +21,15 @@ export const UpdateTransactionInputSchema = z.object({
   categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }).optional(),
   amount: z.number().int({ message: "金額は整数で指定してください。" }).optional(),
   description: z.string().min(1, { message: "店名・内容を入力してください。" }).optional(),
+  date: z.iso
+    .datetime({ message: "有効な日付を指定してください。" })
+    .optional()
+    .openapi({ example: "2024-01-01T00:00:00Z" }),
 });
 
 // リクエストDTO（作成）
 export const CreateTransactionInputSchema = z.object({
-  date: z.string().datetime({ message: "有効な日付を指定してください。" }),
+  date: z.iso.datetime({ message: "有効な日付を指定してください。" }).openapi({ example: "2024-01-01T00:00:00Z" }),
   amount: z.number().int({ message: "金額は整数で指定してください。" }),
   description: z.string().min(1, { message: "店名・内容を入力してください。" }),
   categoryId: z.uuid({ message: "有効なカテゴリIDを指定してください。" }),
