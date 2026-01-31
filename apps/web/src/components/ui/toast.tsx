@@ -59,6 +59,7 @@ export function Toast({ id, message, type = "success", duration = 2000, onClose 
       <button
         onClick={handleClose}
         className="ml-auto shrink-0 p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        aria-label="閉じる"
       >
         <X className="h-4 w-4 text-gray-400" />
       </button>

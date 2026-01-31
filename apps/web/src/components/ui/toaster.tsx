@@ -7,7 +7,11 @@ export function Toaster() {
   const { toasts, removeToast } = useToast();
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-sm pointer-events-none items-center">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-sm pointer-events-none items-center"
+    >
       {toasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
           <Toast

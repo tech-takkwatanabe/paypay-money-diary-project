@@ -1,5 +1,3 @@
-"use client";
-
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { Toast } from "./toast";
@@ -34,9 +32,9 @@ describe("Toast", () => {
   it("calls onClose after default duration", () => {
     render(<Toast id="1" message="Message" onClose={mockOnClose} />);
 
-    // Default duration is 3000ms
+    // Default duration is 2000ms
     act(() => {
-      vi.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(2000);
     });
 
     // It should trigger handleClose which sets isExiting and then calls onClose after 300ms
