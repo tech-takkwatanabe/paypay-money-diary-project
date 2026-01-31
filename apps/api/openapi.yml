@@ -800,6 +800,9 @@ paths:
                 categoryId:
                   type: string
                   format: uuid
+                date:
+                  type: string
+                  format: date-time
                 amount:
                   type: integer
                 description:
