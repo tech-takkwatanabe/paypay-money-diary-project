@@ -64,10 +64,9 @@ const categoriesData = [
 
 const rulesData = [
   { keyword: "ファミリーマート", categoryName: "日用品" },
-  { keyword: "セブン－イレブン", categoryName: "日用品" },
+  { keyword: "セブン-イレブン", categoryName: "日用品" },
   { keyword: "ローソン", categoryName: "日用品" },
   { keyword: "マクドナルド", categoryName: "食費" },
-  { keyword: "吉野家", categoryName: "食費" },
   { keyword: "スターバックス", categoryName: "食費" },
   { keyword: "ＪＲ", categoryName: "交通費" },
   { keyword: "地下鉄", categoryName: "交通費" },

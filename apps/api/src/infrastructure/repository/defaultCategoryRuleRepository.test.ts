@@ -21,7 +21,7 @@ describe("DefaultCategoryRuleRepository", () => {
 
   const mockDefaultRuleDataZeroPriority = {
     id: "default-rule-3",
-    keyword: "セブン－イレブン",
+    keyword: "セブン-イレブン",
     defaultCategoryId: "default-cat-1",
     priority: 0,
   };
@@ -95,7 +95,7 @@ describe("DefaultCategoryRuleRepository", () => {
     it("should handle special characters in keywords", async () => {
       const specialCharRule = {
         id: "default-rule-special",
-        keyword: "セブン－イレブン（全店）",
+        keyword: "セブン-イレブン（全店）",
         defaultCategoryId: "default-cat-1",
         priority: 5,
       };
@@ -110,7 +110,7 @@ describe("DefaultCategoryRuleRepository", () => {
 
       const rules = await repository.findAll();
 
-      expect(rules[0].keyword).toBe("セブン－イレブン（全店）");
+      expect(rules[0].keyword).toBe("セブン-イレブン（全店）");
       expect(rules).toHaveLength(1);
     });
 
@@ -235,7 +235,7 @@ describe("DefaultCategoryRuleRepository", () => {
     it("should handle special characters in keyword", async () => {
       const specialCharRule = {
         id: "default-rule-special",
-        keyword: "セブン－イレブン（全店舗）",
+        keyword: "セブン-イレブン（全店舗）",
         defaultCategoryId: "default-cat-1",
         priority: 5,
       };
@@ -252,7 +252,7 @@ describe("DefaultCategoryRuleRepository", () => {
       const rule = await repository.findById("default-rule-special");
 
       expect(rule).not.toBeNull();
-      expect(rule?.keyword).toBe("セブン－イレブン（全店舗）");
+      expect(rule?.keyword).toBe("セブン-イレブン（全店舗）");
     });
 
     it("should handle UUIDs as rule IDs", async () => {
@@ -482,7 +482,7 @@ describe("DefaultCategoryRuleRepository", () => {
 
     it("should handle special characters in keywords for category", async () => {
       const specialCharRules = [
-        { ...mockDefaultRuleData, keyword: "セブン－イレブン", defaultCategoryId: "default-cat-1" },
+        { ...mockDefaultRuleData, keyword: "セブン-イレブン", defaultCategoryId: "default-cat-1" },
         { ...mockDefaultRuleData, id: "rule-2", keyword: "ローソン（24時間）", defaultCategoryId: "default-cat-1" },
       ];
 
@@ -497,7 +497,7 @@ describe("DefaultCategoryRuleRepository", () => {
 
       const rules = await repository.findByCategoryId("default-cat-1");
 
-      expect(rules[0].keyword).toBe("セブン－イレブン");
+      expect(rules[0].keyword).toBe("セブン-イレブン");
       expect(rules[1].keyword).toBe("ローソン（24時間）");
     });
 
