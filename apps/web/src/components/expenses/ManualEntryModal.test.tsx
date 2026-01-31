@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { ToastProvider } from "@/contexts/ToastContext";
 import { ManualEntryModal } from "./ManualEntryModal";
 import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactions } from "@/api/generated/transactions/transactions";
@@ -54,7 +55,11 @@ describe("ManualEntryModal", () => {
   });
 
   it("renders correctly when open", async () => {
-    render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+    render(
+      <ToastProvider>
+        <ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />
+      </ToastProvider>
+    );
 
     expect(screen.getByText("手動支出入力")).toBeInTheDocument();
     expect(screen.getByLabelText("日付")).toBeInTheDocument();
@@ -69,7 +74,11 @@ describe("ManualEntryModal", () => {
   });
 
   it("calls onClose when cancel button is clicked", async () => {
-    render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+    render(
+      <ToastProvider>
+        <ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />
+      </ToastProvider>
+    );
 
     // Wait for categories to load to avoid act warning
     await waitFor(() => expect(screen.getByText("Food")).toBeInTheDocument());
@@ -99,7 +108,11 @@ describe("ManualEntryModal", () => {
       headers: new Headers(),
     } as Awaited<ReturnType<typeof postTransactions>>);
 
-    render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+    render(
+      <ToastProvider>
+        <ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />
+      </ToastProvider>
+    );
 
     // Wait for categories to load
     await waitFor(() => expect(screen.getByText("Food")).toBeInTheDocument());
@@ -133,7 +146,11 @@ describe("ManualEntryModal", () => {
       headers: new Headers(),
     } as unknown as Awaited<ReturnType<typeof postTransactions>>);
 
-    render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+    render(
+      <ToastProvider>
+        <ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />
+      </ToastProvider>
+    );
 
     await waitFor(() => expect(screen.getByText("Food")).toBeInTheDocument());
 
@@ -155,7 +172,11 @@ describe("ManualEntryModal", () => {
 
     vi.mocked(postTransactions).mockRejectedValue(new Error("Network error"));
 
-    render(<ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />);
+    render(
+      <ToastProvider>
+        <ManualEntryModal isOpen={true} onClose={mockOnClose} onSuccess={mockOnSuccess} />
+      </ToastProvider>
+    );
 
     await waitFor(() => expect(screen.getByText("Food")).toBeInTheDocument());
 
