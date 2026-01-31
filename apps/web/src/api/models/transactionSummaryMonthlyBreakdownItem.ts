@@ -10,5 +10,6 @@ import type { TransactionSummaryMonthlyBreakdownItemCategoriesItem } from "./tra
 export type TransactionSummaryMonthlyBreakdownItem = {
   month: number;
   totalAmount: number;
+  /** @maxItems 100 */
   categories: TransactionSummaryMonthlyBreakdownItemCategoriesItem[];
 };

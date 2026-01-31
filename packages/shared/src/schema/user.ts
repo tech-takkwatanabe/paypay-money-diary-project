@@ -7,7 +7,7 @@ export const UserSchema = z
     id: z.string().optional().openapi({ example: "550e8400-e29b-41d4-a716-446655440000" }),
     name: z.string().min(1, { message: "名前は必須です。" }).openapi({ example: "田中 太郎" }),
     email: EmailSchema.openapi({ example: "test@example.com" }),
-    password: PasswordSchema, // For creation/updates
+    password: PasswordSchema.openapi({ example: "password123" }), // For creation/updates
   })
   .openapi("User");
 

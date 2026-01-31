@@ -63,6 +63,7 @@ api.use("/auth/me", authMiddleware);
 registerAuthRoutes(api);
 
 // ===== 取引 API (OpenAPI 対応) =====
+api.use("/transactions", authMiddleware);
 api.use("/transactions/*", authMiddleware);
 registerTransactionRoutes(api);
 

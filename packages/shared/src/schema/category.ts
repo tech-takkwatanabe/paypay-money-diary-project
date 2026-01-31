@@ -58,7 +58,7 @@ export const UpdateCategoryInputSchema = z
 export const ReorderCategoriesInputSchema = z
   .object({
     categoryIds: z
-      .array(z.string().uuid())
+      .array(z.uuid())
       .min(1, { message: "カテゴリIDリストは必須です。" })
       .openapi({ example: ["550e8400-e29b-41d4-a716-446655440003", "550e8400-e29b-41d4-a716-446655440004"] }),
   })

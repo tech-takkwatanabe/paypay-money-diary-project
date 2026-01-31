@@ -11,6 +11,8 @@ import type { TransactionSummarySummary } from "./transactionSummarySummary";
 
 export interface TransactionSummary {
   summary: TransactionSummarySummary;
+  /** @maxItems 100 */
   categoryBreakdown: TransactionSummaryCategoryBreakdownItem[];
+  /** @maxItems 12 */
   monthlyBreakdown?: TransactionSummaryMonthlyBreakdownItem[];
 }

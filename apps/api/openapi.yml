@@ -257,6 +257,7 @@ components:
               - displayOrder
               - totalAmount
               - transactionCount
+          maxItems: 100
         monthlyBreakdown:
           type: array
           items:
@@ -296,10 +297,12 @@ components:
                     - categoryColor
                     - displayOrder
                     - amount
+                maxItems: 100
             required:
               - month
               - totalAmount
               - categories
+          maxItems: 12
       required:
         - summary
         - categoryBreakdown

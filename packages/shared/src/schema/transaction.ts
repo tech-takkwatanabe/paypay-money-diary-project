@@ -71,32 +71,37 @@ export const TransactionSummarySchema = z
       totalAmount: z.number().openapi({ example: 150000 }),
       transactionCount: z.number().openapi({ example: 45 }),
     }),
-    categoryBreakdown: z.array(
-      z.object({
-        categoryId: z.uuid().nullable().openapi({ example: "550e8400-e29b-41d4-a716-446655440003" }),
-        categoryName: z.string().openapi({ example: "食費" }),
-        categoryColor: z.string().openapi({ example: "#FF6B6B" }),
-        displayOrder: z.number().openapi({ example: 1 }),
-        totalAmount: z.number().openapi({ example: 45000 }),
-        transactionCount: z.number().openapi({ example: 20 }),
-      })
-    ),
+    categoryBreakdown: z
+      .array(
+        z.object({
+          categoryId: z.uuid().nullable().openapi({ example: "550e8400-e29b-41d4-a716-446655440003" }),
+          categoryName: z.string().openapi({ example: "食費" }),
+          categoryColor: z.string().openapi({ example: "#FF6B6B" }),
+          displayOrder: z.number().openapi({ example: 1 }),
+          totalAmount: z.number().openapi({ example: 45000 }),
+          transactionCount: z.number().openapi({ example: 20 }),
+        })
+      )
+      .max(100),
     monthlyBreakdown: z
       .array(
         z.object({
           month: z.number().openapi({ example: 1 }),
           totalAmount: z.number().openapi({ example: 150000 }),
-          categories: z.array(
-            z.object({
-              categoryId: z.uuid().nullable().openapi({ example: "550e8400-e29b-41d4-a716-446655440003" }),
-              categoryName: z.string().openapi({ example: "食費" }),
-              categoryColor: z.string().openapi({ example: "#FF6B6B" }),
-              displayOrder: z.number().openapi({ example: 1 }),
-              amount: z.number().openapi({ example: 45000 }),
-            })
-          ),
+          categories: z
+            .array(
+              z.object({
+                categoryId: z.uuid().nullable().openapi({ example: "550e8400-e29b-41d4-a716-446655440003" }),
+                categoryName: z.string().openapi({ example: "食費" }),
+                categoryColor: z.string().openapi({ example: "#FF6B6B" }),
+                displayOrder: z.number().openapi({ example: 1 }),
+                amount: z.number().openapi({ example: 45000 }),
+              })
+            )
+            .max(100),
         })
       )
+      .max(12)
       .optional(),
   })
   .openapi("TransactionSummary");
