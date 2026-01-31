@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Plus, X, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
 import {
@@ -64,6 +65,7 @@ interface CategoryFormData {
 }
 
 export default function CategoriesPage() {
+  const { success, error: toastError } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -169,11 +171,12 @@ export default function CategoriesPage() {
       const response = await deleteCategoriesId(id);
       if (response.status === 200) {
         await fetchCategories();
+        success("カテゴリを削除しました");
       } else if ("data" in response && "error" in response.data) {
-        alert(response.data.error);
+        toastError(response.data.error);
       }
     } catch (_error) {
-      alert(
+      toastError(
         "削除に失敗しました。このカテゴリを使用したルールまたは支出がある場合は、先にルールの変更や支出の付け替えを行ってください。"
       );
     }

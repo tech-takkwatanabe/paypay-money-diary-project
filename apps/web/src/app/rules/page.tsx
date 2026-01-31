@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ArrowLeft, Plus, Pencil, Trash2, X, Check, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
@@ -19,6 +20,7 @@ interface RuleFormData {
 }
 
 export default function RulesPage() {
+  const { success, error: toastError } = useToast();
   const [rules, setRules] = useState<Rule[]>([]);
   const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -131,11 +133,12 @@ export default function RulesPage() {
       const response = await deleteRulesId(id);
       if (response.status === 200) {
         await fetchData();
+        success("ルールを削除しました");
       } else if ("data" in response && "error" in response.data) {
-        alert(response.data.error);
+        toastError(response.data.error);
       }
     } catch (_error) {
-      alert("削除に失敗しました");
+      toastError("削除に失敗しました");
     }
   };
 
@@ -146,12 +149,12 @@ export default function RulesPage() {
     try {
       const response = await postTransactionsReCategorize({});
       if (response.status === 200) {
-        alert("再分類が完了しました");
+        success("再分類が完了しました");
       } else {
-        alert("再分類に失敗しました");
+        toastError("再分類に失敗しました");
       }
     } catch (_error) {
-      alert("エラーが発生しました");
+      toastError("エラーが発生しました");
     } finally {
       setIsReCategorizing(false);
     }
