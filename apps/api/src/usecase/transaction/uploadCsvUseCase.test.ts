@@ -62,7 +62,11 @@ describe("UploadCsvUseCase", () => {
     expect(csvUploadRepository.create).toHaveBeenCalled();
     expect(csvService.assignCategories).toHaveBeenCalled();
     expect(transactionRepository.existsByExternalId).toHaveBeenCalledWith(input.userId, "tx-1");
-    expect(transactionRepository.create).toHaveBeenCalled();
+    expect(transactionRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        paymentMethod: "PayPay",
+      })
+    );
     expect(csvUploadRepository.updateStatus).toHaveBeenCalledWith("upload-123", "processed");
 
     expect(result).toEqual({

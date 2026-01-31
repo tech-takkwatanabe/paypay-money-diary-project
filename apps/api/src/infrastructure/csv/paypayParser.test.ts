@@ -17,6 +17,7 @@ describe("parsePayPayCsv", () => {
     // 最初の支出（550円）
     expect(result.expenses[0].amount).toBe(550);
     expect(result.expenses[0].merchant).toBe("近鉄百貨店 - 名古屋店");
+    expect(result.expenses[0].paymentMethod).toBe("クレジット Mastercard 1678");
     expect(result.expenses[0].externalTransactionId).toBe("04608314245975736328");
 
     // 2番目の支出（3,600円）

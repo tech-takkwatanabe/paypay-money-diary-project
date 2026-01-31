@@ -66,6 +66,7 @@ export class UploadCsvUseCase {
           categoryColor: "",
           displayOrder: 100,
           externalTransactionId: expense.externalTransactionId,
+          paymentMethod: expense.paymentMethod,
         });
 
         importedRows++;
