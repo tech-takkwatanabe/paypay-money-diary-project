@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ManualEntryModal } from "./ManualEntryModal";
 import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactions } from "@/api/generated/transactions/transactions";
-import type { GetCategories200DataItem as Category, PostTransactions201 } from "@/api/models";
+import type { CategoryResponse as Category, TransactionResponse } from "@/api/models";
 
 // Mock API functions
 vi.mock("@/api/generated/categories/categories", () => ({
@@ -79,7 +79,7 @@ describe("ManualEntryModal", () => {
   });
 
   it("submits the form successfully", async () => {
-    const mockResponseData: PostTransactions201 = {
+    const mockResponseData: TransactionResponse = {
       id: "tx1",
       userId: "user1",
       date: "2024-01-24",

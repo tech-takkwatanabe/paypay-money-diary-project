@@ -27,26 +27,8 @@ app.get("/", (c) => {
 
 const api = new OpenAPIHono<Env>();
 
-// ===== 認証 API (OpenAPI 対応) =====
-api.use("/auth/logout", authMiddleware);
-api.use("/auth/me", authMiddleware);
-registerAuthRoutes(api);
-
-// ===== 取引 API (OpenAPI 対応) =====
-api.use("/transactions/*", authMiddleware);
-registerTransactionRoutes(api);
-
-// ===== カテゴリ API (OpenAPI 対応) =====
-api.use("/categories", authMiddleware);
-api.use("/categories/*", authMiddleware);
-registerCategoryRoutes(api);
-
-// ===== ルール API (OpenAPI 対応) =====
-api.use("/rules", authMiddleware);
-api.use("/rules/*", authMiddleware);
-registerRuleRoutes(api);
-
 // ===== OpenAPI ドキュメント (開発環境のみ) =====
+// ミドルウェアの影響を避けるため、先に定義
 if (process.env.NODE_ENV !== "production") {
   api.doc("/openapi.json", {
     openapi: "3.1.0",
@@ -57,7 +39,7 @@ if (process.env.NODE_ENV !== "production") {
     },
     servers: [
       {
-        url: `${process.env.API_URL}/api`,
+        url: process.env.API_URL ? `${process.env.API_URL}/api` : "http://localhost:8080/api",
         description: "Development server",
       },
     ],
@@ -71,8 +53,29 @@ if (process.env.NODE_ENV !== "production") {
     description: "HttpOnly Cookie に設定されたアクセストークン",
   });
 
-  api.get("/docs", swaggerUI({ url: "/api/openapi.json" }));
+  // /api/docs からの相対パスで指定
+  api.get("/docs", swaggerUI({ url: "./openapi.json" }));
 }
+
+// ===== 認証 API (OpenAPI 対応) =====
+api.use("/auth/logout", authMiddleware);
+api.use("/auth/me", authMiddleware);
+registerAuthRoutes(api);
+
+// ===== 取引 API (OpenAPI 対応) =====
+api.use("/transactions", authMiddleware);
+api.use("/transactions/*", authMiddleware);
+registerTransactionRoutes(api);
+
+// ===== カテゴリ API (OpenAPI 対応) =====
+api.use("/categories", authMiddleware);
+api.use("/categories/*", authMiddleware);
+registerCategoryRoutes(api);
+
+// ===== ルール API (OpenAPI 対応) =====
+api.use("/rules", authMiddleware);
+api.use("/rules/*", authMiddleware);
+registerRuleRoutes(api);
 
 // /api プレフィックスでマウント
 app.route("/api", api);

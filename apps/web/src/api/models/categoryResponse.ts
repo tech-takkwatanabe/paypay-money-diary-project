@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostCategories201 = {
+export interface CategoryResponse {
   id: string;
   name: string;
   color: string;
@@ -17,4 +17,4 @@ export type PostCategories201 = {
   userId: string;
   hasRules: boolean;
   hasTransactions: boolean;
-};
+}

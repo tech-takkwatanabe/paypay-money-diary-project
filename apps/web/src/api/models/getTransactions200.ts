@@ -5,10 +5,10 @@
  * PayPay 家計簿アプリケーション API
  * OpenAPI spec version: 1.0.0
  */
-import type { GetTransactions200DataItem } from "./getTransactions200DataItem";
 import type { GetTransactions200Pagination } from "./getTransactions200Pagination";
+import type { TransactionResponse } from "./transactionResponse";
 
 export type GetTransactions200 = {
-  data: GetTransactions200DataItem[];
+  data: TransactionResponse[];
   pagination: GetTransactions200Pagination;
 };

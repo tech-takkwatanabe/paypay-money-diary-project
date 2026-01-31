@@ -6,8 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostAuthLoginBody = {
-  email: string;
+export interface UpdateCategoryInput {
   /** @minLength 1 */
-  password: string;
-};
+  name?: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  color?: string;
+  icon?: string | null;
+  displayOrder?: number;
+}

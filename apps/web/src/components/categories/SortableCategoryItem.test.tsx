@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SortableCategoryItem } from "./SortableCategoryItem";
-import type { GetCategories200DataItem as Category } from "@/api/models";
+import type { CategoryResponse as Category } from "@/api/models";
 
 // Mock @dnd-kit/sortable
 vi.mock("@dnd-kit/sortable", () => ({

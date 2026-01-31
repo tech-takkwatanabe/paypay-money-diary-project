@@ -6,26 +6,25 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  AvailableYearsResponse,
+  CreateTransactionInput,
   GetTransactions200,
-  GetTransactionsAvailableYears200,
   GetTransactionsParams,
-  GetTransactionsSummary200,
   GetTransactionsSummaryParams,
-  PostTransactions201,
-  PostTransactionsBody,
-  PostTransactionsReCategorize200,
-  PostTransactionsReCategorizeBody,
-  PostTransactionsUpload201,
   PostTransactionsUpload400,
   PostTransactionsUploadBody,
-  PutTransactionsId200,
-  PutTransactionsIdBody,
+  ReCategorizeInput,
+  ReCategorizeResponse,
+  TransactionResponse,
+  TransactionSummary,
+  UpdateTransactionInput,
+  UploadCsvResponse,
 } from "../../models";
 
 import { customFetch } from "../../customFetch";
 
 export type postTransactionsUploadResponse201 = {
-  data: PostTransactionsUpload201;
+  data: UploadCsvResponse;
   status: 201;
 };
 
@@ -100,7 +99,7 @@ export const getTransactions = async (
 };
 
 export type postTransactionsResponse201 = {
-  data: PostTransactions201;
+  data: TransactionResponse;
   status: 201;
 };
 
@@ -114,19 +113,19 @@ export const getPostTransactionsUrl = () => {
 };
 
 export const postTransactions = async (
-  postTransactionsBody: PostTransactionsBody,
+  createTransactionInput: CreateTransactionInput,
   options?: RequestInit
 ): Promise<postTransactionsResponse> => {
   return customFetch<postTransactionsResponse>(getPostTransactionsUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postTransactionsBody),
+    body: JSON.stringify(createTransactionInput),
   });
 };
 
 export type getTransactionsSummaryResponse200 = {
-  data: GetTransactionsSummary200;
+  data: TransactionSummary;
   status: 200;
 };
 
@@ -160,7 +159,7 @@ export const getTransactionsSummary = async (
 };
 
 export type getTransactionsAvailableYearsResponse200 = {
-  data: GetTransactionsAvailableYears200;
+  data: AvailableYearsResponse;
   status: 200;
 };
 
@@ -183,7 +182,7 @@ export const getTransactionsAvailableYears = async (
 };
 
 export type postTransactionsReCategorizeResponse200 = {
-  data: PostTransactionsReCategorize200;
+  data: ReCategorizeResponse;
   status: 200;
 };
 
@@ -197,19 +196,19 @@ export const getPostTransactionsReCategorizeUrl = () => {
 };
 
 export const postTransactionsReCategorize = async (
-  postTransactionsReCategorizeBody: PostTransactionsReCategorizeBody,
+  reCategorizeInput: ReCategorizeInput,
   options?: RequestInit
 ): Promise<postTransactionsReCategorizeResponse> => {
   return customFetch<postTransactionsReCategorizeResponse>(getPostTransactionsReCategorizeUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postTransactionsReCategorizeBody),
+    body: JSON.stringify(reCategorizeInput),
   });
 };
 
 export type putTransactionsIdResponse200 = {
-  data: PutTransactionsId200;
+  data: TransactionResponse;
   status: 200;
 };
 
@@ -238,14 +237,14 @@ export const getPutTransactionsIdUrl = (id: string) => {
 
 export const putTransactionsId = async (
   id: string,
-  putTransactionsIdBody: PutTransactionsIdBody,
+  updateTransactionInput: UpdateTransactionInput,
   options?: RequestInit
 ): Promise<putTransactionsIdResponse> => {
   return customFetch<putTransactionsIdResponse>(getPutTransactionsIdUrl(id), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(putTransactionsIdBody),
+    body: JSON.stringify(updateTransactionInput),
   });
 };
 

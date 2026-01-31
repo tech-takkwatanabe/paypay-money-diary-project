@@ -10,7 +10,7 @@ import { Link } from "@/components/ui/link";
 import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rules/rules";
 import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactionsReCategorize } from "@/api/generated/transactions/transactions";
-import type { RuleResponse as Rule, GetCategories200DataItem as CategoryWithSystem } from "@/api/models";
+import type { RuleResponse as Rule, CategoryResponse as CategoryWithSystem } from "@/api/models";
 
 interface RuleFormData {
   keyword: string;

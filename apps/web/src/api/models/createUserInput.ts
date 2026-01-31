@@ -6,6 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactionsAvailableYears200 = {
-  years: number[];
-};
+export interface CreateUserInput {
+  /** @minLength 1 */
+  name: string;
+  email: string;
+  /** @minLength 8 */
+  password: string;
+}

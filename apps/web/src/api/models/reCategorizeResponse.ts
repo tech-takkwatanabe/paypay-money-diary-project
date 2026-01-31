@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsReCategorize200 = {
+export interface ReCategorizeResponse {
   message: string;
   updatedCount: number;
-};
+}

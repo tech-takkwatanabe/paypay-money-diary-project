@@ -6,12 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  CreateUserInput,
   ErrorResponse,
+  LoginInput,
   LoginResponse,
   LogoutResponse,
   MeResponse,
-  PostAuthLoginBody,
-  PostAuthSignupBody,
   RefreshResponse,
   SignupResponse,
 } from "../../models";
@@ -60,14 +60,14 @@ export const getPostAuthSignupUrl = () => {
 };
 
 export const postAuthSignup = async (
-  postAuthSignupBody: PostAuthSignupBody,
+  createUserInput: CreateUserInput,
   options?: RequestInit
 ): Promise<postAuthSignupResponse> => {
   return customFetch<postAuthSignupResponse>(getPostAuthSignupUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postAuthSignupBody),
+    body: JSON.stringify(createUserInput),
   });
 };
 
@@ -112,15 +112,12 @@ export const getPostAuthLoginUrl = () => {
   return `/auth/login`;
 };
 
-export const postAuthLogin = async (
-  postAuthLoginBody: PostAuthLoginBody,
-  options?: RequestInit
-): Promise<postAuthLoginResponse> => {
+export const postAuthLogin = async (loginInput: LoginInput, options?: RequestInit): Promise<postAuthLoginResponse> => {
   return customFetch<postAuthLoginResponse>(getPostAuthLoginUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postAuthLoginBody),
+    body: JSON.stringify(loginInput),
   });
 };
 

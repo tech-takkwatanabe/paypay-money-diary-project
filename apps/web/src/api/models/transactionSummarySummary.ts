@@ -6,10 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostAuthSignupBody = {
-  /** @minLength 1 */
-  name: string;
-  email: string;
-  /** @minLength 8 */
-  password: string;
+export type TransactionSummarySummary = {
+  totalAmount: number;
+  transactionCount: number;
 };
