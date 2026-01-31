@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactionsSummary200Summary = {
-  totalAmount: number;
-  transactionCount: number;
-};
+export interface LoginInput {
+  email: string;
+  /** @minLength 1 */
+  password: string;
+}

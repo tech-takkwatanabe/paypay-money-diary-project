@@ -12,8 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import { getTransactionsSummary, getTransactionsAvailableYears } from "@/api/generated/transactions/transactions";
 import type {
-  GetTransactionsSummary200 as SummaryResponse,
-  GetTransactionsSummary200CategoryBreakdownItem as CategoryBreakdown,
+  TransactionSummary as SummaryResponse,
+  TransactionSummaryCategoryBreakdownItem as CategoryBreakdown,
 } from "@/api/models";
 
 /**

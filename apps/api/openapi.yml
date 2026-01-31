@@ -39,6 +39,25 @@ components:
           description: エラーメッセージ
       required:
         - error
+    CreateUserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: 田中 太郎
+        email:
+          type: string
+          format: email
+          example: test@example.com
+        password:
+          type: string
+          minLength: 8
+          example: password123
+      required:
+        - name
+        - email
+        - password
     User:
       type: object
       properties:
@@ -64,6 +83,20 @@ components:
           $ref: "#/components/schemas/User"
       required:
         - user
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: test@example.com
+        password:
+          type: string
+          minLength: 1
+          example: password123
+      required:
+        - email
+        - password
     RefreshResponse:
       type: object
       properties:
@@ -98,6 +131,355 @@ components:
         - id
         - name
         - email
+    UploadCsvResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: CSV uploaded successfully
+        processedCount:
+          type: number
+          example: 100
+        categorizedCount:
+          type: number
+          example: 95
+        uncategorizedCount:
+          type: number
+          example: 5
+      required:
+        - message
+        - processedCount
+        - categorizedCount
+        - uncategorizedCount
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440005
+        userId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        date:
+          type: string
+          format: date-time
+          example: 2024-01-01T10:00:00Z
+        description:
+          type: string
+          example: セブン-イレブン
+        amount:
+          type: number
+          example: 540
+        categoryId:
+          type: string
+          nullable: true
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440003
+        categoryName:
+          type: string
+          example: 食費
+        categoryColor:
+          type: string
+          example: "#FF6B6B"
+        displayOrder:
+          type: number
+          example: 1
+        paymentMethod:
+          type: string
+          nullable: true
+          example: PayPay
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-01-01T10:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-01-01T10:00:00Z
+      required:
+        - id
+        - userId
+        - date
+        - description
+        - amount
+        - categoryId
+        - categoryName
+        - categoryColor
+        - displayOrder
+        - createdAt
+        - updatedAt
+    TransactionSummary:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            totalAmount:
+              type: number
+              example: 150000
+            transactionCount:
+              type: number
+              example: 45
+          required:
+            - totalAmount
+            - transactionCount
+        categoryBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+                nullable: true
+                format: uuid
+                example: 550e8400-e29b-41d4-a716-446655440003
+              categoryName:
+                type: string
+                example: 食費
+              categoryColor:
+                type: string
+                example: "#FF6B6B"
+              displayOrder:
+                type: number
+                example: 1
+              totalAmount:
+                type: number
+                example: 45000
+              transactionCount:
+                type: number
+                example: 20
+            required:
+              - categoryId
+              - categoryName
+              - categoryColor
+              - displayOrder
+              - totalAmount
+              - transactionCount
+        monthlyBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              month:
+                type: number
+                example: 1
+              totalAmount:
+                type: number
+                example: 150000
+              categories:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    categoryId:
+                      type: string
+                      nullable: true
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440003
+                    categoryName:
+                      type: string
+                      example: 食費
+                    categoryColor:
+                      type: string
+                      example: "#FF6B6B"
+                    displayOrder:
+                      type: number
+                      example: 1
+                    amount:
+                      type: number
+                      example: 45000
+                  required:
+                    - categoryId
+                    - categoryName
+                    - categoryColor
+                    - displayOrder
+                    - amount
+            required:
+              - month
+              - totalAmount
+              - categories
+      required:
+        - summary
+        - categoryBreakdown
+    AvailableYearsResponse:
+      type: object
+      properties:
+        years:
+          type: array
+          items:
+            type: number
+          example:
+            - 2024
+            - 2023
+      required:
+        - years
+    ReCategorizeResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 3件の取引を再分類しました。
+        updatedCount:
+          type: number
+          example: 3
+      required:
+        - message
+        - updatedCount
+    ReCategorizeInput:
+      type: object
+      properties:
+        year:
+          type: integer
+          minimum: 2000
+          maximum: 2100
+          example: 2024
+        month:
+          type: integer
+          minimum: 1
+          maximum: 12
+          example: 1
+    UpdateTransactionInput:
+      type: object
+      properties:
+        categoryId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440004
+        amount:
+          type: integer
+          example: 1200
+        description:
+          type: string
+          minLength: 1
+          example: 更新後の店名
+        date:
+          type: string
+          format: date-time
+          example: 2024-01-02T00:00:00Z
+    CreateTransactionInput:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          example: 2024-01-01T00:00:00Z
+        amount:
+          type: integer
+          example: 1000
+        description:
+          type: string
+          minLength: 1
+          example: 手動入力支出
+        categoryId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440003
+      required:
+        - date
+        - amount
+        - description
+        - categoryId
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440003
+        name:
+          type: string
+          example: 食費
+        color:
+          type: string
+          example: "#FF6B6B"
+        icon:
+          type: string
+          nullable: true
+          example: utensils
+        displayOrder:
+          type: number
+          example: 1
+        isDefault:
+          type: boolean
+          example: true
+        isOther:
+          type: boolean
+          example: false
+        userId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+        hasRules:
+          type: boolean
+          example: true
+        hasTransactions:
+          type: boolean
+          example: true
+      required:
+        - id
+        - name
+        - color
+        - icon
+        - displayOrder
+        - isDefault
+        - isOther
+        - userId
+        - hasRules
+        - hasTransactions
+    CreateCategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: 新しいカテゴリ
+        color:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+          example: "#4ECDC4"
+        icon:
+          type: string
+          nullable: true
+          example: tag
+        displayOrder:
+          type: number
+          example: 10
+      required:
+        - name
+        - color
+    UpdateCategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: 更新後の名前
+        color:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+          example: "#FF6B6B"
+        icon:
+          type: string
+          nullable: true
+          example: shopping-cart
+        displayOrder:
+          type: number
+          example: 5
+    ReorderCategoriesInput:
+      type: object
+      properties:
+        categoryIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          example:
+            - 550e8400-e29b-41d4-a716-446655440003
+            - 550e8400-e29b-41d4-a716-446655440004
+      required:
+        - categoryIds
     RuleResponse:
       type: object
       properties:
@@ -190,21 +572,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 1
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  minLength: 8
-              required:
-                - name
-                - email
-                - password
+              $ref: "#/components/schemas/CreateUserInput"
       responses:
         "201":
           description: 登録成功
@@ -240,17 +608,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  minLength: 1
-              required:
-                - email
-                - password
+              $ref: "#/components/schemas/LoginInput"
       responses:
         "200":
           description: ログイン成功（トークンはCookieに設定）
@@ -382,21 +740,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  processedCount:
-                    type: number
-                  categorizedCount:
-                    type: number
-                  uncategorizedCount:
-                    type: number
-                required:
-                  - message
-                  - processedCount
-                  - categorizedCount
-                  - uncategorizedCount
+                $ref: "#/components/schemas/UploadCsvResponse"
         "400":
           description: バリデーションエラーまたはアップロード失敗
           content:
@@ -417,32 +761,38 @@ paths:
       parameters:
         - schema:
             type: string
+            example: "2024"
           required: false
           name: year
           in: query
         - schema:
             type: string
+            example: "1"
           required: false
           name: month
           in: query
         - schema:
             type: string
             format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440003
           required: false
           name: categoryId
           in: query
         - schema:
             type: string
+            example: セブン
           required: false
           name: search
           in: query
         - schema:
             type: string
+            example: "1"
           required: false
           name: page
           in: query
         - schema:
             type: string
+            example: "50"
           required: false
           name: limit
           in: query
@@ -451,6 +801,7 @@ paths:
             enum:
               - date
               - amount
+            example: date
           required: false
           name: sortBy
           in: query
@@ -459,6 +810,7 @@ paths:
             enum:
               - asc
               - desc
+            example: desc
           required: false
           name: sortOrder
           in: query
@@ -473,52 +825,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          format: uuid
-                        userId:
-                          type: string
-                          format: uuid
-                        date:
-                          type: string
-                          format: date-time
-                        description:
-                          type: string
-                        amount:
-                          type: number
-                        categoryId:
-                          type: string
-                          nullable: true
-                          format: uuid
-                        categoryName:
-                          type: string
-                        categoryColor:
-                          type: string
-                        displayOrder:
-                          type: number
-                        paymentMethod:
-                          type: string
-                          nullable: true
-                        createdAt:
-                          type: string
-                          format: date-time
-                        updatedAt:
-                          type: string
-                          format: date-time
-                      required:
-                        - id
-                        - userId
-                        - date
-                        - description
-                        - amount
-                        - categoryId
-                        - categoryName
-                        - categoryColor
-                        - displayOrder
-                        - createdAt
-                        - updatedAt
+                      $ref: "#/components/schemas/TransactionResponse"
                   pagination:
                     type: object
                     properties:
@@ -550,76 +857,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                amount:
-                  type: integer
-                description:
-                  type: string
-                  minLength: 1
-                categoryId:
-                  type: string
-                  format: uuid
-              required:
-                - date
-                - amount
-                - description
-                - categoryId
+              $ref: "#/components/schemas/CreateTransactionInput"
       responses:
         "201":
           description: トランザクションを作成
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  userId:
-                    type: string
-                    format: uuid
-                  date:
-                    type: string
-                    format: date-time
-                  description:
-                    type: string
-                  amount:
-                    type: number
-                  categoryId:
-                    type: string
-                    nullable: true
-                    format: uuid
-                  categoryName:
-                    type: string
-                  categoryColor:
-                    type: string
-                  displayOrder:
-                    type: number
-                  paymentMethod:
-                    type: string
-                    nullable: true
-                  createdAt:
-                    type: string
-                    format: date-time
-                  updatedAt:
-                    type: string
-                    format: date-time
-                required:
-                  - id
-                  - userId
-                  - date
-                  - description
-                  - amount
-                  - categoryId
-                  - categoryName
-                  - categoryColor
-                  - displayOrder
-                  - createdAt
-                  - updatedAt
+                $ref: "#/components/schemas/TransactionResponse"
   /transactions/summary:
     get:
       tags:
@@ -645,83 +890,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  summary:
-                    type: object
-                    properties:
-                      totalAmount:
-                        type: number
-                      transactionCount:
-                        type: number
-                    required:
-                      - totalAmount
-                      - transactionCount
-                  categoryBreakdown:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        categoryId:
-                          type: string
-                          nullable: true
-                          format: uuid
-                        categoryName:
-                          type: string
-                        categoryColor:
-                          type: string
-                        displayOrder:
-                          type: number
-                        totalAmount:
-                          type: number
-                        transactionCount:
-                          type: number
-                      required:
-                        - categoryId
-                        - categoryName
-                        - categoryColor
-                        - displayOrder
-                        - totalAmount
-                        - transactionCount
-                  monthlyBreakdown:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        month:
-                          type: number
-                        totalAmount:
-                          type: number
-                        categories:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              categoryId:
-                                type: string
-                                nullable: true
-                                format: uuid
-                              categoryName:
-                                type: string
-                              categoryColor:
-                                type: string
-                              displayOrder:
-                                type: number
-                              amount:
-                                type: number
-                            required:
-                              - categoryId
-                              - categoryName
-                              - categoryColor
-                              - displayOrder
-                              - amount
-                      required:
-                        - month
-                        - totalAmount
-                        - categories
-                required:
-                  - summary
-                  - categoryBreakdown
+                $ref: "#/components/schemas/TransactionSummary"
   /transactions/available-years:
     get:
       tags:
@@ -734,14 +903,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  years:
-                    type: array
-                    items:
-                      type: number
-                required:
-                  - years
+                $ref: "#/components/schemas/AvailableYearsResponse"
   /transactions/re-categorize:
     post:
       tags:
@@ -752,31 +914,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                year:
-                  type: integer
-                  minimum: 2000
-                  maximum: 2100
-                month:
-                  type: integer
-                  minimum: 1
-                  maximum: 12
+              $ref: "#/components/schemas/ReCategorizeInput"
       responses:
         "200":
           description: トランザクションを再分類
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  updatedCount:
-                    type: number
-                required:
-                  - message
-                  - updatedCount
+                $ref: "#/components/schemas/ReCategorizeResponse"
   /transactions/{id}:
     put:
       tags:
@@ -795,71 +940,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                categoryId:
-                  type: string
-                  format: uuid
-                date:
-                  type: string
-                  format: date-time
-                amount:
-                  type: integer
-                description:
-                  type: string
-                  minLength: 1
+              $ref: "#/components/schemas/UpdateTransactionInput"
       responses:
         "200":
           description: トランザクションを更新
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  userId:
-                    type: string
-                    format: uuid
-                  date:
-                    type: string
-                    format: date-time
-                  description:
-                    type: string
-                  amount:
-                    type: number
-                  categoryId:
-                    type: string
-                    nullable: true
-                    format: uuid
-                  categoryName:
-                    type: string
-                  categoryColor:
-                    type: string
-                  displayOrder:
-                    type: number
-                  paymentMethod:
-                    type: string
-                    nullable: true
-                  createdAt:
-                    type: string
-                    format: date-time
-                  updatedAt:
-                    type: string
-                    format: date-time
-                required:
-                  - id
-                  - userId
-                  - date
-                  - description
-                  - amount
-                  - categoryId
-                  - categoryName
-                  - categoryColor
-                  - displayOrder
-                  - createdAt
-                  - updatedAt
+                $ref: "#/components/schemas/TransactionResponse"
         "403":
           description: 権限がありません
         "404":
@@ -902,41 +990,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          format: uuid
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        icon:
-                          type: string
-                          nullable: true
-                        displayOrder:
-                          type: number
-                        isDefault:
-                          type: boolean
-                        isOther:
-                          type: boolean
-                        userId:
-                          type: string
-                        hasRules:
-                          type: boolean
-                        hasTransactions:
-                          type: boolean
-                      required:
-                        - id
-                        - name
-                        - color
-                        - icon
-                        - displayOrder
-                        - isDefault
-                        - isOther
-                        - userId
-                        - hasRules
-                        - hasTransactions
+                      $ref: "#/components/schemas/CategoryResponse"
                 required:
                   - data
         "400":
@@ -985,63 +1039,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 1
-                color:
-                  type: string
-                  pattern: ^#[0-9A-Fa-f]{6}$
-                icon:
-                  type: string
-                  nullable: true
-                displayOrder:
-                  type: number
-              required:
-                - name
-                - color
+              $ref: "#/components/schemas/CreateCategoryInput"
       responses:
         "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  icon:
-                    type: string
-                    nullable: true
-                  displayOrder:
-                    type: number
-                  isDefault:
-                    type: boolean
-                  isOther:
-                    type: boolean
-                  userId:
-                    type: string
-                  hasRules:
-                    type: boolean
-                  hasTransactions:
-                    type: boolean
-                required:
-                  - id
-                  - name
-                  - color
-                  - icon
-                  - displayOrder
-                  - isDefault
-                  - isOther
-                  - userId
-                  - hasRules
-                  - hasTransactions
+                $ref: "#/components/schemas/CategoryResponse"
         "400":
           description: バリデーションエラー
           content:
@@ -1108,60 +1113,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 1
-                color:
-                  type: string
-                  pattern: ^#[0-9A-Fa-f]{6}$
-                icon:
-                  type: string
-                  nullable: true
-                displayOrder:
-                  type: number
+              $ref: "#/components/schemas/UpdateCategoryInput"
       responses:
         "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  icon:
-                    type: string
-                    nullable: true
-                  displayOrder:
-                    type: number
-                  isDefault:
-                    type: boolean
-                  isOther:
-                    type: boolean
-                  userId:
-                    type: string
-                  hasRules:
-                    type: boolean
-                  hasTransactions:
-                    type: boolean
-                required:
-                  - id
-                  - name
-                  - color
-                  - icon
-                  - displayOrder
-                  - isDefault
-                  - isOther
-                  - userId
-                  - hasRules
-                  - hasTransactions
+                $ref: "#/components/schemas/CategoryResponse"
         "400":
           description: バリデーションエラー
           content:
@@ -1331,16 +1290,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                categoryIds:
-                  type: array
-                  items:
-                    type: string
-                    format: uuid
-                  minItems: 1
-              required:
-                - categoryIds
+              $ref: "#/components/schemas/ReorderCategoriesInput"
       responses:
         "200":
           description: 並び替え成功

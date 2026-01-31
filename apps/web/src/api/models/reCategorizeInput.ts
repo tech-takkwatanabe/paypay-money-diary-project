@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsReCategorizeBody = {
+export interface ReCategorizeInput {
   /**
    * @minimum 2000
    * @maximum 2100
@@ -17,4 +17,4 @@ export type PostTransactionsReCategorizeBody = {
    * @maximum 12
    */
   month?: number;
-};
+}

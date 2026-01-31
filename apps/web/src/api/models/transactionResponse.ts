@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PutTransactionsId200 = {
+export interface TransactionResponse {
   id: string;
   userId: string;
   date: string;
@@ -19,4 +19,4 @@ export type PutTransactionsId200 = {
   paymentMethod?: string | null;
   createdAt: string;
   updatedAt: string;
-};
+}

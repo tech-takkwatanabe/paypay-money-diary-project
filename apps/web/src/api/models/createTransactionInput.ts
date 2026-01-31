@@ -6,11 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostCategoriesBody = {
+export interface CreateTransactionInput {
+  date: string;
+  amount: number;
   /** @minLength 1 */
-  name: string;
-  /** @pattern ^#[0-9A-Fa-f]{6}$ */
-  color: string;
-  icon?: string | null;
-  displayOrder?: number;
-};
+  description: string;
+  categoryId: string;
+}

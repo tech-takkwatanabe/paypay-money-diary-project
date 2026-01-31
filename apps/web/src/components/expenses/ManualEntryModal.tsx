@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { SelectNative } from "@/components/ui/select-native";
 import { postTransactions } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
-import type { GetCategories200DataItem as Category } from "@/api/models";
+import type { CategoryResponse as Category } from "@/api/models";
 
 interface ManualEntryModalProps {
   isOpen: boolean;

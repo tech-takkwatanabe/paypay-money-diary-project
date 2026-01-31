@@ -6,17 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactions200DataItem = {
-  id: string;
-  userId: string;
-  date: string;
-  description: string;
-  amount: number;
+export type TransactionSummaryMonthlyBreakdownItemCategoriesItem = {
   categoryId: string | null;
   categoryName: string;
   categoryColor: string;
   displayOrder: number;
-  paymentMethod?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  amount: number;
 };

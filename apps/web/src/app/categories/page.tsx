@@ -13,7 +13,7 @@ import {
   deleteCategoriesId,
   patchCategoriesReorder,
 } from "@/api/generated/categories/categories";
-import type { GetCategories200DataItem as Category } from "@/api/models";
+import type { CategoryResponse as Category } from "@/api/models";
 
 // dnd-kit imports
 import {

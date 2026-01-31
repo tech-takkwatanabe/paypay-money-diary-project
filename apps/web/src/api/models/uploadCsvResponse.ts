@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchCategoriesReorderBody = {
-  /** @minItems 1 */
-  categoryIds: string[];
-};
+export interface UploadCsvResponse {
+  message: string;
+  processedCount: number;
+  categorizedCount: number;
+  uncategorizedCount: number;
+}

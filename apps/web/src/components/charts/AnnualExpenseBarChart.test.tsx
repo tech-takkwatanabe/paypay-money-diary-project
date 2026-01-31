@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { AnnualExpenseBarChart } from "./AnnualExpenseBarChart";
-import type { GetTransactionsSummary200MonthlyBreakdownItem as MonthlyBreakdown } from "@/api/models";
+import type { TransactionSummaryMonthlyBreakdownItem as MonthlyBreakdown } from "@/api/models";
 
 // Mock react-apexcharts
 interface MockChartProps {

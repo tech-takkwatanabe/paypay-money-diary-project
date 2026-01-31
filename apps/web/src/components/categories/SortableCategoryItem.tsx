@@ -3,7 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Trash2, GripVertical } from "lucide-react";
-import type { GetCategories200DataItem as Category } from "@/api/models";
+import type { CategoryResponse as Category } from "@/api/models";
 
 interface SortableCategoryItemProps {
   category: Category;

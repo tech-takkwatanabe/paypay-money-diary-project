@@ -28,10 +28,7 @@ import {
   deleteTransactionsId,
 } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
-import type {
-  GetTransactions200DataItem as Transaction,
-  GetCategories200DataItem as CategoryWithSystem,
-} from "@/api/models";
+import type { TransactionResponse as Transaction, CategoryResponse as CategoryWithSystem } from "@/api/models";
 
 /**
  * Render the expenses page with UI for viewing and managing expenditure transactions.

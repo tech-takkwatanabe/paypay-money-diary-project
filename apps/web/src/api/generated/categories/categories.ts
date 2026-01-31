@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  CategoryResponse,
+  CreateCategoryInput,
   DeleteCategoriesId200,
   DeleteCategoriesId400,
   DeleteCategoriesId401,
@@ -20,21 +22,18 @@ import type {
   PatchCategoriesReorder400,
   PatchCategoriesReorder401,
   PatchCategoriesReorder500,
-  PatchCategoriesReorderBody,
-  PostCategories201,
   PostCategories400,
   PostCategories401,
   PostCategories409,
   PostCategories500,
-  PostCategoriesBody,
-  PutCategoriesId200,
   PutCategoriesId400,
   PutCategoriesId401,
   PutCategoriesId403,
   PutCategoriesId404,
   PutCategoriesId409,
   PutCategoriesId500,
-  PutCategoriesIdBody,
+  ReorderCategoriesInput,
+  UpdateCategoryInput,
 } from "../../models";
 
 import { customFetch } from "../../customFetch";
@@ -90,7 +89,7 @@ export const getCategories = async (options?: RequestInit): Promise<getCategorie
  * @summary カテゴリ作成
  */
 export type postCategoriesResponse201 = {
-  data: PostCategories201;
+  data: CategoryResponse;
   status: 201;
 };
 
@@ -133,14 +132,14 @@ export const getPostCategoriesUrl = () => {
 };
 
 export const postCategories = async (
-  postCategoriesBody: PostCategoriesBody,
+  createCategoryInput: CreateCategoryInput,
   options?: RequestInit
 ): Promise<postCategoriesResponse> => {
   return customFetch<postCategoriesResponse>(getPostCategoriesUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postCategoriesBody),
+    body: JSON.stringify(createCategoryInput),
   });
 };
 
@@ -148,7 +147,7 @@ export const postCategories = async (
  * @summary カテゴリ更新
  */
 export type putCategoriesIdResponse200 = {
-  data: PutCategoriesId200;
+  data: CategoryResponse;
   status: 200;
 };
 
@@ -204,14 +203,14 @@ export const getPutCategoriesIdUrl = (id: string) => {
 
 export const putCategoriesId = async (
   id: string,
-  putCategoriesIdBody: PutCategoriesIdBody,
+  updateCategoryInput: UpdateCategoryInput,
   options?: RequestInit
 ): Promise<putCategoriesIdResponse> => {
   return customFetch<putCategoriesIdResponse>(getPutCategoriesIdUrl(id), {
     ...options,
     method: "PUT",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(putCategoriesIdBody),
+    body: JSON.stringify(updateCategoryInput),
   });
 };
 
@@ -317,13 +316,13 @@ export const getPatchCategoriesReorderUrl = () => {
 };
 
 export const patchCategoriesReorder = async (
-  patchCategoriesReorderBody: PatchCategoriesReorderBody,
+  reorderCategoriesInput: ReorderCategoriesInput,
   options?: RequestInit
 ): Promise<patchCategoriesReorderResponse> => {
   return customFetch<patchCategoriesReorderResponse>(getPatchCategoriesReorderUrl(), {
     ...options,
     method: "PATCH",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(patchCategoriesReorderBody),
+    body: JSON.stringify(reorderCategoriesInput),
   });
 };

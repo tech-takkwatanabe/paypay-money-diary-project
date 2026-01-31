@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetTransactionsSummary200MonthlyBreakdownItemCategoriesItem = {
+export type TransactionSummaryCategoryBreakdownItem = {
   categoryId: string | null;
   categoryName: string;
   categoryColor: string;
   displayOrder: number;
-  amount: number;
+  totalAmount: number;
+  transactionCount: number;
 };

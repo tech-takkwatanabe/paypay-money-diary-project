@@ -6,9 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsUpload201 = {
-  message: string;
-  processedCount: number;
-  categorizedCount: number;
-  uncategorizedCount: number;
-};
+export interface AvailableYearsResponse {
+  years: number[];
+}

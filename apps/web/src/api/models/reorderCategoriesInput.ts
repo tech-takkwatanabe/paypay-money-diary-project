@@ -6,10 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostTransactionsBody = {
-  date: string;
-  amount: number;
-  /** @minLength 1 */
-  description: string;
-  categoryId: string;
-};
+export interface ReorderCategoriesInput {
+  /** @minItems 1 */
+  categoryIds: string[];
+}
