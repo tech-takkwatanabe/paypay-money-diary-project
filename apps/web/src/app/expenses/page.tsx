@@ -20,6 +20,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import {
   getTransactions,
@@ -41,6 +42,7 @@ import type { TransactionResponse as Transaction, CategoryResponse as CategoryWi
  */
 export default function ExpensesPage() {
   const { user, logout } = useAuth();
+  const { success, error: toastError } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
@@ -144,7 +146,7 @@ export default function ExpensesPage() {
       if (!currentTransaction) return;
 
       if (!editCategoryId) {
-        alert("カテゴリを選択してください");
+        toastError("カテゴリを選択してください");
         return;
       }
 
@@ -163,7 +165,7 @@ export default function ExpensesPage() {
         if (editDescription !== currentTransaction.description) {
           const normalizedDescription = editDescription.trim();
           if (normalizedDescription === "") {
-            alert("店名・内容を入力してください");
+            toastError("店名・内容を入力してください");
             return;
           }
           updateData.description = normalizedDescription;
@@ -172,7 +174,7 @@ export default function ExpensesPage() {
         const currentDateStr = new Date(currentTransaction.date).toISOString().split("T")[0];
         if (editDate !== currentDateStr) {
           if (!editDate) {
-            alert("日付を入力してください");
+            toastError("日付を入力してください");
             return;
           }
           updateData.date = new Date(editDate).toISOString();
@@ -185,9 +187,11 @@ export default function ExpensesPage() {
         // ローカルの状態を更新
         setTransactions((prev) => prev.map((t) => (t.id === id ? (response.data as Transaction) : t)));
         setEditingId(null);
+        success("取引を更新しました");
       }
     } catch (error) {
       console.error("Failed to update transaction:", error);
+      toastError("更新に失敗しました");
     }
   };
 
@@ -202,9 +206,11 @@ export default function ExpensesPage() {
         setTransactions((prev) => prev.filter((t) => t.id !== id));
         // 総額や件数も更新するために再取得
         fetchTransactions();
+        success("取引を削除しました");
       }
     } catch (error) {
       console.error("Failed to delete transaction:", error);
+      toastError("削除に失敗しました");
     }
   };
 
