@@ -27,6 +27,36 @@ app.get("/", (c) => {
 
 const api = new OpenAPIHono<Env>();
 
+// ===== OpenAPI ドキュメント (開発環境のみ) =====
+// ミドルウェアの影響を避けるため、先に定義
+if (process.env.NODE_ENV !== "production") {
+  api.doc("/openapi.json", {
+    openapi: "3.1.0",
+    info: {
+      title: "PayPay Money Diary API",
+      version: "1.0.0",
+      description: "PayPay 家計簿アプリケーション API (HttpOnly Cookie 認証)",
+    },
+    servers: [
+      {
+        url: process.env.API_URL ? `${process.env.API_URL}/api` : "http://localhost:8080/api",
+        description: "Development server",
+      },
+    ],
+  });
+
+  // Cookie 認証スキーマを登録
+  api.openAPIRegistry.registerComponent("securitySchemes", "Cookie", {
+    type: "apiKey",
+    in: "cookie",
+    name: "accessToken",
+    description: "HttpOnly Cookie に設定されたアクセストークン",
+  });
+
+  // /api/docs からの相対パスで指定
+  api.get("/docs", swaggerUI({ url: "./openapi.json" }));
+}
+
 // ===== 認証 API (OpenAPI 対応) =====
 api.use("/auth/logout", authMiddleware);
 api.use("/auth/me", authMiddleware);
@@ -45,34 +75,6 @@ registerCategoryRoutes(api);
 api.use("/rules", authMiddleware);
 api.use("/rules/*", authMiddleware);
 registerRuleRoutes(api);
-
-// ===== OpenAPI ドキュメント (開発環境のみ) =====
-if (process.env.NODE_ENV !== "production") {
-  api.doc("/openapi.json", {
-    openapi: "3.1.0",
-    info: {
-      title: "PayPay Money Diary API",
-      version: "1.0.0",
-      description: "PayPay 家計簿アプリケーション API (HttpOnly Cookie 認証)",
-    },
-    servers: [
-      {
-        url: `${process.env.API_URL}/api`,
-        description: "Development server",
-      },
-    ],
-  });
-
-  // Cookie 認証スキーマを登録
-  api.openAPIRegistry.registerComponent("securitySchemes", "Cookie", {
-    type: "apiKey",
-    in: "cookie",
-    name: "accessToken",
-    description: "HttpOnly Cookie に設定されたアクセストークン",
-  });
-
-  api.get("/docs", swaggerUI({ url: "/api/openapi.json" }));
-}
 
 // /api プレフィックスでマウント
 app.route("/api", api);
