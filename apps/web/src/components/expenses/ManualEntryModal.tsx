@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SelectNative } from "@/components/ui/select-native";
+import { useToast } from "@/contexts/ToastContext";
 import { postTransactions } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type { CategoryResponse as Category } from "@/api/models";
@@ -35,6 +36,7 @@ interface ManualEntryModalProps {
  * @returns The JSX element for the manual entry modal
  */
 export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModalProps) {
+  const { success } = useToast();
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -76,6 +78,7 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
       });
 
       if (response.status === 201) {
+        success("支出を登録しました");
         onSuccess();
         onClose();
         // Reset form
