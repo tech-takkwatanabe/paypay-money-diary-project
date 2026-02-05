@@ -19,7 +19,7 @@ This document outlines the standards, workflows, and conventions for the
 
 - **Framework**: Next.js (App Router)
 - **Styling**: Tailwind CSS, Shadcn UI
-- **State Management**: jotai
+- **State Management**: React Hooks (Native) / None (if simple)
 - **Generate API from openapi.yml**: Orval
 - **Language**: TypeScript
 
@@ -111,7 +111,7 @@ This document outlines the standards, workflows, and conventions for the
       /api          # Generated API client (orval)
       /components   # Reusable UI components
       /providers    # Context providers
-      /atoms        # jotai atoms
+      /providers    # context providers
       /stories      # Storybook stories
       /utils        # Helper utilities
       /app          # App Router
