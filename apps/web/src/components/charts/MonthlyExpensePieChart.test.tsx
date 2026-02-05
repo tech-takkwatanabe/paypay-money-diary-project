@@ -70,7 +70,7 @@ describe("MonthlyExpensePieChart", () => {
   it("displays loading state when isLoading is true", () => {
     render(<MonthlyExpensePieChart data={[]} isLoading={true} />);
     const loadingContainer = screen.getByText("カテゴリ別支出").parentElement?.parentElement;
-    const spinner = loadingContainer?.querySelector(".animate-bounce");
+    const spinner = loadingContainer?.querySelector(".bg-black");
     expect(spinner).toBeInTheDocument();
   });
 
