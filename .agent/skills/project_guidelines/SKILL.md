@@ -10,7 +10,7 @@ This skill consolidates key information from `PROJECT_RULES.md` and `REQUIREMENT
 ## 1. Core Architecture (Source of Truth: `PROJECT_RULES.md`)
 
 - **Monorepo**: Turborepo + pnpm
-- **Frontend**: `apps/web` (Next.js App Router, Tailwind CSS, Shadcn UI, Jotai, Orval)
+- **Frontend**: `apps/web` (Next.js App Router, Tailwind CSS, Shadcn UI, Orval)
 - **Backend**: `apps/api` (Hono, Drizzle ORM, PostgreSQL)
 - **Shared**: `packages/shared` (Types, Zod Schemas, Utils)
 
@@ -45,11 +45,12 @@ Visualize PayPay transaction history via CSV upload.
 
 ## 4. Directory Structure
 - `apps/api/src`: `controllers`, `usecase`, `service`, `models`, `infrastructure`.
-- `apps/web/src`: `api` (generated), `components`, `providers`, `atoms`.
+- `apps/web/src`: `api` (generated), `components`, `providers`.
 - `packages/shared`: `types` (Zod schemas), `utils`.
 
 ## 5. Critical Instructions for the Agent
 - **Adhere to `PROJECT_RULES.md`**: It is the authoritative source for architecture and conventions.
 - **Validation**: Meaningful Zod schemas are required.
 - **Strict Tailwind**: Follow the specific restriction on class name construction tools (no `clsx`/`cn` etc.).
-- **Workflow Integrity**: After completing any fixes or modifications, always run `pnpm lint` and `pnpm test` to ensure stability and code quality.
+- **Workflow Integrity**: After completing any code fixes or modifications (excluding documentation-only changes), always run `pnpm lint` and `pnpm test`.
+- **Committing Changes**: Use the `/commit` slash command to commit changed files one by one with Japanese messages and gitmojis.
