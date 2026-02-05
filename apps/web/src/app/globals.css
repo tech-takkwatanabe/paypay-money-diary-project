@@ -145,9 +145,7 @@
 }
 
 .loading-container {
-  animation: loading-fade-in 0.3s ease-in-out forwards;
-  animation-delay: 200ms;
-  opacity: 0;
+  animation: loading-fade-in 0.3s ease-in-out 200ms both;
 }
 
 .loading-dot {
