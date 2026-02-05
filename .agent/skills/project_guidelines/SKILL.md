@@ -52,3 +52,4 @@ Visualize PayPay transaction history via CSV upload.
 - **Adhere to `PROJECT_RULES.md`**: It is the authoritative source for architecture and conventions.
 - **Validation**: Meaningful Zod schemas are required.
 - **Strict Tailwind**: Follow the specific restriction on class name construction tools (no `clsx`/`cn` etc.).
+- **Workflow Integrity**: After completing any fixes or modifications, always run `pnpm lint` and `pnpm test` to ensure stability and code quality.
