@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
+import { Loading } from "@/components/ui/loading";
 import { DollarSign, TrendingUp, Wallet, LogOut, Upload, PlusCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
@@ -180,7 +181,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="h-8 bg-muted animate-pulse rounded" />
+                <Loading size="sm" />
               ) : (
                 <>
                   <div className="text-2xl font-bold">{formatCurrency(yearlyTotal)}</div>
@@ -197,7 +198,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="h-8 bg-muted animate-pulse rounded" />
+                <Loading size="sm" />
               ) : (
                 <>
                   <div className="text-2xl font-bold">{formatCurrency(monthlyAverage)}</div>
@@ -213,7 +214,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="h-8 bg-muted animate-pulse rounded" />
+                <Loading size="sm" />
               ) : (
                 <>
                   <div className="text-2xl font-bold">{topCategory?.categoryName ?? "---"}</div>
