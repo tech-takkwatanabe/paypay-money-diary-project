@@ -5,7 +5,7 @@ import { Loading } from "./loading";
 describe("Loading", () => {
   it("renders with default props", () => {
     const { container } = render(<Loading />);
-    const dots = container.querySelectorAll(".bg-pink-500");
+    const dots = container.querySelectorAll(".bg-black");
     expect(dots).toHaveLength(3);
   });
 
