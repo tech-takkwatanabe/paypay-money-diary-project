@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
+import { Loading } from "@/components/ui/loading";
 import {
   getCategories,
   postCategories,
@@ -348,7 +349,7 @@ export default function CategoriesPage() {
             {dragError && <p className="text-sm text-red-500 mb-4">{dragError}</p>}
             {isLoading ? (
               <div className="flex justify-center py-8">
-                <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+                <Loading />
               </div>
             ) : categories.length === 0 ? (
               <p className="text-center text-gray-500 py-8">カテゴリはありません</p>

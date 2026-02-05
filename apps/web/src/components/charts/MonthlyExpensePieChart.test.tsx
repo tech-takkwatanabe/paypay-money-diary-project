@@ -70,7 +70,7 @@ describe("MonthlyExpensePieChart", () => {
   it("displays loading state when isLoading is true", () => {
     render(<MonthlyExpensePieChart data={[]} isLoading={true} />);
     const loadingContainer = screen.getByText("カテゴリ別支出").parentElement?.parentElement;
-    const spinner = loadingContainer?.querySelector(".animate-spin");
+    const spinner = loadingContainer?.querySelector('[data-testid="loading-indicator"]');
     expect(spinner).toBeInTheDocument();
   });
 

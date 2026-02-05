@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
+import { Loading } from "@/components/ui/loading";
 import {
   Search,
   ChevronDown,
@@ -414,11 +415,11 @@ export default function ExpensesPage() {
               </thead>
               <tbody className="divide-y">
                 {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="animate-pulse">
-                      <td className="px-4 py-4 h-12 bg-muted/20" colSpan={5} />
-                    </tr>
-                  ))
+                  <tr>
+                    <td className="px-4 py-8 text-center" colSpan={5}>
+                      <Loading />
+                    </td>
+                  </tr>
                 ) : transactions.length === 0 ? (
                   <tr>
                     <td className="px-4 py-8 text-center text-muted-foreground" colSpan={5}>
