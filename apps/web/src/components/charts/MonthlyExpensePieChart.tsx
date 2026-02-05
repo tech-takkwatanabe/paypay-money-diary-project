@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
 import type { TransactionSummaryCategoryBreakdownItem as CategoryBreakdown } from "@/api/models";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -73,7 +74,7 @@ export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieCha
       <CardContent>
         {isLoading ? (
           <div className="w-full h-75 flex items-center justify-center">
-            <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+            <Loading />
           </div>
         ) : !hasData ? (
           <div className="w-full h-75 flex items-center justify-center text-muted-foreground">
