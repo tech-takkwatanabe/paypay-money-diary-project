@@ -8,8 +8,8 @@ interface LoadingProps {
 }
 
 /**
- * シンプルで目立たないローディングコンポーネント
- * 3つのドットが順番にバウンスするアニメーション
+ * シンプルで目覚ましくない、おしゃれなローディングコンポーネント
+ * 200msの遅延フェードインにより高速な読み込み時のチラつきを防止します。
  */
 export function Loading({ size = "md", fullScreen = false, message, className = "" }: LoadingProps) {
   // サイズに応じたドットのサイズとギャップを定義
@@ -22,13 +22,60 @@ export function Loading({ size = "md", fullScreen = false, message, className = 
   const { dot, gap } = sizeClasses[size];
 
   const content = (
-    <div className={`flex flex-col items-center justify-center ${className}`}>
+    <div
+      className={`flex flex-col items-center justify-center ${className}`}
+      style={{
+        animation: "fade-in 0.3s ease-in-out forwards",
+        animationDelay: "200ms",
+        opacity: 0,
+      }}
+    >
       <div className={`flex ${gap}`}>
-        <div className={`${dot} bg-red-500 rounded-full animate-bounce`} style={{ animationDelay: "0ms" }} />
-        <div className={`${dot} bg-red-500 rounded-full animate-bounce`} style={{ animationDelay: "150ms" }} />
-        <div className={`${dot} bg-red-500 rounded-full animate-bounce`} style={{ animationDelay: "300ms" }} />
+        <div
+          className={`${dot} bg-pink-500 rounded-full`}
+          style={{
+            animation: "bounce-dot 1.4s ease-in-out infinite",
+            animationDelay: "0ms",
+          }}
+        />
+        <div
+          className={`${dot} bg-pink-500 rounded-full`}
+          style={{
+            animation: "bounce-dot 1.4s ease-in-out infinite",
+            animationDelay: "200ms",
+          }}
+        />
+        <div
+          className={`${dot} bg-pink-500 rounded-full`}
+          style={{
+            animation: "bounce-dot 1.4s ease-in-out infinite",
+            animationDelay: "400ms",
+          }}
+        />
       </div>
       {message && <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">{message}</p>}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes bounce-dot {
+              0%,
+              80%,
+              100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+              }
+              40% {
+                transform: translateY(-12px) scale(1.1);
+                opacity: 1;
+              }
+            }
+            @keyframes fade-in {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+          `,
+        }}
+      />
     </div>
   );
 
