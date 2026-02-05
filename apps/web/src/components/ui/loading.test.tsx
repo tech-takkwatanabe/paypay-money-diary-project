@@ -5,7 +5,7 @@ import { Loading } from "./loading";
 describe("Loading", () => {
   it("renders with default props", () => {
     const { container } = render(<Loading />);
-    const dots = container.querySelectorAll(".animate-bounce");
+    const dots = container.querySelectorAll(".bg-pink-500");
     expect(dots).toHaveLength(3);
   });
 
@@ -56,15 +56,20 @@ describe("Loading", () => {
     expect(wrapper).toBeInTheDocument();
   });
 
-  it("renders all dots with red background", () => {
+  it("renders all dots with black background", () => {
     const { container } = render(<Loading />);
-    const redDots = container.querySelectorAll(".bg-red-500");
-    expect(redDots).toHaveLength(3);
+    const blackDots = container.querySelectorAll(".bg-black");
+    expect(blackDots).toHaveLength(3);
   });
 
-  it("renders all dots with bounce animation", () => {
+  it("renders all dots with custom animation", () => {
     const { container } = render(<Loading />);
-    const bouncingDots = container.querySelectorAll(".animate-bounce");
-    expect(bouncingDots).toHaveLength(3);
+    const animatedDots = container.querySelectorAll(".bg-black");
+    expect(animatedDots).toHaveLength(3);
+    // 各ドットにanimationスタイルが設定されていることを確認
+    animatedDots.forEach((dot) => {
+      const style = (dot as HTMLElement).style;
+      expect(style.animation).toContain("bounce-dot");
+    });
   });
 });

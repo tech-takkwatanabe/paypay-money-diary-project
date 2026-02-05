@@ -32,21 +32,21 @@ export function Loading({ size = "md", fullScreen = false, message, className = 
     >
       <div className={`flex ${gap}`}>
         <div
-          className={`${dot} bg-pink-500 rounded-full`}
+          className={`${dot} bg-black rounded-full`}
           style={{
             animation: "bounce-dot 1.4s ease-in-out infinite",
             animationDelay: "0ms",
           }}
         />
         <div
-          className={`${dot} bg-pink-500 rounded-full`}
+          className={`${dot} bg-black rounded-full`}
           style={{
             animation: "bounce-dot 1.4s ease-in-out infinite",
             animationDelay: "200ms",
           }}
         />
         <div
-          className={`${dot} bg-pink-500 rounded-full`}
+          className={`${dot} bg-black rounded-full`}
           style={{
             animation: "bounce-dot 1.4s ease-in-out infinite",
             animationDelay: "400ms",
