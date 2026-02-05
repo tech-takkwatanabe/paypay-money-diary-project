@@ -8,6 +8,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
 import { Link } from "@/components/ui/link";
+import { Loading } from "@/components/ui/loading";
 import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rules/rules";
 import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactionsReCategorize } from "@/api/generated/transactions/transactions";
@@ -272,7 +273,7 @@ export default function RulesPage() {
           <CardContent className="pt-6">
             {isLoading ? (
               <div className="flex justify-center py-8">
-                <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+                <Loading />
               </div>
             ) : rules.length === 0 ? (
               <p className="text-center text-gray-500 py-8">ルールはまだありません</p>
