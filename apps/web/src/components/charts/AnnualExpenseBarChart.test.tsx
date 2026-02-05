@@ -79,7 +79,7 @@ describe("AnnualExpenseBarChart", () => {
   it("displays loading state when isLoading is true", () => {
     render(<AnnualExpenseBarChart data={[]} isLoading={true} />);
     const loadingContainer = screen.getByText("年間支出推移").parentElement?.parentElement;
-    const spinner = loadingContainer?.querySelector(".bg-black");
+    const spinner = loadingContainer?.querySelector('[data-testid="loading-indicator"]');
     expect(spinner).toBeInTheDocument();
   });
 

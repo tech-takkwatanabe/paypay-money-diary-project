@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./loading.module.css";
 
 interface LoadingProps {
   size?: "sm" | "md" | "lg";
@@ -23,59 +24,25 @@ export function Loading({ size = "md", fullScreen = false, message, className = 
 
   const content = (
     <div
-      className={`flex flex-col items-center justify-center ${className}`}
-      style={{
-        animation: "fade-in 0.3s ease-in-out forwards",
-        animationDelay: "200ms",
-        opacity: 0,
-      }}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label={message ?? "読み込み中"}
+      data-testid="loading-indicator"
+      className={`flex flex-col items-center justify-center ${styles.container} ${className}`}
     >
       <div className={`flex ${gap}`}>
+        <div className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`} style={{ animationDelay: "0ms" }} />
         <div
-          className={`${dot} bg-black rounded-full`}
-          style={{
-            animation: "bounce-dot 1.4s ease-in-out infinite",
-            animationDelay: "0ms",
-          }}
+          className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`}
+          style={{ animationDelay: "200ms" }}
         />
         <div
-          className={`${dot} bg-black rounded-full`}
-          style={{
-            animation: "bounce-dot 1.4s ease-in-out infinite",
-            animationDelay: "200ms",
-          }}
-        />
-        <div
-          className={`${dot} bg-black rounded-full`}
-          style={{
-            animation: "bounce-dot 1.4s ease-in-out infinite",
-            animationDelay: "400ms",
-          }}
+          className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`}
+          style={{ animationDelay: "400ms" }}
         />
       </div>
       {message && <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">{message}</p>}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes bounce-dot {
-              0%,
-              80%,
-              100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.7;
-              }
-              40% {
-                transform: translateY(-12px) scale(1.1);
-                opacity: 1;
-              }
-            }
-            @keyframes fade-in {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-          `,
-        }}
-      />
     </div>
   );
 
