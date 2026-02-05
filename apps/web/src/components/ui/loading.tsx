@@ -1,6 +1,3 @@
-import React from "react";
-import styles from "./loading.module.css";
-
 interface LoadingProps {
   size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
@@ -29,18 +26,12 @@ export function Loading({ size = "md", fullScreen = false, message, className = 
       aria-busy="true"
       aria-label={message ?? "読み込み中"}
       data-testid="loading-indicator"
-      className={`flex flex-col items-center justify-center ${styles.container} ${className}`}
+      className={`flex flex-col items-center justify-center loading-container ${className}`}
     >
       <div className={`flex ${gap}`}>
-        <div className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`} style={{ animationDelay: "0ms" }} />
-        <div
-          className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`}
-          style={{ animationDelay: "200ms" }}
-        />
-        <div
-          className={`${dot} bg-black dark:bg-white rounded-full ${styles.dot}`}
-          style={{ animationDelay: "400ms" }}
-        />
+        <div className={`${dot} bg-black dark:bg-white rounded-full loading-dot`} style={{ animationDelay: "0ms" }} />
+        <div className={`${dot} bg-black dark:bg-white rounded-full loading-dot`} style={{ animationDelay: "200ms" }} />
+        <div className={`${dot} bg-black dark:bg-white rounded-full loading-dot`} style={{ animationDelay: "400ms" }} />
       </div>
       {message && <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">{message}</p>}
     </div>
