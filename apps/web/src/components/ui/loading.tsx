@@ -6,7 +6,7 @@ interface LoadingProps {
 }
 
 /**
- * シンプルで目覚ましくない、おしゃれなローディングコンポーネント
+ * ドットが動くローディングコンポーネント
  * 200msの遅延フェードインにより高速な読み込み時のチラつきを防止します。
  */
 export function Loading({ size = "md", fullScreen = false, message, className = "" }: LoadingProps) {
