@@ -153,7 +153,7 @@
 ### 3.2 フロントエンド認証連携 (apps/web)
 
 - [x] 認証ページ作成 (`/login`, `/signup`)
-- [x] 認証状態管理 (Jotai + Middleware)
+- [x] 認証状態管理 (Middleware)
 - [x] API クライアント生成 (Orval from OpenAPI)
 
 ### 3.3 ダッシュボード連携
