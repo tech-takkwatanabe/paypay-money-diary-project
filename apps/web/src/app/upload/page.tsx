@@ -6,18 +6,18 @@ import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-re
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
-import { postTransactionsUpload } from "@/api/generated/transactions/transactions";
+import { postTransactionsUpload, type postTransactionsUploadResponse } from "@/api/generated/transactions/transactions";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
-interface UploadResult {
+type UploadResult = {
   message: string;
   processedCount: number;
   categorizedCount: number;
   uncategorizedCount: number;
-}
+};
 
-export default function UploadPage() {
+const UploadPage = () => {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -69,7 +69,7 @@ export default function UploadPage() {
     setError("");
 
     try {
-      const response = await postTransactionsUpload({
+      const response: postTransactionsUploadResponse = await postTransactionsUpload({
         file: file,
       });
 
@@ -241,4 +241,6 @@ export default function UploadPage() {
       </main>
     </div>
   );
-}
+};
+
+export default UploadPage;

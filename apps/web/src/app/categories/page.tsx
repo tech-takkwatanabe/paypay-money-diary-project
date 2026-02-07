@@ -59,13 +59,13 @@ const PRESET_COLORS = [
   "#64748b",
 ];
 
-interface CategoryFormData {
+type CategoryFormData = {
   name: string;
   color: string;
   icon: string;
-}
+};
 
-export default function CategoriesPage() {
+const CategoriesPage = () => {
   const { success, error: toastError } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -410,4 +410,6 @@ export default function CategoriesPage() {
       </main>
     </div>
   );
-}
+};
+
+export default CategoriesPage;

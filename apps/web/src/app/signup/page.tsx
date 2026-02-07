@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { postAuthSignup } from "@/api/generated/auth/auth";
+import { postAuthSignup, type postAuthSignupResponse } from "@/api/generated/auth/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
 import { CreateUserSchema } from "@paypay-money-diary/shared";
 import { ZodError } from "zod";
 
-export default function SignupPage() {
+const SignupPage = () => {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function SignupPage() {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
@@ -34,7 +34,7 @@ export default function SignupPage() {
       const validatedData = CreateUserSchema.parse({ name, email, password });
 
       setIsLoading(true);
-      const response = await postAuthSignup(validatedData);
+      const response: postAuthSignupResponse = await postAuthSignup(validatedData);
 
       if (response.status === 201) {
         // 登録成功後、ログインページへ
@@ -279,4 +279,6 @@ export default function SignupPage() {
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;

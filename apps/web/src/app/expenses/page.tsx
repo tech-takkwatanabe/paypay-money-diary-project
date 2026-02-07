@@ -28,6 +28,7 @@ import {
   getTransactionsAvailableYears,
   putTransactionsId,
   deleteTransactionsId,
+  getTransactionsResponse,
 } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type { TransactionResponse as Transaction, CategoryResponse as CategoryWithSystem } from "@/api/models";
@@ -41,7 +42,7 @@ import type { TransactionResponse as Transaction, CategoryResponse as CategoryWi
  *
  * @returns The ExpensesPage React element.
  */
-export default function ExpensesPage() {
+const ExpensesPage = () => {
   const { user, logout } = useAuth();
   const { success, error: toastError } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -98,7 +99,7 @@ export default function ExpensesPage() {
   const fetchTransactions = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await getTransactions({
+      const response: getTransactionsResponse = await getTransactions({
         page: currentPage.toString(),
         limit: limit.toString(),
         year: selectedYear || undefined,
@@ -600,4 +601,6 @@ export default function ExpensesPage() {
       <ManualEntryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={fetchTransactions} />
     </div>
   );
-}
+};
+
+export default ExpensesPage;
