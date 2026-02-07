@@ -7,11 +7,11 @@ import { User } from "@/domain/entity/user";
 /**
  * Login Response
  */
-export interface LoginResponse {
+export type LoginResponse = {
   accessToken: string;
   refreshToken: string;
   user: User;
-}
+};
 
 /**
  * Login Use Case

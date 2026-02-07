@@ -1,7 +1,4 @@
-export interface TokenPayload {
-  userId: string;
-  email: string;
-}
+import { TokenPayload } from "./token";
 
 export type Env = {
   Variables: {

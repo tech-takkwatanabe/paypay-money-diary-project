@@ -13,7 +13,7 @@ export type DefaultCategoryData = {
   isOther: boolean;
 };
 
-export interface IDefaultCategoryRepository {
+export type IDefaultCategoryRepository = {
   /**
    * すべてのデフォルトカテゴリを取得
    */
@@ -23,4 +23,4 @@ export interface IDefaultCategoryRepository {
    * デフォルトカテゴリをIDで検索
    */
   findById(id: string): Promise<DefaultCategoryData | null>;
-}
+};

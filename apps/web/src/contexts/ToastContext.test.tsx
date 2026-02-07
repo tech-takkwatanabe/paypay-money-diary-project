@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { ToastProvider, useToast } from "./ToastContext";
 
-function TestComponent() {
+const TestComponent = () => {
   const { toasts, success, error, info, removeToast } = useToast();
 
   return (
@@ -19,7 +19,7 @@ function TestComponent() {
       ))}
     </div>
   );
-}
+};
 
 describe("ToastContext", () => {
   beforeEach(() => {

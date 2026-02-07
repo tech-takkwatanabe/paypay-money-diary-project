@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, mock } from "bun:test";
-import { TokenService, type TokenPayload } from "./tokenService";
+import { TokenService } from "./tokenService";
+import { type TokenPayload } from "@/types/token";
 import * as jwt from "@/infrastructure/auth/jwt";
 
 describe("TokenService", () => {

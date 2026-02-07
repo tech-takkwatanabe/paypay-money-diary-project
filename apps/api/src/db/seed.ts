@@ -76,7 +76,7 @@ const rulesData = [
   { keyword: "ａｕ", categoryName: "通信費" },
 ];
 
-async function seed() {
+const seed = async () => {
   console.log("🌱 Seeding default categories...");
 
   for (const category of categoriesData) {
@@ -127,7 +127,7 @@ async function seed() {
 
   console.log("✅ Seeding completed!");
   process.exit(0);
-}
+};
 
 seed().catch((error) => {
   console.error("❌ Seeding failed:", error);

@@ -3,15 +3,15 @@ import { Slot } from "@radix-ui/react-slot";
 
 type ButtonSize = "default" | "sm" | "lg" | "xl" | "icon" | "icon-sm" | "icon-lg";
 
-interface ButtonProps extends React.ComponentProps<"button"> {
+type ButtonProps = React.ComponentProps<"button"> & {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "brand";
   size?: ButtonSize;
   asChild?: boolean;
-}
+};
 
 type AtomicButtonProps = Omit<ButtonProps, "variant">;
 
-function ButtonDefault({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonDefault = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -20,9 +20,9 @@ function ButtonDefault({ className, size = "default", asChild = false, ...props 
       {...props}
     />
   );
-}
+};
 
-function ButtonBrand({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonBrand = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -31,9 +31,9 @@ function ButtonBrand({ className, size = "default", asChild = false, ...props }:
       {...props}
     />
   );
-}
+};
 
-function ButtonDestructive({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonDestructive = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -42,9 +42,9 @@ function ButtonDestructive({ className, size = "default", asChild = false, ...pr
       {...props}
     />
   );
-}
+};
 
-function ButtonOutline({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonOutline = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -53,9 +53,9 @@ function ButtonOutline({ className, size = "default", asChild = false, ...props 
       {...props}
     />
   );
-}
+};
 
-function ButtonSecondary({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonSecondary = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -64,9 +64,9 @@ function ButtonSecondary({ className, size = "default", asChild = false, ...prop
       {...props}
     />
   );
-}
+};
 
-function ButtonGhost({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonGhost = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -75,9 +75,9 @@ function ButtonGhost({ className, size = "default", asChild = false, ...props }:
       {...props}
     />
   );
-}
+};
 
-function ButtonLink({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) {
+const ButtonLink = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
@@ -86,9 +86,9 @@ function ButtonLink({ className, size = "default", asChild = false, ...props }: 
       {...props}
     />
   );
-}
+};
 
-function Button({ variant = "default", ...props }: ButtonProps) {
+export const Button = ({ variant = "default", ...props }: ButtonProps) => {
   switch (variant) {
     case "brand":
       return <ButtonBrand {...props} />;
@@ -105,6 +105,4 @@ function Button({ variant = "default", ...props }: ButtonProps) {
     default:
       return <ButtonDefault {...props} />;
   }
-}
-
-export { Button };
+};

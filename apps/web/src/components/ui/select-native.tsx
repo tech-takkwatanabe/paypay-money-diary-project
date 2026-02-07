@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 
-export interface SelectNativeProps extends React.ComponentProps<"select"> {
+type SelectNativeProps = React.ComponentProps<"select"> & {
   variant?: "default" | "filter";
-}
+};
 
-const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
+export const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
   ({ className, children, variant = "default", ...props }, ref) => {
     const variants = {
       default:
@@ -29,5 +29,3 @@ const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
   }
 );
 SelectNative.displayName = "SelectNative";
-
-export { SelectNative };

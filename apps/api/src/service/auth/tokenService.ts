@@ -1,20 +1,14 @@
 import * as jwt from "@/infrastructure/auth/jwt";
 
-/**
- * Token Payload
- */
-export interface TokenPayload {
-  userId: string;
-  email: string;
-}
+import { TokenPayload } from "../../types/token";
 
 /**
  * Token Pair
  */
-export interface TokenPair {
+export type TokenPair = {
   accessToken: string;
   refreshToken: string;
-}
+};
 
 /**
  * Token Service
@@ -44,6 +38,10 @@ export class TokenService {
    * リフレッシュトークンを検証
    */
   verifyRefreshToken(token: string): TokenPayload {
-    return this.jwtProvider.verifyRefreshToken(token) as TokenPayload;
+    const decoded = this.jwtProvider.verifyRefreshToken(token);
+    if (typeof decoded === "object" && decoded !== null && "userId" in decoded && "email" in decoded) {
+      return decoded as TokenPayload;
+    }
+    throw new Error("Invalid token payload");
   }
 }

@@ -1,11 +1,11 @@
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 import { TransactionService } from "@/service/transaction/transactionService";
 
-export interface GetTransactionSummaryInput {
+export type GetTransactionSummaryInput = {
   userId: string;
   year: number;
   month?: number;
-}
+};
 
 export class GetTransactionSummaryUseCase {
   constructor(

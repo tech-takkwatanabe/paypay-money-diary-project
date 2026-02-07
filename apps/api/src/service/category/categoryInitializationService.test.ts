@@ -75,11 +75,17 @@ describe("CategoryInitializationService", () => {
     },
   ];
 
-  function createMockRule(id: string, userId: string, keyword: string, categoryId: string, priority: number = 0): Rule {
+  const createMockRule = (
+    id: string,
+    userId: string,
+    keyword: string,
+    categoryId: string,
+    priority: number = 0
+  ): Rule => {
     return new Rule(id, userId, keyword, categoryId, priority, new Date(), new Date(), null);
-  }
+  };
 
-  function createMockCategory(
+  const createMockCategory = (
     id: string,
     userId: string,
     name: string,
@@ -88,7 +94,7 @@ describe("CategoryInitializationService", () => {
     displayOrder: number = 100,
     isDefault: boolean = false,
     isOther: boolean = false
-  ): Category {
+  ): Category => {
     return new Category({
       id,
       userId,
@@ -99,7 +105,7 @@ describe("CategoryInitializationService", () => {
       isDefault,
       isOther,
     });
-  }
+  };
 
   beforeEach(() => {
     // Mock repositories with proper typing

@@ -2,7 +2,7 @@
  * Category Entity
  * ドメイン層のカテゴリエンティティ
  */
-interface CategoryProps {
+type CategoryProps = {
   id: string;
   name: string;
   color: string;
@@ -15,7 +15,7 @@ interface CategoryProps {
   updatedAt?: Date;
   hasRules?: boolean;
   hasTransactions?: boolean;
-}
+};
 
 export class Category {
   public readonly id: string;

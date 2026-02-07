@@ -1,15 +1,15 @@
-interface LoadingProps {
+type LoadingProps = {
   size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
   message?: string;
   className?: string;
-}
+};
 
 /**
  * ドットが動くローディングコンポーネント
  * 200msの遅延フェードインにより高速な読み込み時のチラつきを防止します。
  */
-export function Loading({ size = "md", fullScreen = false, message, className = "" }: LoadingProps) {
+export const Loading = ({ size = "md", fullScreen = false, message, className = "" }: LoadingProps) => {
   // サイズに応じたドットのサイズとギャップを定義
   const sizeClasses = {
     sm: { dot: "w-1.5 h-1.5", gap: "gap-1" },
@@ -42,4 +42,4 @@ export function Loading({ size = "md", fullScreen = false, message, className = 
   }
 
   return content;
-}
+};

@@ -2,7 +2,7 @@
  * Default Category Rule Repository Interface
  * デフォルトカテゴリルールのデータアクセスを抽象化
  */
-export interface IDefaultCategoryRuleRepository {
+export type IDefaultCategoryRuleRepository = {
   /**
    * すべてのデフォルトカテゴリルールを取得
    */
@@ -19,4 +19,4 @@ export interface IDefaultCategoryRuleRepository {
   findByCategoryId(
     categoryId: string
   ): Promise<Array<{ id: string; keyword: string; defaultCategoryId: string; priority: number }>>;
-}
+};

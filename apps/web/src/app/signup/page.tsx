@@ -9,7 +9,7 @@ import { Link } from "@/components/ui/link";
 import { CreateUserSchema } from "@paypay-money-diary/shared";
 import { ZodError } from "zod";
 
-export default function SignupPage() {
+const SignupPage = () => {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function SignupPage() {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
@@ -44,9 +44,8 @@ export default function SignupPage() {
       }
     } catch (err) {
       if (err instanceof ZodError) {
-        const zodError = err as ZodError;
         const fieldErrors: { [key: string]: string } = {};
-        zodError.issues.forEach((e) => {
+        err.issues.forEach((e) => {
           if (e.path[0]) {
             fieldErrors[e.path[0] as string] = e.message;
           }
@@ -279,4 +278,6 @@ export default function SignupPage() {
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;

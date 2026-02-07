@@ -26,7 +26,7 @@ import type {
  *
  * @returns The React element that renders the full dashboard interface including controls, charts, and the ManualEntryModal.
  */
-export default function Dashboard() {
+const Dashboard = () => {
   const { user, logout } = useAuth();
   const [summary, setSummary] = useState<SummaryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,4 +238,6 @@ export default function Dashboard() {
       <ManualEntryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleModalSuccess} />
     </div>
   );
-}
+};
+
+export default Dashboard;

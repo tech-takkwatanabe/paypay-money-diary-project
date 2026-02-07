@@ -249,7 +249,7 @@ export const meRoute = createRoute({
 
 // ===== ルート登録 =====
 
-export function registerAuthRoutes(app: OpenAPIHono<Env>) {
+export const registerAuthRoutes = (app: OpenAPIHono<Env>) => {
   const authController = new AuthController();
 
   app.openapi(signupRoute, (c) => authController.signup(c));
@@ -257,4 +257,4 @@ export function registerAuthRoutes(app: OpenAPIHono<Env>) {
   app.openapi(refreshRoute, (c) => authController.refresh(c));
   app.openapi(logoutRoute, (c) => authController.logout(c));
   app.openapi(meRoute, (c) => authController.getMe(c));
-}
+};

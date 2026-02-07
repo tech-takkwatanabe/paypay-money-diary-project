@@ -13,7 +13,7 @@ vi.mock("@/api/generated/auth/auth", () => ({
 }));
 
 // Test component to access context
-function TestComponent() {
+const TestComponent = () => {
   const { user, isLoading, isAuthenticated, login, logout, refreshUser } = useAuth();
 
   return (
@@ -26,7 +26,7 @@ function TestComponent() {
       <button onClick={refreshUser}>Refresh</button>
     </div>
   );
-}
+};
 
 describe("AuthContext", () => {
   beforeEach(() => {

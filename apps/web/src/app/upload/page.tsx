@@ -6,18 +6,20 @@ import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-re
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
-import { postTransactionsUpload } from "@/api/generated/transactions/transactions";
+import { postTransactionsUpload, type postTransactionsUploadResponse } from "@/api/generated/transactions/transactions";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
-interface UploadResult {
+type UploadResult = {
   message: string;
   processedCount: number;
   categorizedCount: number;
   uncategorizedCount: number;
-}
+};
 
-export default function UploadPage() {
+const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
+
+const UploadPage = () => {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -26,10 +28,12 @@ export default function UploadPage() {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
+  // const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      if (!selectedFile.name.endsWith(".csv")) {
+      if (!isValidCsvFile(selectedFile)) {
         setError("CSVファイルを選択してください");
         return;
       }
@@ -44,7 +48,7 @@ export default function UploadPage() {
 
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
-      if (!droppedFile.name.endsWith(".csv")) {
+      if (!isValidCsvFile(droppedFile)) {
         setError("CSVファイルを選択してください");
         return;
       }
@@ -69,7 +73,7 @@ export default function UploadPage() {
     setError("");
 
     try {
-      const response = await postTransactionsUpload({
+      const response: postTransactionsUploadResponse = await postTransactionsUpload({
         file: file,
       });
 
@@ -79,6 +83,9 @@ export default function UploadPage() {
       } else if ("data" in response && "error" in response.data) {
         setStatus("error");
         setError(response.data.error);
+      } else {
+        setStatus("error");
+        setError("予期しないレスポンスが返されました。もう一度お試しください。");
       }
     } catch (_err) {
       setStatus("error");
@@ -241,4 +248,6 @@ export default function UploadPage() {
       </main>
     </div>
   );
-}
+};
+
+export default UploadPage;

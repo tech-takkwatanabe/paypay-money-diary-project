@@ -18,11 +18,11 @@ import { postTransactions } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type { CategoryResponse as Category } from "@/api/models";
 
-interface ManualEntryModalProps {
+type ManualEntryModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-}
+};
 
 /**
  * Render a modal dialog to manually create an expense transaction.
@@ -35,7 +35,7 @@ interface ManualEntryModalProps {
  * @param onSuccess - Callback invoked after a transaction is successfully created
  * @returns The JSX element for the manual entry modal
  */
-export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModalProps) {
+export const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps) => {
   const { success } = useToast();
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [amount, setAmount] = useState("");
@@ -64,7 +64,7 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -154,4 +154,4 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
       </DialogContent>
     </Dialog>
   );
-}
+};

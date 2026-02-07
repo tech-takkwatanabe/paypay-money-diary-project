@@ -5,7 +5,7 @@ import { CreateCategoryInput, InternalCreateCategoryInput, UpdateCategoryInput }
  * Category Repository Interface
  * カテゴリのデータアクセスを抽象化
  */
-export interface ICategoryRepository {
+export type ICategoryRepository = {
   /**
    * ユーザーIDでカテゴリを検索（システムカテゴリを含む）
    */
@@ -44,4 +44,4 @@ export interface ICategoryRepository {
    * カテゴリを削除
    */
   delete(id: string): Promise<void>;
-}
+};

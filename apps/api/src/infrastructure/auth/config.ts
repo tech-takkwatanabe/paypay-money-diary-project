@@ -1,9 +1,9 @@
-export interface JWTConfig {
+export type JWTConfig = {
   accessSecret: string;
   refreshSecret: string;
   accessExpiresIn: string;
   refreshExpiresIn: string;
-}
+};
 
 export const getConfig = (): JWTConfig => {
   const accessSecret = process.env.JWT_ACCESS_SECRET;

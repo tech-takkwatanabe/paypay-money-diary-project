@@ -1,4 +1,4 @@
-export interface CsvUpload {
+export type CsvUpload = {
   id: string;
   userId: string;
   fileName: string;
@@ -6,9 +6,9 @@ export interface CsvUpload {
   rawData: unknown;
   rowCount: number;
   status: string;
-}
+};
 
-export interface ICsvUploadRepository {
+export type ICsvUploadRepository = {
   create(input: {
     userId: string;
     fileName: string;
@@ -18,4 +18,4 @@ export interface ICsvUploadRepository {
   }): Promise<CsvUpload>;
 
   updateStatus(id: string, status: string): Promise<void>;
-}
+};

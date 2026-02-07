@@ -4,12 +4,12 @@ import { MonthlyExpensePieChart } from "./MonthlyExpensePieChart";
 import type { TransactionSummaryCategoryBreakdownItem as CategoryBreakdown } from "@/api/models";
 
 // Mock react-apexcharts
-interface MockChartProps {
+type MockChartProps = {
   options: Record<string, unknown>;
   series: number[];
   type: string;
   height?: string;
-}
+};
 
 vi.mock("react-apexcharts", () => ({
   default: ({ options, series, type }: MockChartProps) => (

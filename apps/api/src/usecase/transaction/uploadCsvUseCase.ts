@@ -2,19 +2,19 @@ import { ITransactionRepository } from "@/domain/repository/transactionRepositor
 import { ICsvUploadRepository } from "@/domain/repository/csvUploadRepository";
 import { CsvService } from "@/service/transaction/csvService";
 
-export interface UploadCsvInput {
+export type UploadCsvInput = {
   userId: string;
   fileName: string;
   csvContent: string;
-}
+};
 
-export interface UploadCsvResult {
+export type UploadCsvResult = {
   uploadId: string;
   totalRows: number;
   importedRows: number;
   skippedRows: number;
   duplicateRows: number;
-}
+};
 
 export class UploadCsvUseCase {
   constructor(

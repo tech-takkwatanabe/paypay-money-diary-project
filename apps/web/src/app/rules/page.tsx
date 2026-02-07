@@ -14,13 +14,13 @@ import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactionsReCategorize } from "@/api/generated/transactions/transactions";
 import type { RuleResponse as Rule, CategoryResponse as CategoryWithSystem } from "@/api/models";
 
-interface RuleFormData {
+type RuleFormData = {
   keyword: string;
   categoryId: string;
   priority: number;
-}
+};
 
-export default function RulesPage() {
+const RulesPage = () => {
   const { success, error: toastError } = useToast();
   const [rules, setRules] = useState<Rule[]>([]);
   const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
@@ -368,4 +368,6 @@ export default function RulesPage() {
       </main>
     </div>
   );
-}
+};
+
+export default RulesPage;
