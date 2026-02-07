@@ -7,18 +7,18 @@ import { db } from "@/db";
 import { categories, categoryRules } from "@/db/schema";
 import { eq, isNull, or, desc } from "drizzle-orm";
 
-export interface CategoryRule {
+export type CategoryRule = {
   keyword: string;
   categoryId: string;
   priority: number;
-}
+};
 
-export interface Category {
+export type Category = {
   id: string;
   name: string;
   color: string;
   icon: string | null;
-}
+};
 
 /**
  * ユーザーのカテゴリルールを取得（システム共通 + ユーザー固有）

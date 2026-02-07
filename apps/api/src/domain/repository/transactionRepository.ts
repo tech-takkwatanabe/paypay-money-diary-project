@@ -5,7 +5,7 @@ import { UpdateTransactionInput } from "@paypay-money-diary/shared";
  * Transaction Repository Interface
  * トランザクションのデータアクセスを抽象化
  */
-export interface ITransactionRepository {
+export type ITransactionRepository = {
   /**
    * ユーザーIDでトランザクションを検索
    */
@@ -119,4 +119,4 @@ export interface ITransactionRepository {
    * カテゴリを一括変更
    */
   reCategorize(userId: string, fromCategoryId: string, toCategoryId: string): Promise<number>;
-}
+};

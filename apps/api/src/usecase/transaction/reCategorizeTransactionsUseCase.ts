@@ -1,10 +1,10 @@
 import { ITransactionRepository } from "@/domain/repository/transactionRepository";
 
-export interface ReCategorizeTransactionsInput {
+export type ReCategorizeTransactionsInput = {
   userId: string;
   year?: number;
   month?: number;
-}
+};
 
 export class ReCategorizeTransactionsUseCase {
   constructor(private transactionRepository: ITransactionRepository) {}

@@ -5,7 +5,7 @@ import { CreateRuleInput, UpdateRuleInput } from "@paypay-money-diary/shared";
  * Rule Repository Interface
  * ルールのデータアクセスを抽象化
  */
-export interface IRuleRepository {
+export type IRuleRepository = {
   /**
    * ユーザーIDでルールを検索（優先度順）
    */
@@ -43,4 +43,4 @@ export interface IRuleRepository {
    * ルールを削除
    */
   delete(id: string): Promise<void>;
-}
+};

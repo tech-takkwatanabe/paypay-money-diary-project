@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import { getConfig } from "@/infrastructure/auth/config";
 
-interface TokenPayload {
+type TokenPayload = {
   userId: string;
   email: string;
-}
+};
 
 export const generateAccessToken = (payload: TokenPayload): string => {
   const config = getConfig();

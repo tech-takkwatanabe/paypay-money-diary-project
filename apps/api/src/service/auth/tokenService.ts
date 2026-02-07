@@ -3,18 +3,18 @@ import * as jwt from "@/infrastructure/auth/jwt";
 /**
  * Token Payload
  */
-export interface TokenPayload {
+export type TokenPayload = {
   userId: string;
   email: string;
-}
+};
 
 /**
  * Token Pair
  */
-export interface TokenPair {
+export type TokenPair = {
   accessToken: string;
   refreshToken: string;
-}
+};
 
 /**
  * Token Service

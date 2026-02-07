@@ -4,10 +4,10 @@ import { TokenService } from "@/service/auth/tokenService";
 /**
  * Refresh Response
  */
-export interface RefreshResponse {
+export type RefreshResponse = {
   accessToken: string;
   refreshToken: string;
-}
+};
 
 /**
  * Refresh Use Case
