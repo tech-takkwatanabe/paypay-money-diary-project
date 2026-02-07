@@ -3,7 +3,7 @@
  * PayPayの取引履歴CSVを解析し、支出データを抽出する
  */
 
-export interface PayPayCsvRow {
+export type PayPayCsvRow = {
   transactionDate: string; // 取引日
   withdrawalAmount: string; // 出金金額（円）
   depositAmount: string; // 入金金額（円）
@@ -17,28 +17,28 @@ export interface PayPayCsvRow {
   paymentCategory: string; // 支払い区分
   user: string; // 利用者
   transactionId: string; // 取引番号
-}
+};
 
-export interface ParsedExpense {
+export type ParsedExpense = {
   transactionDate: Date;
   amount: number;
   merchant: string;
   paymentMethod: string;
   externalTransactionId: string;
-}
+};
 
-export interface CsvParseResult {
+export type CsvParseResult = {
   expenses: ParsedExpense[];
   rawData: PayPayCsvRow[];
   totalRows: number;
   expenseRows: number;
   skippedRows: number;
-}
+};
 
 /**
  * CSVテキストを行に分割（クォート内のカンマを考慮）
  */
-function parseCsvLine(line: string): string[] {
+const parseCsvLine = (line: string): string[] => {
   const result: string[] = [];
   let current = "";
   let inQuotes = false;
@@ -58,12 +58,12 @@ function parseCsvLine(line: string): string[] {
   result.push(current.trim());
 
   return result;
-}
+};
 
 /**
  * 金額文字列を数値に変換（カンマ除去）
  */
-function parseAmount(amountStr: string): number {
+const parseAmount = (amountStr: string): number => {
   if (!amountStr || amountStr === "-") {
     return 0;
   }
@@ -71,13 +71,13 @@ function parseAmount(amountStr: string): number {
   const cleaned = amountStr.replace(/[,"\s]/g, "");
   const parsed = parseInt(cleaned, 10);
   return isNaN(parsed) ? 0 : parsed;
-}
+};
 
 /**
  * PayPay CSV の日付文字列をDateオブジェクトに変換
  * 形式: "2024/12/31 14:46:28"
  */
-function parseDate(dateStr: string): Date {
+const parseDate = (dateStr: string): Date => {
   // "2024/12/31 14:46:28" -> Date
   const [datePart, timePart] = dateStr.split(" ");
   const [year, month, day] = datePart.split("/").map(Number);
@@ -88,12 +88,12 @@ function parseDate(dateStr: string): Date {
   }
 
   return new Date(year, month - 1, day);
-}
+};
 
 /**
  * PayPay CSV をパースして支出データを抽出
  */
-export function parsePayPayCsv(csvContent: string): CsvParseResult {
+export const parsePayPayCsv = (csvContent: string): CsvParseResult => {
   // BOM を除去
   const content = csvContent.replace(/^\uFEFF/, "");
 
@@ -155,4 +155,4 @@ export function parsePayPayCsv(csvContent: string): CsvParseResult {
     expenseRows: expenses.length,
     skippedRows,
   };
-}
+};
