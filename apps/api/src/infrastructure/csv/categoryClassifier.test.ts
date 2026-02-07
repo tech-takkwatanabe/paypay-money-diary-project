@@ -97,32 +97,40 @@ describe("CategoryClassifier", () => {
       const mockRules = [{ keyword: "Amazon", categoryId: "cat-shopping", priority: 10 }];
       const mockDefaultId = "cat-other";
 
-      // Mock getCategoryRules
+      // Mock getCategoryRules and getDefaultCategoryId via db.select chain
+      let callCount = 0;
       spyOn(db, "select").mockImplementation((() => {
         const chain = {
           from: mock().mockReturnThis(),
           where: mock().mockReturnThis(),
-          orderBy: mock().mockImplementation(() => Promise.resolve(mockRules)),
-          limit: mock().mockImplementation(() => Promise.resolve([{ id: mockDefaultId }])),
+          orderBy: mock().mockReturnThis(),
+          limit: mock().mockReturnThis(),
           then: mock().mockImplementation((resolve: (val: unknown) => void) => {
-            // This is a bit tricky because assignCategories calls db.select twice
-            // We can use mockImplementationOnce or check the arguments
-            return resolve(mockRules);
+            callCount++;
+            if (callCount === 1) {
+              // First call: getCategoryRules (returns rules array)
+              return resolve(mockRules);
+            }
+            if (callCount === 2) {
+              // Second call: getDefaultCategoryId (returns [{ id }])
+              return resolve([{ id: mockDefaultId }]);
+            }
+            return resolve([]);
           }),
         };
         return chain;
       }) as unknown as never);
 
-      // Re-implementing assignCategories logic with mocks is hard with spyOn(db, "select")
-      // because it's called multiple times.
-      // Let's use a simpler approach: mock the internal functions if possible,
-      // but they are exported from the same file.
+      const expenses = [{ merchant: "Amazon Pay" }, { merchant: "Unknown Store" }];
 
-      // Actually, I'll just mock db.select to return different things based on the table/condition
-      // But drizzle-orm's select doesn't easily expose that in the chain.
+      // Act
+      // Dynamic import to ensure fresh module load if needed, or simply call exported function
+      // Since we are mocking db which is imported by the module, standard import works.
+      const result = await import("./categoryClassifier").then((m) => m.assignCategories(expenses, "user-123"));
 
-      // Let's just test that it works when db.select is mocked to return rules first, then default id.
-      // Or better, I'll mock the whole chain to handle multiple calls.
+      // Assert
+      expect(result.get("Amazon Pay")).toBe("cat-shopping");
+      expect(result.get("Unknown Store")).toBe("cat-other");
     });
   });
 });

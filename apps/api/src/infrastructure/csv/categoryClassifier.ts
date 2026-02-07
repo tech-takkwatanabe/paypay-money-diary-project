@@ -40,9 +40,6 @@ export const getCategoryRules = async (userId: string): Promise<CategoryRule[]> 
 /**
  * 「その他」カテゴリのIDを取得
  */
-/**
- * 「その他」カテゴリのIDを取得
- */
 export const getDefaultCategoryId = async (userId: string): Promise<string | null> => {
   const result = await db
     .select({ id: categories.id })

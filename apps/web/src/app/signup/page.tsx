@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { postAuthSignup, type postAuthSignupResponse } from "@/api/generated/auth/auth";
+import { postAuthSignup } from "@/api/generated/auth/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
@@ -34,7 +34,7 @@ const SignupPage = () => {
       const validatedData = CreateUserSchema.parse({ name, email, password });
 
       setIsLoading(true);
-      const response: postAuthSignupResponse = await postAuthSignup(validatedData);
+      const response = await postAuthSignup(validatedData);
 
       if (response.status === 201) {
         // 登録成功後、ログインページへ

@@ -17,6 +17,8 @@ type UploadResult = {
   uncategorizedCount: number;
 };
 
+const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
+
 const UploadPage = () => {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +28,7 @@ const UploadPage = () => {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
+  // const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -81,6 +83,9 @@ const UploadPage = () => {
       } else if ("data" in response && "error" in response.data) {
         setStatus("error");
         setError(response.data.error);
+      } else {
+        setStatus("error");
+        setError("予期しないレスポンスが返されました。もう一度お試しください。");
       }
     } catch (_err) {
       setStatus("error");
