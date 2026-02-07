@@ -18,11 +18,11 @@ import { postTransactions } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type { CategoryResponse as Category } from "@/api/models";
 
-interface ManualEntryModalProps {
+type ManualEntryModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-}
+};
 
 /**
  * Render a modal dialog to manually create an expense transaction.
