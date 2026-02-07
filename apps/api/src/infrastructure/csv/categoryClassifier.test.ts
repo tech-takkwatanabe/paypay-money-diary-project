@@ -72,7 +72,7 @@ describe("CategoryClassifier", () => {
         return chain as unknown as never;
       });
 
-      const id = await getDefaultCategoryId();
+      const id = await getDefaultCategoryId("user-123");
       expect(id).toBe("cat-other");
     });
 
@@ -87,7 +87,7 @@ describe("CategoryClassifier", () => {
         return chain as unknown as never;
       });
 
-      const id = await getDefaultCategoryId();
+      const id = await getDefaultCategoryId("user-123");
       expect(id).toBe(null);
     });
   });

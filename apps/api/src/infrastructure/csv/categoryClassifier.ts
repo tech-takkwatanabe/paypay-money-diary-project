@@ -5,7 +5,7 @@
 
 import { db } from "@/db";
 import { categories, categoryRules } from "@/db/schema";
-import { eq, isNull, or, desc } from "drizzle-orm";
+import { eq, isNull, or, desc, and } from "drizzle-orm";
 
 export type CategoryRule = {
   keyword: string;
@@ -40,8 +40,15 @@ export const getCategoryRules = async (userId: string): Promise<CategoryRule[]> 
 /**
  * 「その他」カテゴリのIDを取得
  */
-export const getDefaultCategoryId = async (): Promise<string | null> => {
-  const result = await db.select({ id: categories.id }).from(categories).where(eq(categories.name, "その他")).limit(1);
+/**
+ * 「その他」カテゴリのIDを取得
+ */
+export const getDefaultCategoryId = async (userId: string): Promise<string | null> => {
+  const result = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(and(eq(categories.userId, userId), eq(categories.name, "その他")))
+    .limit(1);
 
   return result[0]?.id ?? null;
 };
@@ -69,7 +76,7 @@ export const assignCategories = async (
   userId: string
 ): Promise<Map<string, string | null>> => {
   const rules = await getCategoryRules(userId);
-  const defaultCategoryId = await getDefaultCategoryId();
+  const defaultCategoryId = await getDefaultCategoryId(userId);
 
   const result = new Map<string, string | null>();
 
