@@ -10,7 +10,7 @@ import { Link } from "@/components/ui/link";
 import { LoginSchema } from "@paypay-money-diary/shared";
 import { ZodError } from "zod";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
@@ -221,4 +221,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

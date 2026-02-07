@@ -64,7 +64,7 @@ export function ManualEntryModal({ isOpen, onClose, onSuccess }: ManualEntryModa
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
