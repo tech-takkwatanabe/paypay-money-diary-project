@@ -7,14 +7,14 @@ import type { TransactionSummaryMonthlyBreakdownItem as MonthlyBreakdown } from 
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-interface AnnualExpenseBarChartProps {
+type AnnualExpenseBarChartProps = {
   data: MonthlyBreakdown[];
   isLoading?: boolean;
-}
+};
 
 const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
 
-export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChartProps) {
+export const AnnualExpenseBarChart = ({ data, isLoading }: AnnualExpenseBarChartProps) => {
   const hasData = data.some((m) => (m.categories ?? []).some((c) => (c.amount ?? 0) > 0));
 
   // 全てのカテゴリーを抽出（ユニークなリストを作成）
@@ -117,4 +117,4 @@ export function AnnualExpenseBarChart({ data, isLoading }: AnnualExpenseBarChart
       </CardContent>
     </Card>
   );
-}
+};

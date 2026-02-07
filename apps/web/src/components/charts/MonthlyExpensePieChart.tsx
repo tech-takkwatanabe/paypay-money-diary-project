@@ -7,10 +7,10 @@ import type { TransactionSummaryCategoryBreakdownItem as CategoryBreakdown } fro
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-interface MonthlyExpensePieChartProps {
+type MonthlyExpensePieChartProps = {
   data: CategoryBreakdown[];
   isLoading?: boolean;
-}
+};
 
 // デフォルトカラー
 const defaultColors = [
@@ -26,7 +26,7 @@ const defaultColors = [
   "#6b7280",
 ];
 
-export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieChartProps) {
+export const MonthlyExpensePieChart = ({ data, isLoading }: MonthlyExpensePieChartProps) => {
   const hasData = data.length > 0;
   const chartData = hasData
     ? data.map((item, index) => ({
@@ -88,4 +88,4 @@ export function MonthlyExpensePieChart({ data, isLoading }: MonthlyExpensePieCha
       </CardContent>
     </Card>
   );
-}
+};

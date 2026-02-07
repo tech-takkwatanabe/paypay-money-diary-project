@@ -5,14 +5,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loading } from "@/components/ui/loading";
 
-interface AuthGuardProps {
+type AuthGuardProps = {
   children: React.ReactNode;
-}
+};
 
 // 認証不要なパス
 const PUBLIC_PATHS = ["/login", "/signup"];
 
-export function AuthGuard({ children }: AuthGuardProps) {
+export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -47,4 +47,4 @@ export function AuthGuard({ children }: AuthGuardProps) {
   }
 
   return <>{children}</>;
-}
+};

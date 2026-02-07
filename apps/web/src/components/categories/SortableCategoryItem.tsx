@@ -5,13 +5,13 @@ import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Trash2, GripVertical } from "lucide-react";
 import type { CategoryResponse as Category } from "@/api/models";
 
-interface SortableCategoryItemProps {
+type SortableCategoryItemProps = {
   category: Category;
   onEdit: (category: Category) => void;
   onDelete: (id: string, name: string) => void;
-}
+};
 
-export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCategoryItemProps) {
+export const SortableCategoryItem = ({ category, onEdit, onDelete }: SortableCategoryItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
     disabled: category.isOther, // 「その他」はドラッグ不可
@@ -74,4 +74,4 @@ export function SortableCategoryItem({ category, onEdit, onDelete }: SortableCat
       </div>
     </div>
   );
-}
+};
