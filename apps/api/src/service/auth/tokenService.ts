@@ -3,10 +3,7 @@ import * as jwt from "@/infrastructure/auth/jwt";
 /**
  * Token Payload
  */
-export type TokenPayload = {
-  userId: string;
-  email: string;
-};
+import { TokenPayload } from "../../types/token";
 
 /**
  * Token Pair
