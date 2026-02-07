@@ -28,7 +28,7 @@ import {
   getTransactionsAvailableYears,
   putTransactionsId,
   deleteTransactionsId,
-  getTransactionsResponse,
+  type getTransactionsResponse,
 } from "@/api/generated/transactions/transactions";
 import { getCategories } from "@/api/generated/categories/categories";
 import type { TransactionResponse as Transaction, CategoryResponse as CategoryWithSystem } from "@/api/models";

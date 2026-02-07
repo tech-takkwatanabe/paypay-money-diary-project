@@ -26,10 +26,12 @@ const UploadPage = () => {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
+  const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      if (!selectedFile.name.endsWith(".csv")) {
+      if (!isValidCsvFile(selectedFile)) {
         setError("CSVファイルを選択してください");
         return;
       }
@@ -44,7 +46,7 @@ const UploadPage = () => {
 
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
-      if (!droppedFile.name.endsWith(".csv")) {
+      if (!isValidCsvFile(droppedFile)) {
         setError("CSVファイルを選択してください");
         return;
       }

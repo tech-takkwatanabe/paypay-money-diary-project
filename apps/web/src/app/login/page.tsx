@@ -19,7 +19,7 @@ const LoginPage = () => {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
@@ -39,9 +39,8 @@ const LoginPage = () => {
       }
     } catch (err) {
       if (err instanceof ZodError) {
-        const zodError = err as ZodError;
         const fieldErrors: { [key: string]: string } = {};
-        zodError.issues.forEach((e) => {
+        err.issues.forEach((e) => {
           if (e.path[0]) {
             fieldErrors[e.path[0] as string] = e.message;
           }
