@@ -3,7 +3,7 @@
 import { useToast } from "@/contexts/ToastContext";
 import { Toast } from "./toast";
 
-export function Toaster() {
+export const Toaster = () => {
   const { toasts, removeToast } = useToast();
 
   return (
@@ -25,4 +25,4 @@ export function Toaster() {
       ))}
     </div>
   );
-}
+};

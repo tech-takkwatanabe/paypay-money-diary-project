@@ -2,12 +2,12 @@ import * as React from "react";
 import NextLink from "next/link";
 import { Slot } from "@radix-ui/react-slot";
 
-interface LinkProps extends React.ComponentProps<typeof NextLink> {
+type LinkProps = React.ComponentProps<typeof NextLink> & {
   variant?: "default" | "brand" | "outline" | "ghost";
   asChild?: boolean;
-}
+};
 
-const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
+export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   ({ className, variant = "default", asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : NextLink;
 
@@ -24,5 +24,3 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   }
 );
 Link.displayName = "Link";
-
-export { Link };

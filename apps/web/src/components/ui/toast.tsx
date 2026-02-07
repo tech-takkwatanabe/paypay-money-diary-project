@@ -5,15 +5,15 @@ import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 
 export type ToastType = "success" | "error" | "info";
 
-export interface ToastProps {
+export type ToastProps = {
   id: string;
   message: string;
   type?: ToastType;
   duration?: number;
   onClose: (id: string) => void;
-}
+};
 
-export function Toast({ id, message, type = "success", duration = 2000, onClose }: ToastProps) {
+export const Toast = ({ id, message, type = "success", duration = 2000, onClose }: ToastProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -65,4 +65,4 @@ export function Toast({ id, message, type = "success", duration = 2000, onClose 
       </button>
     </div>
   );
-}
+};
