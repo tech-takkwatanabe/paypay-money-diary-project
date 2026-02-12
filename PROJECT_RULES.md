@@ -18,7 +18,7 @@ This document outlines the standards, workflows, and conventions for the
 ### Frontend
 
 - **Framework**: Next.js (App Router)
-- **Styling**: Tailwind CSS, Shadcn UI
+- **Styling**: Tailwind CSS
 - **State Management**: React Hooks (Native) / None (if simple)
 - **Generate API from openapi.yml**: Orval
 - **Language**: TypeScript
@@ -132,12 +132,12 @@ This document outlines the standards, workflows, and conventions for the
 
 ## 6. Component Structure Rules
 
-(Tailwind + Shadcn UI)
+(Tailwind CSS)
 
 ### General Rules
 
 - Tailwind for layout & spacing
-- Shadcn UI for forms, buttons, inputs, dialogs
+- Tailwind CSS for all styling (layouts, forms, buttons)
 - Prefer server components unless client-side state is needed
 - Use Zod for form schema validation
 

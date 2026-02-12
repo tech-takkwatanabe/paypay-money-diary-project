@@ -37,7 +37,7 @@ pnpm install
 ### Frontend (`apps/web`)
 
 - **Framework**: Next.js (App Router)
-- **Styling**: Tailwind CSS + Shadcn UI (Modern & Responsive)
+- **Styling**: Tailwind CSS (Modern & Responsive)
 - **Charts**: ApexCharts (Interactive Data Visualization)
 - **API Client**: Orval (OpenAPI スキーマからの自動生成)
 

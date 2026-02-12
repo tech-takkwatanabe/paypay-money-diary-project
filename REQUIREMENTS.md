@@ -108,7 +108,7 @@ PayPay の取引履歴 CSV を取り込み、支出をカテゴリー別・月�
 ## 5. 画面・UX要件
 
 - シンプルでミニマルな UI
-- Tailwind CSS、Shadcn UI を活用（Next.jsベース）
+- Tailwind CSS を活用（Next.jsベース）
 - 視認性の高いチャートデザイン
 
 ---

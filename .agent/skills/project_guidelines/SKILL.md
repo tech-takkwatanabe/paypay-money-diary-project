@@ -10,7 +10,7 @@ This skill consolidates key information from `PROJECT_RULES.md` and `REQUIREMENT
 ## 1. Core Architecture (Source of Truth: `PROJECT_RULES.md`)
 
 - **Monorepo**: Turborepo + pnpm
-- **Frontend**: `apps/web` (Next.js App Router, Tailwind CSS, Shadcn UI, Orval)
+- **Frontend**: `apps/web` (Next.js App Router, Tailwind CSS, Orval)
 - **Backend**: `apps/api` (Hono, Drizzle ORM, PostgreSQL)
 - **Shared**: `packages/shared` (Types, Zod Schemas, Utils)
 

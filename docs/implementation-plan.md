@@ -21,7 +21,7 @@
 
 ### 1.2 フロントエンド基盤 (apps/web)
 
-- [x] Next.js + Tailwind CSS + Shadcn UI のセットアップ
+- [x] Next.js + Tailwind CSS のセットアップ
 - [x] テーマ設定 (フォント, カラーパレット)
 - [x] レイアウト作成 (ヘッダー, サイドバー, メインエリア)
 
