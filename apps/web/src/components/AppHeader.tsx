@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "@/components/ui/link";
+import { AppLogo } from "@/components/AppLogo";
 import { Button } from "@/components/ui/button";
 import { LogOut, Upload } from "lucide-react";
 
@@ -35,18 +36,10 @@ export const AppHeader = ({ actions, currentPath }: AppHeaderProps) => {
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
       <div className="flex items-center gap-3">
         {currentPath === "/" ? (
-          <>
-            <div className="w-8 h-8 bg-linear-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">¥</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
-          </>
+          <AppLogo size="sm" />
         ) : (
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-linear-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">¥</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
+            <AppLogo size="sm" />
           </Link>
         )}
       </div>

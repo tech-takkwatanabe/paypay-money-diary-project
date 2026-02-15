@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { postAuthLogin } from "@/api/generated/auth/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { AppLogo } from "@/components/AppLogo";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
 import { LoginSchema } from "@paypay-money-diary/shared";
@@ -68,12 +69,7 @@ const LoginPage = () => {
         {/* コンテンツ */}
         <div className="relative z-10 flex flex-col justify-center px-12 text-white">
           <div className="mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-                <span className="text-red-500 font-bold text-xl">¥</span>
-              </div>
-              <h1 className="text-3xl font-bold">PayPay 家計簿</h1>
-            </div>
+            <AppLogo size="lg" variant="white" className="mb-6" />
             <p className="text-xl text-white/90 leading-relaxed">
               あなたの支出を可視化して、
               <br />
@@ -130,12 +126,7 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* モバイル用ロゴ */}
           <div className="lg:hidden mb-8 text-center">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-linear-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">¥</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PayPay 家計簿</h1>
-            </div>
+            <AppLogo size="md" className="inline-flex mb-4" />
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
