@@ -241,22 +241,7 @@ const ExpensesPage = () => {
         {/* フィルタ・検索バー */}
         <Card>
           <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="text"
-                  variant="filter"
-                  placeholder="店名・内容 で検索..."
-                  value={merchantSearch}
-                  onChange={(e) => {
-                    setMerchantSearch(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="pl-10"
-                />
-              </div>
-
+            <div className="flex flex-col md:flex-row gap-4">
               <div className="flex items-center gap-2">
                 <div className="yearSelect flex items-center gap-2">
                   <Filter className="h-4 w-4 text-gray-400" />
@@ -302,6 +287,21 @@ const ExpensesPage = () => {
                 )}
               </div>
 
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  type="text"
+                  variant="filter"
+                  placeholder="店名・内容 で検索..."
+                  value={merchantSearch}
+                  onChange={(e) => {
+                    setMerchantSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10"
+                />
+              </div>
+
               <div className="flex items-center gap-2">
                 <SelectNative
                   variant="filter"
@@ -322,19 +322,32 @@ const ExpensesPage = () => {
               </div>
 
               <div className="flex items-center justify-end gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setMerchantSearch("");
-                    setSelectedYear(availableYears[0]?.toString() || "");
-                    setSelectedMonth("");
-                    setSelectedCategory("");
-                    setCurrentPage(1);
-                  }}
-                >
-                  リセット
-                </Button>
+                {(() => {
+                  const defaultYear = availableYears[0]?.toString() || "";
+                  const isFilterApplied =
+                    merchantSearch !== "" ||
+                    selectedYear !== defaultYear ||
+                    selectedMonth !== "" ||
+                    selectedCategory !== "";
+
+                  return (
+                    isFilterApplied && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setMerchantSearch("");
+                          setSelectedYear(defaultYear);
+                          setSelectedMonth("");
+                          setSelectedCategory("");
+                          setCurrentPage(1);
+                        }}
+                      >
+                        リセット
+                      </Button>
+                    )
+                  );
+                })()}
               </div>
             </div>
           </CardContent>
