@@ -2,10 +2,10 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/components/ui/link";
+import { AppHeader } from "@/components/AppHeader";
 import { postTransactionsUpload, type postTransactionsUploadResponse } from "@/api/generated/transactions/transactions";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
@@ -102,15 +102,7 @@ const UploadPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link href="/" variant="ghost">
-          <ArrowLeft className="h-5 w-5" />
-          <span>ダッシュボードに戻る</span>
-        </Link>
-        <Link href="/expenses" variant="outline">
-          支出一覧
-        </Link>
-      </header>
+      <AppHeader currentPath="/upload" />
 
       <main className="max-w-2xl mx-auto p-6">
         <div className="mb-8">

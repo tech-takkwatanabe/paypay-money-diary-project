@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Plus, X, Check } from "lucide-react";
+import { Plus, X, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
-import { Link } from "@/components/ui/link";
 import { Loading } from "@/components/ui/loading";
+import { AppHeader } from "@/components/AppHeader";
 import {
   getCategories,
   postCategories,
@@ -270,21 +270,15 @@ const CategoriesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link href="/" variant="ghost">
-          <ArrowLeft className="h-5 w-5" />
-          <span>ダッシュボードに戻る</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/expenses" variant="outline">
-            支出一覧
-          </Link>
+      <AppHeader
+        currentPath="/categories"
+        actions={
           <Button variant="brand" onClick={startCreate}>
             <Plus className="h-4 w-4" />
             新規作成
           </Button>
-        </div>
-      </header>
+        }
+      />
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">

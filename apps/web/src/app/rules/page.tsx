@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
-import { Link } from "@/components/ui/link";
 import { Loading } from "@/components/ui/loading";
+import { AppHeader } from "@/components/AppHeader";
 import { getRules, postRules, putRulesId, deleteRulesId } from "@/api/generated/rules/rules";
 import { getCategories } from "@/api/generated/categories/categories";
 import { postTransactionsReCategorize } from "@/api/generated/transactions/transactions";
@@ -190,15 +190,9 @@ const RulesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white dark:bg-gray-800 px-4 sm:px-6">
-        <Link href="/" variant="ghost">
-          <ArrowLeft className="h-5 w-5" />
-          <span>ダッシュボードに戻る</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/expenses" variant="outline">
-            支出一覧
-          </Link>
+      <AppHeader
+        currentPath="/rules"
+        actions={
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleReCategorize} disabled={isReCategorizing}>
               <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
@@ -209,8 +203,8 @@ const RulesPage = () => {
               新規作成
             </Button>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">

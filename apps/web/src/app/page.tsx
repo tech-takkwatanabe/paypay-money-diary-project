@@ -6,10 +6,9 @@ import { AnnualExpenseBarChart } from "@/components/charts/AnnualExpenseBarChart
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SelectNative } from "@/components/ui/select-native";
-import { Link } from "@/components/ui/link";
 import { Loading } from "@/components/ui/loading";
-import { DollarSign, TrendingUp, Wallet, LogOut, Upload, PlusCircle } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { DollarSign, TrendingUp, Wallet, PlusCircle } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
 import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import { getTransactionsSummary, getTransactionsAvailableYears } from "@/api/generated/transactions/transactions";
 import type {
@@ -27,7 +26,6 @@ import type {
  * @returns The React element that renders the full dashboard interface including controls, charts, and the ManualEntryModal.
  */
 const Dashboard = () => {
-  const { user, logout } = useAuth();
   const [summary, setSummary] = useState<SummaryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
@@ -107,10 +105,6 @@ const Dashboard = () => {
 
   const topCategoryRatio = yearlyTotal > 0 && topCategory ? (topCategory.totalAmount / yearlyTotal) * 100 : 0;
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("ja-JP", {
       style: "currency",
@@ -121,38 +115,15 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/10">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-linear-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">¥</span>
-          </div>
-          <h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/expenses" variant="outline">
-            支出一覧
-          </Link>
-          <Link href="/categories" variant="outline">
-            カテゴリ
-          </Link>
-          <Link href="/rules" variant="outline">
-            ルール
-          </Link>
-          <Link href="/upload" variant="brand">
-            <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">CSV アップロード</span>
-          </Link>
+      <AppHeader
+        currentPath="/"
+        actions={
           <Button variant="outline" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-4 w-4" />
             <span className="hidden sm:inline">手動入力</span>
           </Button>
-          <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
-          <Button variant="ghost" onClick={handleLogout}>
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:block">ログアウト</span>
-          </Button>
-        </div>
-      </header>
+        }
+      />
 
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-6 md:gap-8">
         {/* 年選択ドロップダウン */}
