@@ -5,23 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
-import { Link } from "@/components/ui/link";
 import { Loading } from "@/components/ui/loading";
-import {
-  Search,
-  ChevronDown,
-  ChevronUp,
-  LogOut,
-  Upload,
-  Filter,
-  Pencil,
-  Check,
-  X,
-  PlusCircle,
-  Trash2,
-} from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { Search, ChevronDown, ChevronUp, Filter, Pencil, Check, X, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
+import { AppHeader } from "@/components/AppHeader";
 import { ManualEntryModal } from "@/components/expenses/ManualEntryModal";
 import {
   getTransactions,
@@ -43,7 +30,6 @@ import type { TransactionResponse as Transaction, CategoryResponse as CategoryWi
  * @returns The ExpensesPage React element.
  */
 const ExpensesPage = () => {
-  const { user, logout } = useAuth();
   const { success, error: toastError } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
@@ -126,10 +112,6 @@ const ExpensesPage = () => {
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   const handleSort = (column: "date" | "amount") => {
     if (sortBy === column) {
@@ -234,40 +216,15 @@ const ExpensesPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/10">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-linear-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">¥</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">PayPay 家計簿</h1>
-          </Link>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/expenses" variant="outline" className="text-red-600 bg-red-50 dark:bg-red-900/20">
-            支出一覧
-          </Link>
-          <Link href="/categories" variant="outline">
-            カテゴリ
-          </Link>
-          <Link href="/rules" variant="outline">
-            ルール
-          </Link>
-          <Link href="/upload" variant="brand">
-            <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">CSV アップロード</span>
-          </Link>
+      <AppHeader
+        currentPath="/expenses"
+        actions={
           <Button variant="outline" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-4 w-4" />
             <span className="hidden sm:inline">手動入力</span>
           </Button>
-          <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
-          <Button variant="ghost" onClick={handleLogout}>
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:block">ログアウト</span>
-          </Button>
-        </div>
-      </header>
+        }
+      />
 
       <main className="flex-1 p-4 sm:px-6 sm:py-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
