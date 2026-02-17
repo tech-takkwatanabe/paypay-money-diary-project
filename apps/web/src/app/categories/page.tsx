@@ -384,12 +384,14 @@ const CategoriesPage = () => {
                                 onClick={() => handleUpdate(category.id)}
                                 disabled={isSubmitting}
                                 className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
+                                aria-label="保存"
                               >
                                 <Check className="w-5 h-5" />
                               </button>
                               <button
                                 onClick={cancelEdit}
                                 className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                                aria-label="キャンセル"
                               >
                                 <X className="w-5 h-5" />
                               </button>
