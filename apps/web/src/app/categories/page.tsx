@@ -295,8 +295,11 @@ const CategoriesPage = () => {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">カテゴリ名</label>
+                  <label htmlFor="new-category-name" className="block text-sm font-medium mb-2">
+                    カテゴリ名
+                  </label>
                   <Input
+                    id="new-category-name"
                     type="text"
                     variant="filter"
                     value={formData.name}
@@ -357,6 +360,7 @@ const CategoriesPage = () => {
                           <div className="py-4 space-y-4">
                             <div className="flex gap-4">
                               <Input
+                                id={`edit-category-name-${category.id}`}
                                 type="text"
                                 variant="filter"
                                 value={formData.name}
