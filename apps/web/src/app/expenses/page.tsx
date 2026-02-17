@@ -247,6 +247,7 @@ const ExpensesPage = () => {
                   <Filter className="h-4 w-4 text-gray-400" />
                   <SelectNative
                     id="filter-year"
+                    aria-label="年で絞り込み"
                     variant="filter"
                     value={selectedYear}
                     onChange={(e) => {
@@ -270,6 +271,7 @@ const ExpensesPage = () => {
                   <div className="monthSelect flex items-center gap-2">
                     <SelectNative
                       id="filter-month"
+                      aria-label="月で絞り込み"
                       variant="filter"
                       value={selectedMonth}
                       onChange={(e) => {
@@ -293,6 +295,7 @@ const ExpensesPage = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="search-merchant"
+                  aria-label="店名・内容で検索"
                   type="text"
                   variant="filter"
                   placeholder="店名・内容 で検索..."
@@ -308,6 +311,7 @@ const ExpensesPage = () => {
               <div className="flex items-center gap-2">
                 <SelectNative
                   id="filter-category"
+                  aria-label="カテゴリで絞り込み"
                   variant="filter"
                   value={selectedCategory}
                   onChange={(e) => {
@@ -413,6 +417,7 @@ const ExpensesPage = () => {
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             id={`edit-date-${t.id}`}
+                            aria-label="日付を編集"
                             type="date"
                             variant="filter"
                             value={editDate}
@@ -431,6 +436,7 @@ const ExpensesPage = () => {
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             id={`edit-description-${t.id}`}
+                            aria-label="内容を編集"
                             type="text"
                             variant="filter"
                             value={editDescription}
@@ -450,6 +456,7 @@ const ExpensesPage = () => {
                           <div className="flex items-center gap-2">
                             <SelectNative
                               id={`edit-category-${t.id}`}
+                              aria-label="カテゴリを編集"
                               variant="filter"
                               value={editCategoryId}
                               onChange={(e) => setEditCategoryId(e.target.value)}
@@ -479,6 +486,7 @@ const ExpensesPage = () => {
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             id={`edit-amount-${t.id}`}
+                            aria-label="金額を編集"
                             type="number"
                             variant="filter"
                             value={editAmount}
