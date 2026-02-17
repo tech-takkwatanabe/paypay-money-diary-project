@@ -286,6 +286,7 @@ const RulesPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <Input
                             id={`edit-rule-keyword-${rule.id}`}
+                            aria-label="キーワードを編集"
                             type="text"
                             variant="filter"
                             value={formData.keyword}
@@ -298,6 +299,7 @@ const RulesPage = () => {
                           />
                           <SelectNative
                             id={`edit-rule-category-${rule.id}`}
+                            aria-label="カテゴリを編集"
                             variant="filter"
                             value={formData.categoryId}
                             onChange={(e) =>
