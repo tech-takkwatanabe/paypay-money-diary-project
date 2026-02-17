@@ -222,8 +222,11 @@ const RulesPage = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">キーワード</label>
+                    <label htmlFor="new-rule-keyword" className="block text-sm font-medium mb-2">
+                      キーワード
+                    </label>
                     <Input
+                      id="new-rule-keyword"
                       type="text"
                       variant="filter"
                       value={formData.keyword}
@@ -232,8 +235,11 @@ const RulesPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">カテゴリ</label>
+                    <label htmlFor="new-rule-category" className="block text-sm font-medium mb-2">
+                      カテゴリ
+                    </label>
                     <SelectNative
+                      id="new-rule-category"
                       variant="filter"
                       value={formData.categoryId}
                       onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
@@ -279,6 +285,7 @@ const RulesPage = () => {
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <Input
+                            id={`edit-rule-keyword-${rule.id}`}
                             type="text"
                             variant="filter"
                             value={formData.keyword}
@@ -290,6 +297,7 @@ const RulesPage = () => {
                             }
                           />
                           <SelectNative
+                            id={`edit-rule-category-${rule.id}`}
                             variant="filter"
                             value={formData.categoryId}
                             onChange={(e) =>
