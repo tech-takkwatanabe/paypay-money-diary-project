@@ -511,6 +511,7 @@ const ExpensesPage = () => {
                                 onClick={() => handleUpdateTransaction(t.id)}
                                 className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
                                 title="保存"
+                                aria-label="保存"
                               >
                                 <Check className="h-4 w-4" />
                               </button>
@@ -518,6 +519,7 @@ const ExpensesPage = () => {
                                 onClick={() => setEditingId(null)}
                                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                                 title="キャンセル"
+                                aria-label="キャンセル"
                               >
                                 <X className="h-4 w-4" />
                               </button>
@@ -535,6 +537,7 @@ const ExpensesPage = () => {
                                 }}
                                 className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                                 title="編集"
+                                aria-label="編集"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -543,6 +546,7 @@ const ExpensesPage = () => {
                                   onClick={() => handleDeleteTransaction(t.id)}
                                   className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                                   title="削除"
+                                  aria-label="削除"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>
