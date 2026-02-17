@@ -322,12 +322,14 @@ const RulesPage = () => {
                             onClick={() => handleUpdate(rule.id)}
                             disabled={isSubmitting}
                             className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
+                            aria-label="保存"
                           >
                             <Check className="w-5 h-5" />
                           </button>
                           <button
                             onClick={cancelEdit}
                             className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                            aria-label="キャンセル"
                           >
                             <X className="w-5 h-5" />
                           </button>
@@ -351,12 +353,14 @@ const RulesPage = () => {
                           <button
                             onClick={() => startEdit(rule)}
                             className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                            aria-label="編集"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(rule.id, rule.keyword)}
                             className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            aria-label="削除"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
