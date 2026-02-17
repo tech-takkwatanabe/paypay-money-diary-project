@@ -165,7 +165,14 @@ const UploadPage = () => {
                   ${isDragOver ? "border-red-500 bg-red-50 dark:bg-red-900/20" : "border-gray-300 dark:border-gray-600 hover:border-red-500 hover:bg-gray-50 dark:hover:bg-gray-800"}
                 `}
               >
-                <input ref={fileInputRef} type="file" accept=".csv" onChange={handleFileChange} className="hidden" />
+                <input
+                  id="csv-upload-input"
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
 
                 {file ? (
                   <div className="flex items-center justify-center gap-3">
