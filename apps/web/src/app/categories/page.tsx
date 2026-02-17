@@ -361,6 +361,7 @@ const CategoriesPage = () => {
                             <div className="flex gap-4">
                               <Input
                                 id={`edit-category-name-${category.id}`}
+                                aria-label="カテゴリ名を編集"
                                 type="text"
                                 variant="filter"
                                 value={formData.name}
