@@ -270,20 +270,22 @@ const CategoriesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AppHeader
-        currentPath="/categories"
-        actions={
-          <Button variant="brand" onClick={startCreate}>
-            <Plus className="h-4 w-4" />
-            新規作成
-          </Button>
-        }
-      />
+      <AppHeader currentPath="/categories" />
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリ管理</h1>
-          <p className="text-gray-500 dark:text-gray-400">支出のカテゴリを管理します（ドラッグで並び替え可能）</p>
+          <div className="flex flex-col gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリ管理</h1>
+              <p className="text-gray-500 dark:text-gray-400">支出のカテゴリを管理します（ドラッグで並び替え可能）</p>
+            </div>
+            <div>
+              <Button variant="brand" onClick={startCreate}>
+                <Plus className="h-4 w-4" />
+                新規作成
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* 新規作成フォーム */}
