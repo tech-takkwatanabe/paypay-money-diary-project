@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "@/components/ui/link";
 import { AppLogo } from "@/components/AppLogo";
 import { Button } from "@/components/ui/button";
+import { MobileMenu } from "@/components/MobileMenu";
 import { LogOut, Upload } from "lucide-react";
 
 type AppHeaderProps = {
@@ -24,6 +25,7 @@ const NAV_LINKS = [
  *
  * ロゴ、ナビゲーションリンク、CSVアップロードリンク、ページ固有アクション、
  * ユーザー名表示、ログアウトボタンを含む。
+ * 1020px未満ではハンバーガーメニューに切り替わる。
  */
 export const AppHeader = ({ actions, currentPath }: AppHeaderProps) => {
   const { user, logout } = useAuth();
@@ -43,7 +45,9 @@ export const AppHeader = ({ actions, currentPath }: AppHeaderProps) => {
           </Link>
         )}
       </div>
-      <div className="flex items-center gap-2 sm:gap-4">
+
+      {/* デスクトップメニュー（1020px以上） */}
+      <div className="hidden desktop:flex items-center gap-4">
         {NAV_LINKS.map((link) => (
           <Link
             key={link.href}
@@ -61,15 +65,20 @@ export const AppHeader = ({ actions, currentPath }: AppHeaderProps) => {
             className={currentPath === "/upload" ? "opacity-80 ring-2 ring-red-300" : ""}
           >
             <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">CSV アップロード</span>
+            CSV アップロード
           </Link>
         )}
         {actions}
-        <span className="text-sm text-muted-foreground hidden sm:block">{user?.name}</span>
+        <span className="text-sm text-muted-foreground">{user?.name}</span>
         <Button variant="ghost" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
-          <span className="hidden sm:block">ログアウト</span>
+          ログアウト
         </Button>
+      </div>
+
+      {/* モバイルメニュー（1020px未満） */}
+      <div className="desktop:hidden">
+        <MobileMenu actions={actions} currentPath={currentPath} user={user} onLogout={handleLogout} />
       </div>
     </header>
   );

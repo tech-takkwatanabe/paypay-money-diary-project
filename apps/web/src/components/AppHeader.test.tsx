@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AppHeader } from "./AppHeader";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -40,6 +40,18 @@ const renderWithAuth = (ui: React.ReactNode) => {
   return render(<AuthProvider>{ui}</AuthProvider>);
 };
 
+/**
+ * デスクトップメニュー領域のコンテナを取得するヘルパー。
+ * モバイルメニューにも同じテキストが存在するため、スコープを限定して検索する。
+ */
+const getDesktopMenu = () => {
+  const header = screen.getByRole("banner");
+  // desktop:flex クラスを持つ div がデスクトップメニュー
+  const desktopDiv = Array.from(header.querySelectorAll("div")).find((el) => el.className.includes("desktop:flex"));
+  if (!desktopDiv) throw new Error("Desktop menu container not found");
+  return within(desktopDiv as HTMLElement);
+};
+
 describe("AppHeader", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -72,57 +84,65 @@ describe("AppHeader", () => {
     });
   });
 
-  describe("ナビゲーションリンク", () => {
+  describe("ナビゲーションリンク（デスクトップ）", () => {
     it("支出一覧リンクを表示する", () => {
       renderWithAuth(<AppHeader />);
-      expect(screen.getByText("支出一覧")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("支出一覧")).toBeInTheDocument();
     });
 
     it("カテゴリリンクを表示する", () => {
       renderWithAuth(<AppHeader />);
-      expect(screen.getByText("カテゴリ")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("カテゴリ")).toBeInTheDocument();
     });
 
     it("ルールリンクを表示する", () => {
       renderWithAuth(<AppHeader />);
-      expect(screen.getByText("ルール")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("ルール")).toBeInTheDocument();
     });
 
     it("現在のパスのリンクにハイライトクラスが適用される", () => {
       renderWithAuth(<AppHeader currentPath="/expenses" />);
-      const expensesLink = screen.getByText("支出一覧").closest("a");
+      const desktop = getDesktopMenu();
+      const expensesLink = desktop.getByText("支出一覧").closest("a");
       expect(expensesLink?.className).toContain("text-red-600");
     });
 
     it("現在のパスでないリンクにはハイライトクラスが適用されない", () => {
       renderWithAuth(<AppHeader currentPath="/expenses" />);
-      const categoriesLink = screen.getByText("カテゴリ").closest("a");
+      const desktop = getDesktopMenu();
+      const categoriesLink = desktop.getByText("カテゴリ").closest("a");
       expect(categoriesLink?.className).not.toContain("text-red-600");
     });
   });
 
-  describe("CSV アップロードリンク", () => {
+  describe("CSV アップロードリンク（デスクトップ）", () => {
     it("CSV アップロードリンクを表示する", () => {
       renderWithAuth(<AppHeader />);
-      expect(screen.getByText("CSV アップロード")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("CSV アップロード")).toBeInTheDocument();
     });
 
     it("currentPath='/categories' の場合は CSV アップロードを非表示にする", () => {
       renderWithAuth(<AppHeader currentPath="/categories" />);
-      expect(screen.queryByText("CSV アップロード")).not.toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.queryByText("CSV アップロード")).not.toBeInTheDocument();
     });
 
     it("currentPath='/rules' の場合は CSV アップロードを非表示にする", () => {
       renderWithAuth(<AppHeader currentPath="/rules" />);
-      expect(screen.queryByText("CSV アップロード")).not.toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.queryByText("CSV アップロード")).not.toBeInTheDocument();
     });
   });
 
   describe("actions prop", () => {
     it("actions を渡すとレンダリングされる", () => {
       renderWithAuth(<AppHeader actions={<button data-testid="custom-action">カスタムアクション</button>} />);
-      expect(screen.getByTestId("custom-action")).toBeInTheDocument();
-      expect(screen.getByText("カスタムアクション")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("カスタムアクション")).toBeInTheDocument();
     });
 
     it("actions を渡さない場合もエラーにならない", () => {
@@ -132,10 +152,11 @@ describe("AppHeader", () => {
     });
   });
 
-  describe("ログアウトボタン", () => {
+  describe("ログアウトボタン（デスクトップ）", () => {
     it("ログアウトボタンを表示する", () => {
       renderWithAuth(<AppHeader />);
-      expect(screen.getByText("ログアウト")).toBeInTheDocument();
+      const desktop = getDesktopMenu();
+      expect(desktop.getByText("ログアウト")).toBeInTheDocument();
     });
 
     it("ログアウトボタンクリックで logout が呼ばれる", async () => {
@@ -144,10 +165,18 @@ describe("AppHeader", () => {
       renderWithAuth(<AppHeader />);
 
       const user = userEvent.setup();
-      const logoutButton = screen.getByText("ログアウト");
+      const desktop = getDesktopMenu();
+      const logoutButton = desktop.getByText("ログアウト");
       await user.click(logoutButton);
 
       expect(mockPostAuthLogout).toHaveBeenCalled();
+    });
+  });
+
+  describe("モバイルメニュー", () => {
+    it("ハンバーガーボタンが表示される", () => {
+      renderWithAuth(<AppHeader />);
+      expect(screen.getByLabelText("メニューを開く")).toBeInTheDocument();
     });
   });
 });
