@@ -120,7 +120,7 @@ const Dashboard = () => {
         actions={
           <Button variant="outline" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-4 w-4" />
-            <span className="hidden sm:inline">手動入力</span>
+            <span>手動入力</span>
           </Button>
         }
       />
