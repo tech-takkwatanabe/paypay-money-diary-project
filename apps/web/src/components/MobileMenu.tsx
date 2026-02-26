@@ -85,7 +85,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
       >
         {/* ヘッダー */}
         <div className="flex h-16 items-center justify-between border-b px-4">
-          <span className="text-sm font-medium text-muted-foreground">{user?.name}</span>
+          <span className="text-sm font-medium text-foreground">{user?.name}</span>
           <Button variant="ghost" size="icon" onClick={close} aria-label="メニューを閉じる">
             <X className="h-5 w-5" />
           </Button>
@@ -98,7 +98,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
               key={link.href}
               href={link.href}
               variant="ghost"
-              className={`justify-start rounded-lg px-3 py-3 text-base ${currentPath === link.href ? "bg-red-50 text-red-600 dark:bg-red-900/20" : ""}`}
+              className={`justify-start rounded-lg px-3 py-3 text-base font-medium text-foreground ${currentPath === link.href ? "bg-red-50 text-red-600 dark:bg-red-900/20" : ""}`}
               onClick={close}
             >
               {link.label}
@@ -109,7 +109,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
             <Link
               href="/upload"
               variant="ghost"
-              className={`justify-start rounded-lg px-3 py-3 text-base ${currentPath === "/upload" ? "bg-red-50 text-red-600 dark:bg-red-900/20" : ""}`}
+              className={`justify-start rounded-lg px-3 py-3 text-base font-medium text-foreground ${currentPath === "/upload" ? "bg-red-50 text-red-600 dark:bg-red-900/20" : ""}`}
               onClick={close}
             >
               <Upload className="h-4 w-4" />
@@ -128,7 +128,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
         <div className="border-t p-4">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 text-base"
+            className="w-full justify-start gap-2 text-base font-bold text-foreground"
             onClick={() => {
               onLogout();
               close();
