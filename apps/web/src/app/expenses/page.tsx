@@ -364,7 +364,7 @@ const ExpensesPage = () => {
         {/* 取引テーブル */}
         <Card className="overflow-hidden" id="expence-table">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[520px]">
+            <table className="w-full text-left border-collapse min-w-[620px]">
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th
@@ -432,7 +432,7 @@ const ExpensesPage = () => {
                           formatDate(t.date)
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm font-medium">
+                      <td className="px-4 py-3 text-sm font-medium description-td">
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             id={`edit-description-${t.id}`}

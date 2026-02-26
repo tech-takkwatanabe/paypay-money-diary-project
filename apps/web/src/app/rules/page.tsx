@@ -340,7 +340,7 @@ const RulesPage = () => {
                     ) : (
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-8">
-                          <div className="min-w-[120px]">
+                          <div className="max-w-[130px] truncate">
                             <span className="text-sm text-gray-400 block">キーワード</span>
                             <span className="font-medium">{rule.keyword}</span>
                           </div>

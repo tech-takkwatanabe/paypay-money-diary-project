@@ -152,3 +152,12 @@
 .loading-dot {
   animation: loading-bounce-dot 1.4s ease-in-out infinite;
 }
+
+@media (max-width: 640px) {
+  .description-td {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

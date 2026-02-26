@@ -145,7 +145,7 @@ const Dashboard = () => {
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {/* 年間支出累計 */}
-          <Card>
+          <Card id="yearly-total" className="dashboard-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">年間支出累計</CardTitle>
               <Wallet className="h-4 w-4 text-muted-foreground" />
@@ -162,7 +162,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           {/* 月の平均支出 */}
-          <Card>
+          <Card id="monthly-average" className="dashboard-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">月の平均支出</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -178,7 +178,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           {/* 最多カテゴリ */}
-          <Card>
+          <Card id="top-category" className="dashboard-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">最多カテゴリ</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -198,10 +198,10 @@ const Dashboard = () => {
 
         {/* Charts */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <div className="col-span-4">
+          <div className="col-span-full lg:col-span-4 dashboard-card" id="annual-expense-bar-chart">
             <AnnualExpenseBarChart data={summary?.monthlyBreakdown ?? []} isLoading={isLoading} />
           </div>
-          <div className="col-span-3">
+          <div className="col-span-full lg:col-span-3 dashboard-card" id="monthly-expense-pie-chart">
             <MonthlyExpensePieChart data={summary?.categoryBreakdown ?? []} isLoading={isLoading} />
           </div>
         </div>
