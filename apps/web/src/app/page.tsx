@@ -118,7 +118,11 @@ const Dashboard = () => {
       <AppHeader
         currentPath="/"
         actions={
-          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsModalOpen(true)}
+            className="w-full justify-start desktop:w-auto"
+          >
             <PlusCircle className="h-4 w-4" />
             <span>手動入力</span>
           </Button>
@@ -198,10 +202,10 @@ const Dashboard = () => {
 
         {/* Charts */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <div className="col-span-full lg:col-span-4 dashboard-card" id="annual-expense-bar-chart">
+          <div className="col-span-full lg:col-span-4 dashboard-card min-w-0" id="annual-expense-bar-chart">
             <AnnualExpenseBarChart data={summary?.monthlyBreakdown ?? []} isLoading={isLoading} />
           </div>
-          <div className="col-span-full lg:col-span-3 dashboard-card" id="monthly-expense-pie-chart">
+          <div className="col-span-full lg:col-span-3 dashboard-card min-w-0" id="monthly-expense-pie-chart">
             <MonthlyExpensePieChart data={summary?.categoryBreakdown ?? []} isLoading={isLoading} />
           </div>
         </div>
