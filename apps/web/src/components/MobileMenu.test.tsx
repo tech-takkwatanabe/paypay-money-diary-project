@@ -50,7 +50,7 @@ describe("MobileMenu", () => {
     await user.click(screen.getByLabelText("メニューを閉じる"));
 
     // メニューパネルはtranslate-x-fullで画面外になる
-    const nav = screen.getByRole("navigation", { name: "モバイルメニュー" });
+    const nav = screen.getByRole("navigation", { hidden: true });
     expect(nav.className).toContain("translate-x-full");
   });
 
@@ -61,7 +61,7 @@ describe("MobileMenu", () => {
     await user.click(screen.getByLabelText("メニューを開く"));
     await user.keyboard("{Escape}");
 
-    const nav = screen.getByRole("navigation", { name: "モバイルメニュー" });
+    const nav = screen.getByRole("navigation", { hidden: true });
     expect(nav.className).toContain("translate-x-full");
   });
 
@@ -88,6 +88,15 @@ describe("MobileMenu", () => {
   it("currentPath=/categories の場合CSVアップロードが非表示", async () => {
     const user = userEvent.setup();
     render(<MobileMenu user={mockUser} onLogout={mockOnLogout} currentPath="/categories" />);
+
+    await user.click(screen.getByLabelText("メニューを開く"));
+
+    expect(screen.queryByText("CSV アップロード")).not.toBeInTheDocument();
+  });
+
+  it("currentPath=/rules の場合CSVアップロードが非表示", async () => {
+    const user = userEvent.setup();
+    render(<MobileMenu user={mockUser} onLogout={mockOnLogout} currentPath="/rules" />);
 
     await user.click(screen.getByLabelText("メニューを開く"));
 

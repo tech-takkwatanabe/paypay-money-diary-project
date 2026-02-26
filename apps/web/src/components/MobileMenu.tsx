@@ -46,13 +46,13 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
 
   // メニュー開閉時にbodyスクロールを無効化
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!isOpen) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen]);
 
@@ -81,7 +81,10 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
         id="mobile-menu-panel"
         role="navigation"
         aria-label="モバイルメニュー"
-        className={`fixed top-0 right-0 z-50 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        aria-hidden={!isOpen}
+        className={`fixed top-0 right-0 z-50 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "translate-x-full invisible pointer-events-none"
+        }`}
       >
         {/* ヘッダー */}
         <div className="flex h-16 items-center justify-between border-b px-4">
