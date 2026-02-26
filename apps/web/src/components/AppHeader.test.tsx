@@ -44,13 +44,7 @@ const renderWithAuth = (ui: React.ReactNode) => {
  * デスクトップメニュー領域のコンテナを取得するヘルパー。
  * モバイルメニューにも同じテキストが存在するため、スコープを限定して検索する。
  */
-const getDesktopMenu = () => {
-  const header = screen.getByRole("banner");
-  // desktop:flex クラスを持つ div がデスクトップメニュー
-  const desktopDiv = Array.from(header.querySelectorAll("div")).find((el) => el.className.includes("desktop:flex"));
-  if (!desktopDiv) throw new Error("Desktop menu container not found");
-  return within(desktopDiv as HTMLElement);
-};
+const getDesktopMenu = () => within(screen.getByTestId("desktop-menu"));
 
 describe("AppHeader", () => {
   beforeEach(() => {

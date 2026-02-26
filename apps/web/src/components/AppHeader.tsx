@@ -47,7 +47,7 @@ export const AppHeader = ({ actions, currentPath }: AppHeaderProps) => {
       </div>
 
       {/* デスクトップメニュー（1020px以上） */}
-      <div className="hidden desktop:flex items-center gap-4">
+      <div data-testid="desktop-menu" className="hidden desktop:flex items-center gap-4">
         {NAV_LINKS.map((link) => (
           <Link
             key={link.href}
