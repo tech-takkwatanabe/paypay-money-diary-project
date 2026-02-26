@@ -190,26 +190,28 @@ const RulesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AppHeader
-        currentPath="/rules"
-        actions={
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleReCategorize} disabled={isReCategorizing}>
-              <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
-              一括再分類
-            </Button>
-            <Button variant="brand" onClick={startCreate}>
-              <Plus className="h-4 w-4" />
-              新規作成
-            </Button>
-          </div>
-        }
-      />
+      <AppHeader currentPath="/rules" />
 
       <main className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリルール管理</h1>
-          <p className="text-gray-500 dark:text-gray-400">店名などのキーワードに基づいて自動でカテゴリを振り分けます</p>
+          <div className="flex flex-col gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">カテゴリルール管理</h1>
+              <p className="text-gray-500 dark:text-gray-400">
+                店名などのキーワードに基づいて自動でカテゴリを振り分けます
+              </p>
+            </div>
+            <div className="flex justify-between items-center">
+              <Button variant="brand" onClick={startCreate}>
+                <Plus className="h-4 w-4" />
+                新規作成
+              </Button>
+              <Button variant="outline" onClick={handleReCategorize} disabled={isReCategorizing}>
+                <RefreshCw className={`h-4 w-4 ${isReCategorizing ? "animate-spin" : ""}`} />
+                一括再分類
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* 新規作成フォーム */}
@@ -338,7 +340,7 @@ const RulesPage = () => {
                     ) : (
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-8">
-                          <div className="min-w-[120px]">
+                          <div className="max-w-[130px] truncate">
                             <span className="text-sm text-gray-400 block">キーワード</span>
                             <span className="font-medium">{rule.keyword}</span>
                           </div>

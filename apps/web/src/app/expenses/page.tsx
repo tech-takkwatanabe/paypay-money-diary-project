@@ -219,9 +219,13 @@ const ExpensesPage = () => {
       <AppHeader
         currentPath="/expenses"
         actions={
-          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsModalOpen(true)}
+            className="w-full justify-start desktop:w-auto"
+          >
             <PlusCircle className="h-4 w-4" />
-            <span className="hidden sm:inline">手動入力</span>
+            <span>手動入力</span>
           </Button>
         }
       />
@@ -362,9 +366,9 @@ const ExpensesPage = () => {
         </Card>
 
         {/* 取引テーブル */}
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden" id="expense-table">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[620px]">
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th
@@ -432,7 +436,7 @@ const ExpensesPage = () => {
                           formatDate(t.date)
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm font-medium">
+                      <td className="px-4 py-3 text-sm font-medium description-td">
                         {editingId === t.id && t.paymentMethod === "手動" ? (
                           <Input
                             id={`edit-description-${t.id}`}
