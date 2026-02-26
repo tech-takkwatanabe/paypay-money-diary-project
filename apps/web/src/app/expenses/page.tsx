@@ -219,7 +219,11 @@ const ExpensesPage = () => {
       <AppHeader
         currentPath="/expenses"
         actions={
-          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsModalOpen(true)}
+            className="w-full justify-start desktop:w-auto"
+          >
             <PlusCircle className="h-4 w-4" />
             <span>手動入力</span>
           </Button>
