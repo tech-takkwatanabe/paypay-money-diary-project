@@ -4,12 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "@/components/ui/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut, Upload } from "lucide-react";
-
-const NAV_LINKS = [
-  { href: "/expenses", label: "支出一覧" },
-  { href: "/categories", label: "カテゴリ" },
-  { href: "/rules", label: "ルール" },
-] as const;
+import { NAV_LINKS } from "@/constants/navigation";
 
 type MobileMenuProps = {
   /** ページ固有のアクションボタン群 */
@@ -120,11 +115,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
             </Link>
           )}
 
-          {actions && (
-            <div className="mt-2 border-t pt-2" onClick={close}>
-              {actions}
-            </div>
-          )}
+          {actions && <div className="mt-2 border-t pt-2">{actions}</div>}
         </div>
 
         {/* フッター */}

@@ -172,5 +172,41 @@ describe("AppHeader", () => {
       renderWithAuth(<AppHeader />);
       expect(screen.getByLabelText("メニューを開く")).toBeInTheDocument();
     });
+
+    it("ハンバーガーボタンクリックでメニューが開き、ナビリンクが表示され、Escapeキーで閉じる", async () => {
+      const user = userEvent.setup();
+      renderWithAuth(<AppHeader />);
+
+      const openButton = screen.getByLabelText("メニューを開く");
+      await user.click(openButton);
+
+      // メニューが開いたことを確認
+      const nav = screen.getByRole("navigation", { name: "モバイルメニュー" });
+      expect(nav).toBeInTheDocument();
+
+      // 各ナビリンクが表示されていることを確認
+      expect(within(nav).getByText("支出一覧")).toBeInTheDocument();
+      expect(within(nav).getByText("カテゴリ")).toBeInTheDocument();
+      expect(within(nav).getByText("ルール")).toBeInTheDocument();
+
+      // Escapeキーで閉じる
+      await user.keyboard("{Escape}");
+      expect(nav.className).toContain("translate-x-full");
+    });
+
+    it("オーバーレイクリックでモバイルメニューが閉じる", async () => {
+      const user = userEvent.setup();
+      renderWithAuth(<AppHeader />);
+
+      await user.click(screen.getByLabelText("メニューを開く"));
+      const nav = screen.getByRole("navigation", { name: "モバイルメニュー" });
+
+      // オーバーレイ（aria-hidden="true" の div）をクリック
+      // MobileMenu.tsx では nav の直前の div がオーバーレイ
+      const overlay = screen.getByText("", { selector: "div.bg-black\\/50" });
+      await user.click(overlay);
+
+      expect(nav.className).toContain("translate-x-full");
+    });
   });
 });

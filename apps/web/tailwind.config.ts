@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        desktop: "1020px",
+      },
       spacing: {
         "75": "18.75rem", // 300px
         "100": "25rem", // 400px

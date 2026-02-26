@@ -6,6 +6,7 @@ import { AppLogo } from "@/components/AppLogo";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/MobileMenu";
 import { LogOut, Upload } from "lucide-react";
+import { NAV_LINKS } from "@/constants/navigation";
 
 type AppHeaderProps = {
   /** 右側に表示するページ固有のアクションボタン群 */
@@ -13,12 +14,6 @@ type AppHeaderProps = {
   /** 現在のページパス（ナビリンクのハイライト用） */
   currentPath?: string;
 };
-
-const NAV_LINKS = [
-  { href: "/expenses", label: "支出一覧" },
-  { href: "/categories", label: "カテゴリ" },
-  { href: "/rules", label: "ルール" },
-] as const;
 
 /**
  * アプリ全体で使用する共通ヘッダーコンポーネント。
