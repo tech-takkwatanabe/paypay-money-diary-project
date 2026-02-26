@@ -366,7 +366,7 @@ const ExpensesPage = () => {
         </Card>
 
         {/* 取引テーブル */}
-        <Card className="overflow-hidden" id="expence-table">
+        <Card className="overflow-hidden" id="expense-table">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[620px]">
               <thead>
