@@ -53,4 +53,4 @@ Visualize PayPay transaction history via CSV upload.
 - **Validation**: Meaningful Zod schemas are required.
 - **Strict Tailwind**: Follow the specific restriction on class name construction tools (no `clsx`/`cn` etc.).
 - **Workflow Integrity**: After completing any code fixes or modifications (excluding documentation-only changes), always run `pnpm lint` and `pnpm test`.
-- **Committing Changes**: Use the `/commit` slash command to commit changed files one by one with Japanese messages and gitmojis.
+- **Committing Changes**: **CRITICAL**: Never commit changes automatically. Always ask for the user's explicit permission before using the `/commit` slash command or any other method to commit files.
