@@ -66,7 +66,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
 
       {/* オーバーレイ */}
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-150 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
         onClick={close}
         aria-hidden="true"
       />
@@ -77,7 +77,8 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
         role="navigation"
         aria-label="モバイルメニュー"
         aria-hidden={!isOpen}
-        className={`fixed top-0 right-0 z-50 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-200 ease-in-out ${
+        inert={!isOpen || undefined}
+        className={`fixed top-0 right-0 z-50 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-150 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
