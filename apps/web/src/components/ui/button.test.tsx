@@ -67,6 +67,18 @@ describe("Button", () => {
       const button = screen.getByRole("button", { name: /icon button/i });
       expect(button).toHaveClass("size-9");
     });
+
+    it("renders icon-xl size correctly", () => {
+      render(<Button size="icon-xl" aria-label="XL Icon button" />);
+      const button = screen.getByRole("button", { name: /xl icon button/i });
+      expect(button).toHaveClass("size-11");
+    });
+
+    it("renders icon-2xl size correctly", () => {
+      render(<Button size="icon-2xl" aria-label="2XL Icon button" />);
+      const button = screen.getByRole("button", { name: /2xl icon button/i });
+      expect(button).toHaveClass("size-12");
+    });
   });
 
   describe("States", () => {

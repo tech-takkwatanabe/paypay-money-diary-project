@@ -3,73 +3,57 @@ import { Slot } from "@radix-ui/react-slot";
 
 type ButtonSize = "default" | "sm" | "lg" | "xl" | "icon" | "icon-sm" | "icon-lg" | "icon-xl" | "icon-2xl";
 
+type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "brand";
+
 type ButtonProps = React.ComponentProps<"button"> & {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "brand";
+  variant?: ButtonVariant;
   size?: ButtonSize;
   asChild?: boolean;
 };
 
 type AtomicButtonProps = Omit<ButtonProps, "variant">;
 
-const getSizeClasses = (size: ButtonSize, variant: string = "default") => {
-  if (variant === "brand") {
-    return size === "sm"
-      ? "h-8 gap-1.5 px-3 has-[>svg]:px-2.5"
-      : size === "lg"
-        ? "h-10 px-6 has-[>svg]:px-4"
-        : size === "xl"
-          ? "h-12 px-8"
-          : size === "icon"
-            ? "size-9"
-            : size === "icon-sm"
-              ? "size-8"
-              : size === "icon-lg"
-                ? "size-10"
-                : size === "icon-xl"
-                  ? "size-11"
-                  : size === "icon-2xl"
-                    ? "size-12"
-                    : "h-11 px-6 py-2 has-[>svg]:px-4";
-  }
+type SizeClassVariant = "default" | "brand" | "outline";
 
-  if (variant === "outline") {
-    return size === "sm"
-      ? "h-8 gap-1.5 px-3 has-[>svg]:px-2.5"
-      : size === "lg"
-        ? "h-10 px-6 has-[>svg]:px-4"
-        : size === "xl"
-          ? "h-11 px-8"
-          : size === "icon"
-            ? "size-9"
-            : size === "icon-sm"
-              ? "size-8"
-              : size === "icon-lg"
-                ? "size-10"
-                : size === "icon-xl"
-                  ? "size-11"
-                  : size === "icon-2xl"
-                    ? "size-12"
-                    : "h-10 px-4 py-2 has-[>svg]:px-3";
-  }
+const SIZE_MAP: Record<SizeClassVariant, Record<ButtonSize, string>> = {
+  brand: {
+    sm: "h-8 gap-1.5 px-3 has-[>svg]:px-2.5",
+    lg: "h-10 px-6 has-[>svg]:px-4",
+    xl: "h-12 px-8",
+    icon: "size-9",
+    "icon-sm": "size-8",
+    "icon-lg": "size-10",
+    "icon-xl": "size-11",
+    "icon-2xl": "size-12",
+    default: "h-11 px-6 py-2 has-[>svg]:px-4",
+  },
+  outline: {
+    sm: "h-8 gap-1.5 px-3 has-[>svg]:px-2.5",
+    lg: "h-10 px-6 has-[>svg]:px-4",
+    xl: "h-11 px-8",
+    icon: "size-9",
+    "icon-sm": "size-8",
+    "icon-lg": "size-10",
+    "icon-xl": "size-11",
+    "icon-2xl": "size-12",
+    default: "h-10 px-4 py-2 has-[>svg]:px-3",
+  },
+  default: {
+    sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+    lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+    xl: "h-11 rounded-xl px-8",
+    icon: "size-9",
+    "icon-sm": "size-8",
+    "icon-lg": "size-10",
+    "icon-xl": "size-11",
+    "icon-2xl": "size-12",
+    default: "h-9 px-4 py-2 has-[>svg]:px-3",
+  },
+};
 
-  // Default / Destructive / Secondary / Ghost / Link
-  return size === "sm"
-    ? "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5"
-    : size === "lg"
-      ? "h-10 rounded-md px-6 has-[>svg]:px-4"
-      : size === "xl"
-        ? "h-11 rounded-xl px-8"
-        : size === "icon"
-          ? "size-9"
-          : size === "icon-sm"
-            ? "size-8"
-            : size === "icon-lg"
-              ? "size-10"
-              : size === "icon-xl"
-                ? "size-11"
-                : size === "icon-2xl"
-                  ? "size-12"
-                  : "h-9 px-4 py-2 has-[>svg]:px-3";
+const getSizeClasses = (size: ButtonSize, variant: ButtonVariant = "default") => {
+  const variantMap: SizeClassVariant = variant === "brand" ? "brand" : variant === "outline" ? "outline" : "default";
+  return SIZE_MAP[variantMap][size];
 };
 
 const ButtonDefault = ({ className, size = "default", asChild = false, ...props }: AtomicButtonProps) => {
@@ -121,7 +105,7 @@ const ButtonSecondary = ({ className, size = "default", asChild = false, ...prop
   return (
     <Comp
       data-slot="button"
-      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 ${getSizeClasses(size)} ${className || ""}`}
+      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 ${getSizeClasses(size)} ${className || ""}`}
       {...props}
     />
   );
