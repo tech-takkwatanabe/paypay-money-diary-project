@@ -37,6 +37,7 @@ import { SortableCategoryItem } from "@/components/categories/SortableCategoryIt
 
 // プリセットカラー
 const PRESET_COLORS = [
+  // 元の20色
   "#ef4444",
   "#f97316",
   "#f59e0b",
@@ -57,6 +58,24 @@ const PRESET_COLORS = [
   "#78716c",
   "#6b7280",
   "#64748b",
+
+  // 追加の16色（合計36色）
+  "#fca5a5",
+  "#fdba74",
+  "#fcd34d",
+  "#fde047",
+  "#bef264",
+  "#86efac",
+  "#6ee7b7",
+  "#5eead4",
+  "#67e8f9",
+  "#7dd3fc",
+  "#93c5fd",
+  "#a5b4fc",
+  "#c4b5fd",
+  "#d8b4fe",
+  "#f0abfc",
+  "#f9a8d4",
 ];
 
 type CategoryFormData = {
@@ -311,7 +330,7 @@ const CategoriesPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">色</label>
+                  <div className="block text-sm font-medium mb-2">色</div>
                   <div className="flex flex-wrap gap-2">
                     {PRESET_COLORS.map((color) => (
                       <button
