@@ -27,14 +27,10 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const close = useCallback(() => setIsOpen(false), []);
-
-  // メニューが閉じられた時にフォーカスをボタンに戻す
-  useEffect(() => {
-    if (!isOpen) {
-      triggerRef.current?.focus();
-    }
-  }, [isOpen]);
+  const close = useCallback(() => {
+    setIsOpen(false);
+    triggerRef.current?.focus();
+  }, []);
 
   // Escキーで閉じる
   useEffect(() => {

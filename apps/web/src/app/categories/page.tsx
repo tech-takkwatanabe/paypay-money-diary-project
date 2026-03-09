@@ -330,11 +330,16 @@ const CategoriesPage = () => {
                 </div>
 
                 <div>
-                  <div className="block text-sm font-medium mb-2">色</div>
-                  <div className="flex flex-wrap gap-2">
+                  <div id="color-selection-label" className="block text-sm font-medium mb-2">
+                    色
+                  </div>
+                  <div role="radiogroup" aria-labelledby="color-selection-label" className="flex flex-wrap gap-2">
                     {PRESET_COLORS.map((color) => (
                       <button
                         key={color}
+                        type="button"
+                        aria-label={`色 ${color}`}
+                        aria-pressed={formData.color === color}
                         onClick={() => setFormData({ ...formData, color })}
                         className={`w-8 h-8 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                         style={{ backgroundColor: color }}
@@ -389,10 +394,13 @@ const CategoriesPage = () => {
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                               />
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div role="radiogroup" aria-label="カテゴリ色を編集" className="flex flex-wrap gap-2">
                               {PRESET_COLORS.map((color) => (
                                 <button
                                   key={color}
+                                  type="button"
+                                  aria-label={`色 ${color}`}
+                                  aria-pressed={formData.color === color}
                                   onClick={() => setFormData({ ...formData, color })}
                                   className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                                   style={{ backgroundColor: color }}
