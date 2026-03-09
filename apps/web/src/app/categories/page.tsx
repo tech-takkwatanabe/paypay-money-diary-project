@@ -338,8 +338,9 @@ const CategoriesPage = () => {
                       <button
                         key={color}
                         type="button"
+                        role="radio"
                         aria-label={`色 ${color}`}
-                        aria-pressed={formData.color === color}
+                        aria-checked={formData.color === color}
                         onClick={() => setFormData({ ...formData, color })}
                         className={`w-8 h-8 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                         style={{ backgroundColor: color }}
@@ -399,8 +400,9 @@ const CategoriesPage = () => {
                                 <button
                                   key={color}
                                   type="button"
+                                  role="radio"
                                   aria-label={`色 ${color}`}
-                                  aria-pressed={formData.color === color}
+                                  aria-checked={formData.color === color}
                                   onClick={() => setFormData({ ...formData, color })}
                                   className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                                   style={{ backgroundColor: color }}
