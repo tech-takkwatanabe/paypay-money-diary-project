@@ -161,22 +161,30 @@ const ButtonLink = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
 );
 ButtonLink.displayName = "ButtonLink";
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ variant = "default", ...props }, ref) => {
-  switch (variant) {
-    case "brand":
-      return <ButtonBrand ref={ref} {...props} />;
-    case "destructive":
-      return <ButtonDestructive ref={ref} {...props} />;
-    case "outline":
-      return <ButtonOutline ref={ref} {...props} />;
-    case "secondary":
-      return <ButtonSecondary ref={ref} {...props} />;
-    case "ghost":
-      return <ButtonGhost ref={ref} {...props} />;
-    case "link":
-      return <ButtonLink ref={ref} {...props} />;
-    default:
-      return <ButtonDefault ref={ref} {...props} />;
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = "default", asChild = false, type, ...props }, ref) => {
+    const sharedProps = {
+      ...props,
+      asChild,
+      ...(asChild ? {} : { type: type ?? "button" }),
+    };
+
+    switch (variant) {
+      case "brand":
+        return <ButtonBrand ref={ref} {...sharedProps} />;
+      case "destructive":
+        return <ButtonDestructive ref={ref} {...sharedProps} />;
+      case "outline":
+        return <ButtonOutline ref={ref} {...sharedProps} />;
+      case "secondary":
+        return <ButtonSecondary ref={ref} {...sharedProps} />;
+      case "ghost":
+        return <ButtonGhost ref={ref} {...sharedProps} />;
+      case "link":
+        return <ButtonLink ref={ref} {...sharedProps} />;
+      default:
+        return <ButtonDefault ref={ref} {...sharedProps} />;
+    }
   }
-});
+);
 Button.displayName = "Button";
