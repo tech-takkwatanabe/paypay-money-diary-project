@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "@/components/ui/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut, Upload } from "lucide-react";
@@ -25,8 +25,12 @@ type MobileMenuProps = {
  */
 export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const close = useCallback(() => setIsOpen(false), []);
+  const close = useCallback(() => {
+    setIsOpen(false);
+    triggerRef.current?.focus();
+  }, []);
 
   // Escキーで閉じる
   useEffect(() => {
@@ -54,6 +58,7 @@ export const MobileMenu = ({ actions, currentPath, user, onLogout }: MobileMenuP
   return (
     <>
       <Button
+        ref={triggerRef}
         variant="ghost"
         size="icon-xl"
         onClick={() => setIsOpen(true)}

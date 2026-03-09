@@ -37,6 +37,7 @@ import { SortableCategoryItem } from "@/components/categories/SortableCategoryIt
 
 // プリセットカラー
 const PRESET_COLORS = [
+  // 元の20色
   "#ef4444",
   "#f97316",
   "#f59e0b",
@@ -57,6 +58,24 @@ const PRESET_COLORS = [
   "#78716c",
   "#6b7280",
   "#64748b",
+
+  // 追加の16色（合計36色）
+  "#fca5a5",
+  "#fdba74",
+  "#fcd34d",
+  "#fde047",
+  "#bef264",
+  "#86efac",
+  "#6ee7b7",
+  "#5eead4",
+  "#67e8f9",
+  "#7dd3fc",
+  "#93c5fd",
+  "#a5b4fc",
+  "#c4b5fd",
+  "#d8b4fe",
+  "#f0abfc",
+  "#f9a8d4",
 ];
 
 type CategoryFormData = {
@@ -311,11 +330,17 @@ const CategoriesPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">色</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div id="color-selection-label" className="block text-sm font-medium mb-2">
+                    色
+                  </div>
+                  <div role="radiogroup" aria-labelledby="color-selection-label" className="flex flex-wrap gap-2">
                     {PRESET_COLORS.map((color) => (
                       <button
                         key={color}
+                        type="button"
+                        role="radio"
+                        aria-label={`色 ${color}`}
+                        aria-checked={formData.color === color}
                         onClick={() => setFormData({ ...formData, color })}
                         className={`w-8 h-8 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                         style={{ backgroundColor: color }}
@@ -370,10 +395,14 @@ const CategoriesPage = () => {
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                               />
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div role="radiogroup" aria-label="カテゴリ色を編集" className="flex flex-wrap gap-2">
                               {PRESET_COLORS.map((color) => (
                                 <button
                                   key={color}
+                                  type="button"
+                                  role="radio"
+                                  aria-label={`色 ${color}`}
+                                  aria-checked={formData.color === color}
                                   onClick={() => setFormData({ ...formData, color })}
                                   className={`w-6 h-6 rounded-full transition-transform ${formData.color === color ? "ring-2 ring-offset-2 ring-gray-400 scale-110" : ""}`}
                                   style={{ backgroundColor: color }}
