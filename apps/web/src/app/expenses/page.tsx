@@ -35,8 +35,9 @@ const ExpensesPage = () => {
   const [categories, setCategories] = useState<CategoryWithSystem[]>([]);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -76,6 +77,10 @@ const ExpensesPage = () => {
         }
       } catch (error) {
         console.error("Failed to fetch initial data:", error);
+      } finally {
+        // 年フィルターが確定してからfetchTransactionsを実行するため、
+        // 初期化完了フラグを立てる
+        setIsInitialized(true);
       }
     };
     fetchInitialData();
@@ -110,8 +115,9 @@ const ExpensesPage = () => {
   }, [currentPage, selectedYear, selectedMonth, selectedCategory, merchantSearch, sortBy, sortOrder]);
 
   useEffect(() => {
+    if (!isInitialized) return;
     fetchTransactions();
-  }, [fetchTransactions]);
+  }, [fetchTransactions, isInitialized]);
 
   const handleSort = (column: "date" | "amount") => {
     if (sortBy === column) {
@@ -198,7 +204,8 @@ const ExpensesPage = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | null) => {
+    if (amount === null) return "";
     return new Intl.NumberFormat("ja-JP", {
       style: "currency",
       currency: "JPY",
@@ -233,13 +240,15 @@ const ExpensesPage = () => {
       <main className="flex-1 p-4 sm:px-6 sm:py-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-2xl font-bold tracking-tight">支出一覧</h2>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div>全 {totalCount} 件の取引</div>
-            <div className="h-4 w-px bg-border" />
-            <div>
-              支出総額: <span className="font-bold text-foreground">{formatCurrency(totalAmount)}</span>
+          {totalCount !== null && totalAmount !== null && (
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div>全 {totalCount} 件の取引</div>
+              <div className="h-4 w-px bg-border" />
+              <div>
+                支出総額: <span className="font-bold text-foreground">{formatCurrency(totalAmount)}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* フィルタ・検索バー */}
