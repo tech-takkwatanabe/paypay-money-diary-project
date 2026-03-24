@@ -5,7 +5,7 @@ description: Functional and non-functional requirements for the PayPay Money Dia
 
 # Project Requirements
 
-Source of truth: [`REQUIREMENTS.md`](file:///Users/watanabetaku/htdocs/paypay-money-diary-project/REQUIREMENTS.md)
+Source of truth: [`REQUIREMENTS.md`](../../../REQUIREMENTS.md)
 
 ## Goal
 

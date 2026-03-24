@@ -24,8 +24,8 @@ pnpm test
 
 ## 3. ソースオブトゥルース
 
-- アーキテクチャ・規約 → [`PROJECT_RULES.md`](file:///Users/watanabetaku/htdocs/paypay-money-diary-project/PROJECT_RULES.md)
-- 要件・仕様 → [`REQUIREMENTS.md`](file:///Users/watanabetaku/htdocs/paypay-money-diary-project/REQUIREMENTS.md)
+- アーキテクチャ・規約 → [`PROJECT_RULES.md`](../../../PROJECT_RULES.md)
+- 要件・仕様 → [`REQUIREMENTS.md`](../../../REQUIREMENTS.md)
 
 これらのドキュメントが最も権威あるソースである。矛盾がある場合はこれらを優先すること。
 

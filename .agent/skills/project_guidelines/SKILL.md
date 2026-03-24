@@ -5,7 +5,7 @@ description: Architecture, technology stack, coding standards, and directory str
 
 # Project Guidelines: Architecture & Coding Standards
 
-Source of truth: [`PROJECT_RULES.md`](file:///Users/watanabetaku/htdocs/paypay-money-diary-project/PROJECT_RULES.md)
+Source of truth: [`PROJECT_RULES.md`](../../../PROJECT_RULES.md)
 
 ## 1. Architecture
 
