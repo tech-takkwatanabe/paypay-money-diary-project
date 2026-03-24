@@ -1,10 +1,17 @@
-import { Context } from "hono";
+import { RouteHandler } from "@hono/zod-openapi";
 import { ListRulesUseCase } from "@/usecase/rule/listRulesUseCase";
 import { CreateRuleUseCase } from "@/usecase/rule/createRuleUseCase";
 import { UpdateRuleUseCase } from "@/usecase/rule/updateRuleUseCase";
 import { DeleteRuleUseCase } from "@/usecase/rule/deleteRuleUseCase";
 import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
 import { RuleService } from "@/service/rule/ruleService";
+import { Env } from "@/types/hono";
+import {
+  GetRulesRoute,
+  CreateRuleRoute,
+  UpdateRuleRoute,
+  DeleteRuleRoute,
+} from "./rule.routes";
 
 /**
  * Rule Controller
@@ -28,29 +35,29 @@ export class RuleController {
   /**
    * ルール一覧取得
    */
-  async list(c: Context) {
+  list: RouteHandler<GetRulesRoute, Env> = async (c) => {
     const user = c.get("user");
     const rules = await this.listUseCase.execute(user.userId);
     return c.json({ data: rules.map((r) => r.toResponse()) }, 200);
-  }
+  };
 
   /**
    * ルール作成
    */
-  async create(c: Context) {
+  create: RouteHandler<CreateRuleRoute, Env> = async (c) => {
     const user = c.get("user");
-    const body = await c.req.json();
+    const body = c.req.valid("json");
     const rule = await this.createUseCase.execute(user.userId, body);
     return c.json(rule.toResponse(), 201);
-  }
+  };
 
   /**
    * ルール更新
    */
-  async update(c: Context) {
+  update: RouteHandler<UpdateRuleRoute, Env> = async (c) => {
     const user = c.get("user");
-    const id = c.req.param("id");
-    const body = await c.req.json();
+    const { id } = c.req.valid("param");
+    const body = c.req.valid("json");
 
     try {
       const rule = await this.updateUseCase.execute(id, user.userId, body);
@@ -65,14 +72,14 @@ export class RuleController {
       }
       throw error;
     }
-  }
+  };
 
   /**
    * ルール削除
    */
-  async delete(c: Context) {
+  delete: RouteHandler<DeleteRuleRoute, Env> = async (c) => {
     const user = c.get("user");
-    const id = c.req.param("id");
+    const { id } = c.req.valid("param");
 
     try {
       await this.deleteUseCase.execute(id, user.userId);
@@ -87,5 +94,5 @@ export class RuleController {
       }
       throw error;
     }
-  }
+  };
 }
