@@ -196,18 +196,18 @@ export type DeleteRuleRoute = typeof deleteRuleRoute;
 /**
  * ルール関連のルートを登録
  */
-export const registerRuleRoutes = <E extends Env>(app: OpenAPIHono<E>) => {
+export const registerRuleRoutes = (app: OpenAPIHono<Env>) => {
   const controller = new RuleController();
 
   // ルール一覧取得
-  app.openapi(getRulesRoute, (c) => controller.list(c));
+  app.openapi(getRulesRoute, controller.list);
 
   // ルール作成
-  app.openapi(createRuleRoute, (c) => controller.create(c));
+  app.openapi(createRuleRoute, controller.create);
 
   // ルール更新
-  app.openapi(updateRuleRoute, (c) => controller.update(c));
+  app.openapi(updateRuleRoute, controller.update);
 
   // ルール削除
-  app.openapi(deleteRuleRoute, (c) => controller.delete(c));
+  app.openapi(deleteRuleRoute, controller.delete);
 };
