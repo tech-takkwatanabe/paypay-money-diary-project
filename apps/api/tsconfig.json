@@ -9,7 +9,8 @@
     "moduleResolution": "bundler",
     "moduleDetection": "force",
     "target": "esnext",
-    "baseUrl": ".",
+    "types": ["bun"],
+    "noUncheckedSideEffectImports": false,
     "paths": {
       "@/*": ["./src/*"]
     }
