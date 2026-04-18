@@ -10,6 +10,12 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "linter": {
+    "enabled": false
+  },
+  "assist": {
+    "enabled": false
+  },
   "javascript": {
     "formatter": {
       "trailingCommas": "es5",

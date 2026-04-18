@@ -2,5 +2,7 @@
 # 以下の行に、フォーマットを実行した際（今回は Biome 化による一括フォーマット）の
 # コミットハッシュを追記してください。
 #
-# 例: 
-# a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0
+# 有効化するには、ローカルで以下のコマンドを実行してください：
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+1487860cdb2e6908dcb1b47f4b119b7fb5c48d05

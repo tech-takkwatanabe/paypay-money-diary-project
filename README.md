@@ -113,6 +113,15 @@ pnpm dev
 - [📖 Backend Architecture](./apps/api/ARCHITECTURE.md)
 - [🔌 API Documentation (Swagger UI)](https://localhost:8080/api/docs) ※開発サーバー起動中のみ
 
+### Git Blame Configuration
+
+本プロジェクトは Biome での一括フォーマットが導入されています。
+フォーマットによる `git blame` のノイズを避けるため、開発作業を開始する前に以下のコマンドを実行してフォーマット変更を無視するようにしてください：
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 ---
 
 Developed with ❤️ by [tech-takkwatanabe](https://github.com/tech-takkwatanabe)
