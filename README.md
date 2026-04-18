@@ -62,8 +62,7 @@ pnpm install
 │   ├── web/        # Next.js Frontend (Modern UI/UX)
 │   └── api/        # Hono Backend (Clean Architecture Implementation)
 ├── packages/
-│   ├── shared/     # Shared Schemas, Types & Value Objects
-│   └── eslint/     # Unified Linting Configurations
+│   └── shared/     # Shared Schemas, Types & Value Objects
 └── ...
 ```
 

@@ -66,7 +66,7 @@ This document outlines the standards, workflows, and conventions for the
 - **`any` 型の使用禁止**
   - TypeScript で `any` 型を使用しないこと
   - エラーハンドリングでは型注釈を省略し、適切な型ガード (`instanceof Error` など) を実装する
-  - ESLint で `@typescript-eslint/no-explicit-any: error` を設定する
+  - Oxlint で `typescript/no-explicit-any: error` を設定する
 
 ---
 
@@ -80,8 +80,7 @@ This document outlines the standards, workflows, and conventions for the
     │   └── web/        # Next.js Frontend
     ├── packages/
     │   ├── shared/     # Shared utilities, types, Zod schemas
-    │   ├── config/     # Shared configuration
-    │   └── eslint/     # Shared ESLint config
+    │   └── config/     # Shared configuration
     └── turbo.json
 
 ---
