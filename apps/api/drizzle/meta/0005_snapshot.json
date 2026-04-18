@@ -83,12 +83,8 @@
           "name": "categories_user_id_users_uuid_fk",
           "tableFrom": "categories",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "uuid"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["uuid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -98,10 +94,7 @@
         "unique_category_per_user": {
           "name": "unique_category_per_user",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "name"
-          ]
+          "columns": ["user_id", "name"]
         }
       },
       "policies": {},
@@ -158,12 +151,8 @@
           "name": "category_rules_user_id_users_uuid_fk",
           "tableFrom": "category_rules",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "uuid"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["uuid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -171,12 +160,8 @@
           "name": "category_rules_category_id_categories_id_fk",
           "tableFrom": "category_rules",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -243,12 +228,8 @@
           "name": "csv_uploads_user_id_users_uuid_fk",
           "tableFrom": "csv_uploads",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "uuid"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["uuid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -317,9 +298,7 @@
         "default_categories_name_unique": {
           "name": "default_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -370,12 +349,8 @@
           "name": "default_category_rules_default_category_id_default_categories_id_fk",
           "tableFrom": "default_category_rules",
           "tableTo": "default_categories",
-          "columnsFrom": [
-            "default_category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["default_category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -385,9 +360,7 @@
         "default_category_rules_keyword_unique": {
           "name": "default_category_rules_keyword_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "keyword"
-          ]
+          "columns": ["keyword"]
         }
       },
       "policies": {},
@@ -531,12 +504,8 @@
           "name": "expenses_user_id_users_uuid_fk",
           "tableFrom": "expenses",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "uuid"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["uuid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -544,12 +513,8 @@
           "name": "expenses_upload_id_csv_uploads_id_fk",
           "tableFrom": "expenses",
           "tableTo": "csv_uploads",
-          "columnsFrom": [
-            "upload_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["upload_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -557,12 +522,8 @@
           "name": "expenses_category_id_categories_id_fk",
           "tableFrom": "expenses",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -572,10 +533,7 @@
         "unique_user_transaction": {
           "name": "unique_user_transaction",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "external_transaction_id"
-          ]
+          "columns": ["user_id", "external_transaction_id"]
         }
       },
       "policies": {},
@@ -638,16 +596,12 @@
         "users_uuid_unique": {
           "name": "users_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},

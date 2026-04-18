@@ -7,32 +7,25 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "pnpm -r test",
-    "fmt": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "fmt": "biome format --write .",
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
   },
   "devDependencies": {
-    "prettier": "3.8.1",
+    "@biomejs/biome": "^2.4.12",
     "turbo": "2.8.20"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
-    "overrides": {
-      "@esbuild-kit/core-utils": "npm:tsx@^4.19.2",
-      "@esbuild-kit/esm-loader": "npm:tsx@^4.19.2",
-      "typescript-eslint": "^8.58.2",
-      "@typescript-eslint/parser": "^8.58.2",
-      "@typescript-eslint/eslint-plugin": "^8.58.2",
-      "@typescript-eslint/utils": "^8.58.2",
-      "@typescript-eslint/typescript-estree": "^8.58.2",
-      "@typescript-eslint/type-utils": "^8.58.2",
-      "@typescript-eslint/project-service": "^8.58.2",
-      "@typescript-eslint/tsconfig-utils": "^8.58.2"
-    },
     "ignoredBuiltDependencies": [
       "esbuild",
       "sharp",
       "unrs-resolver"
-    ]
+    ],
+    "peerDependencyRules": {
+      "allowAny": [
+        "typescript"
+      ]
+    }
   },
   "engines": {
     "node": ">=24"

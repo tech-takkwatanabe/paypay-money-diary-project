@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import Link from "next/link";
 import { Button } from "./button";
 
 describe("Button", () => {
@@ -126,7 +127,7 @@ describe("Button", () => {
     it("renders as child component when asChild is true", () => {
       render(
         <Button asChild>
-          <a href="/test">Link Button</a>
+          <Link href="/test">Link Button</Link>
         </Button>
       );
       const link = screen.getByRole("link", { name: /link button/i });
