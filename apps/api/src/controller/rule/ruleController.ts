@@ -6,12 +6,7 @@ import { DeleteRuleUseCase } from "@/usecase/rule/deleteRuleUseCase";
 import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
 import { RuleService } from "@/service/rule/ruleService";
 import { Env } from "@/types/hono";
-import {
-  GetRulesRoute,
-  CreateRuleRoute,
-  UpdateRuleRoute,
-  DeleteRuleRoute,
-} from "./rule.routes";
+import { GetRulesRoute, CreateRuleRoute, UpdateRuleRoute, DeleteRuleRoute } from "./rule.routes";
 
 /**
  * Rule Controller
