@@ -50,5 +50,7 @@ Source of truth: [`PROJECT_RULES.md`](../../../PROJECT_RULES.md)
   - **禁止**: `clsx`, `cva`, `cn` などのライブラリ
   - 条件分岐は `className` 内で完結させる（例: `condition ? "text-red-500" : "text-blue-500"`）
 - **Zod**: API レスポンス、フォーム、共有ドメインモデルのバリデーションに使用
+  - API 入出力には必ず Zod バリデーションを適用すること
+  - 意味のあるバリデーションを含むこと（形だけのスキーマは不可）
 - **Components**: Functional + Hooks。小さく焦点を絞る（SRP）
 - Server Components を優先（クライアント状態が必要な場合のみ `"use client"`）
