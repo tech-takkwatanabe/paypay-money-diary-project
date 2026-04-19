@@ -50,4 +50,4 @@ pnpm test
 * **Output Constraint:** 作業後の報告は、実施内容の簡潔な要約のみとする。求められない限り、メリットの解説や補足説明、お礼などの余計な一文は含めない。
 
 ### Interaction Style
-* **Professional Distance:** 過度なフレンドリーさは避け、簡潔かつ客観的なトーンを維持すること。
+* Core Principles の **Professional Distance** を適用すること。
