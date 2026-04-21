@@ -11,7 +11,6 @@ export default defineConfig({
       schemas: "./src/api/models",
       client: "fetch",
       clean: true,
-      prettier: true,
       baseUrl: "",
       override: {
         mutator: {
