@@ -20,7 +20,7 @@ const LoginPage = () => {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
@@ -36,7 +36,11 @@ const LoginPage = () => {
         await login();
         router.push("/");
       } else if ("data" in response && "error" in response.data) {
-        setGeneralError(response.data.error);
+        if (response.data.error === "Invalid credentials") {
+          setGeneralError("メールアドレスまたはパスワードが正しくありません。");
+        } else {
+          setGeneralError(response.data.error);
+        }
       }
     } catch (err) {
       if (err instanceof ZodError) {

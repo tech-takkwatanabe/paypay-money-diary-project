@@ -28,8 +28,6 @@ const UploadPage = () => {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // const isValidCsvFile = (f: File): boolean => f.name.toLowerCase().endsWith(".csv");
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
