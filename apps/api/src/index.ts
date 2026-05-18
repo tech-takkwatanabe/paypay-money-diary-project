@@ -82,13 +82,20 @@ app.route("/api", api);
 
 const port = process.env.PORT || 8080;
 
+const certFile = Bun.file("../../.certificate/localhost-cert.pem");
+const keyFile = Bun.file("../../.certificate/localhost-key.pem");
+
+const tls = (await certFile.exists()) && (await keyFile.exists())
+  ? {
+      cert: certFile,
+      key: keyFile,
+    } 
+  : undefined;
+
 export default {
   port,
   fetch: app.fetch,
-  tls: {
-    cert: Bun.file("../../.certificate/localhost-cert.pem"),
-    key: Bun.file("../../.certificate/localhost-key.pem"),
-  },
+  tls,
 };
 
 export { app };
