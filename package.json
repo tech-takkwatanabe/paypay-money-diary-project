@@ -13,33 +13,14 @@
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.13",
-    "turbo": "2.9.7"
+    "@biomejs/biome": "2.4.15",
+    "turbo": "2.9.14"
   },
-  "packageManager": "pnpm@11.1.2",
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ],
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "typescript": "6.x"
-      }
-    },
-    "overrides": {
-      "picomatch@<2.3.2": "2.3.2",
-      "picomatch@>=4.0.0 <4.0.4": "4.0.4",
-      "ajv@<8.18.0": "8.18.0",
-      "postcss@<8.5.10": "8.5.10",
-      "esbuild@<=0.24.2": "0.25.0"
-    }
-  },
+  "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=24"
   },
   "dependencies": {
-    "zod": "4.3.6"
+    "zod": "4.4.3"
   }
 }
