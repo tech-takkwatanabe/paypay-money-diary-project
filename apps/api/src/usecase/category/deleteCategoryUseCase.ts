@@ -31,8 +31,13 @@ export class DeleteCategoryUseCase {
           "Cannot delete category with existing transactions. Please delete or re-categorize the transactions first."
         );
       }
-      // その他判定（デフォルトカテゴリなど）
-      throw new Error("This category cannot be deleted.");
+      if (category.isDefault) {
+        throw new Error("Cannot delete default category");
+      }
+      if (category.name === "その他") {
+        throw new Error("Cannot delete 'その他' category");
+      }
+      throw new Error("Cannot delete system category");
     }
 
     // カテゴリを削除
