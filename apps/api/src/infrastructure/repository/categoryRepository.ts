@@ -227,4 +227,20 @@ export class CategoryRepository implements ICategoryRepository {
   async delete(id: string): Promise<void> {
     await db.delete(categories).where(eq(categories.id, id));
   }
+
+  /**
+   * カテゴリの表示順を一括更新
+   */
+  async reorder(userId: string, categoryIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      const now = new Date();
+      let order = 1;
+      for (const id of categoryIds) {
+        await tx
+          .update(categories)
+          .set({ displayOrder: order++, updatedAt: now })
+          .where(and(eq(categories.id, id), eq(categories.userId, userId)));
+      }
+    });
+  }
 }

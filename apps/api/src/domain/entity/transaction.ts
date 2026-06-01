@@ -46,6 +46,27 @@ export class Transaction {
   }
 
   /**
+   * 手動入力の取引かどうか
+   */
+  isManualEntry(): boolean {
+    return this.paymentMethod === "手動";
+  }
+
+  /**
+   * 削除可能かどうか
+   */
+  canDelete(): boolean {
+    return this.isManualEntry();
+  }
+
+  /**
+   * 指定されたフィールドが更新可能かどうかを判定
+   */
+  canUpdateField(_field: "amount" | "description" | "date"): boolean {
+    return this.isManualEntry();
+  }
+
+  /**
    * カテゴリを変更
    */
   changeCategory(categoryId: string | null, categoryName: string, categoryColor: string): Transaction {

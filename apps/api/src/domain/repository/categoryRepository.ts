@@ -44,4 +44,11 @@ export type ICategoryRepository = {
    * カテゴリを削除
    */
   delete(id: string): Promise<void>;
+
+  /**
+   * カテゴリの表示順を一括更新
+   * @param userId ユーザーID
+   * @param categoryIds 並び替え後のカテゴリIDリスト
+   */
+  reorder(userId: string, categoryIds: string[]): Promise<void>;
 };

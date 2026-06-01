@@ -132,6 +132,7 @@ describe("CategoryInitializationService", () => {
       createInternal: categoryCreateMock,
       update: mock(async () => createMockCategory("id", "uid", "n", "c", "i")),
       delete: mock(async () => {}),
+      reorder: mock(async () => {}),
     };
 
     const ruleCreateMock: Mock<(userId: string, input: CreateRuleInput) => Promise<Rule>> = mock(

@@ -56,4 +56,55 @@ export class CategoryService {
 
     return category;
   }
+
+  /**
+   * カテゴリの並び替えリクエストを検証
+   * @param userId ユーザーID
+   * @param categoryIds 並び替え後のカテゴリIDリスト
+   * @throws Error バリデーション失敗時
+   */
+  async validateReorder(userId: string, categoryIds: string[]): Promise<void> {
+    // 1. ユーザーの全カテゴリを取得して検証
+    const userCategories = await this.categoryRepository.findByUserId(userId);
+    const userCategoryIds = new Set(userCategories.map((c) => c.id));
+    const otherCategory = userCategories.find((c) => c.isOther);
+
+    // 送信されたIDがすべてユーザーのものであることを確認
+    for (const id of categoryIds) {
+      if (!userCategoryIds.has(id)) {
+        throw new Error(`Unauthorized or invalid category ID: ${id}`);
+      }
+    }
+
+    // 重複チェック
+    const uniqueIds = new Set(categoryIds);
+    if (uniqueIds.size !== categoryIds.length) {
+      throw new Error("Duplicate category IDs in reorder request");
+    }
+
+    // 「その他」がリストに含まれていないかチェック
+    if (otherCategory && uniqueIds.has(otherCategory.id)) {
+      throw new Error("Cannot reorder 'Others' category - it must always be at the end");
+    }
+
+    // 「その他」以外のカテゴリがすべて含まれているか確認
+    const reorderableIdSet = new Set(userCategories.filter((c) => !c.isOther).map((c) => c.id));
+    if (![...reorderableIdSet].every((id) => uniqueIds.has(id))) {
+      throw new Error("Reorder list must include all categories except 'Others'");
+    }
+  }
+
+  /**
+   * カテゴリ名が一意であることを確認
+   * @param userId ユーザーID
+   * @param name カテゴリ名
+   * @param excludeId 重複チェックから除外するカテゴリID（更新時用）
+   * @throws Error すでに同名のカテゴリが存在する場合
+   */
+  async ensureNameIsUnique(userId: string, name: string, excludeId?: string): Promise<void> {
+    const existing = await this.categoryRepository.findByName(userId, name);
+    if (existing && existing.id !== excludeId) {
+      throw new Error("Category with this name already exists");
+    }
+  }
 }
