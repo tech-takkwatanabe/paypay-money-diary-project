@@ -1,6 +1,5 @@
 import { Context } from "hono";
 import { CategoryRepository } from "@/infrastructure/repository/categoryRepository";
-import { RuleRepository } from "@/infrastructure/repository/ruleRepository";
 import { CategoryService } from "@/service/category/categoryService";
 import { ListCategoriesUseCase } from "@/usecase/category/listCategoriesUseCase";
 import { CreateCategoryUseCase } from "@/usecase/category/createCategoryUseCase";
@@ -111,7 +110,9 @@ export class CategoryController {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    const reorderCategoriesUseCase = new ReorderCategoriesUseCase();
+    const categoryRepository = new CategoryRepository();
+    const categoryService = new CategoryService(categoryRepository);
+    const reorderCategoriesUseCase = new ReorderCategoriesUseCase(categoryRepository, categoryService);
     const input = c.req.valid("json" as never) as ReorderCategoriesInput;
 
     try {
@@ -150,9 +151,8 @@ export class CategoryController {
     }
 
     const categoryRepository = new CategoryRepository();
-    const ruleRepository = new RuleRepository();
     const categoryService = new CategoryService(categoryRepository);
-    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, ruleRepository, categoryService);
+    const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository, categoryService);
 
     try {
       await deleteCategoryUseCase.execute(categoryId, userPayload.userId);
