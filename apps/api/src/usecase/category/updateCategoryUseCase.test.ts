@@ -33,6 +33,7 @@ describe("UpdateCategoryUseCase", () => {
       createInternal: mock(async (_userId: string, _data) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
+      reorder: mock(async () => {}),
     };
     mockCategoryService = new CategoryService(mockCategoryRepository);
     mockCategoryService.ensureUserCanUpdate = mock(async (_id: string, _userId: string) => updatedCategory);
