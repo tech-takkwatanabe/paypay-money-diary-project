@@ -81,7 +81,7 @@ describe("DeleteCategoryUseCase", () => {
     });
     mockCategoryService.ensureUserCanDelete = mock(async (_id: string, _userId: string) => categoryWithTransactions);
 
-    expect(useCase.execute(categoryId, userId)).rejects.toThrow(
+    await expect(useCase.execute(categoryId, userId)).rejects.toThrow(
       "Cannot delete category with existing transactions. Please delete or re-categorize the transactions first."
     );
     expect(mockCategoryRepository.delete).not.toHaveBeenCalled();
