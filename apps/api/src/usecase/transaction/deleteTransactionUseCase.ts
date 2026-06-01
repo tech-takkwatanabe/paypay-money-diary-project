@@ -12,7 +12,7 @@ export class DeleteTransactionUseCase {
     const transaction = await this.transactionService.ensureUserCanAccess(id, userId);
 
     // 手動のみ削除可能
-    if (transaction.paymentMethod !== "手動") {
+    if (!transaction.canDelete()) {
       throw new Error("Forbidden: Only cash transactions can be deleted");
     }
 
