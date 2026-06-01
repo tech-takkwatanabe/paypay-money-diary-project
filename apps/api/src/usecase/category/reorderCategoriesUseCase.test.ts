@@ -1,53 +1,90 @@
 import { describe, it, expect, beforeEach, mock } from "bun:test";
 import { ReorderCategoriesUseCase } from "./reorderCategoriesUseCase";
-
-// Mock the database module
-mock.module("@/db", () => ({
-  db: {
-    transaction: mock(async (callback) => {
-      // Mock transaction that tracks calls
-      const mockTx = {
-        select: mock(() => ({
-          from: mock(() => ({
-            where: mock(async () => [
-              { id: "cat-1", userId: "user-1", isOther: false, displayOrder: 1, name: "Food" },
-              { id: "cat-2", userId: "user-1", isOther: false, displayOrder: 2, name: "Transport" },
-              { id: "cat-3", userId: "user-1", isOther: true, displayOrder: 9999, name: "その他" },
-            ]),
-          })),
-        })),
-        update: mock(() => ({
-          set: mock(() => ({
-            where: mock(async () => {}),
-          })),
-        })),
-      };
-      return callback(mockTx);
-    }),
-  },
-}));
+import { ICategoryRepository } from "@/domain/repository/categoryRepository";
+import { CategoryService } from "@/service/category/categoryService";
+import { Category } from "@/domain/entity/category";
 
 describe("ReorderCategoriesUseCase", () => {
   let useCase: ReorderCategoriesUseCase;
+  let mockCategoryRepository: ICategoryRepository;
+  let mockCategoryService: CategoryService;
+
+  const userId = "user-1";
+  const cat1 = new Category({
+    id: "cat-1",
+    name: "Food",
+    color: "#FF0000",
+    icon: "food",
+    displayOrder: 1,
+    isDefault: false,
+    isOther: false,
+    userId,
+  });
+  const cat2 = new Category({
+    id: "cat-2",
+    name: "Transport",
+    color: "#0000FF",
+    icon: "bus",
+    displayOrder: 2,
+    isDefault: false,
+    isOther: false,
+    userId,
+  });
+  const cat3 = new Category({
+    id: "cat-3",
+    name: "その他",
+    color: "#CCCCCC",
+    icon: "others",
+    displayOrder: 9999,
+    isDefault: false,
+    isOther: true,
+    userId,
+  });
 
   beforeEach(() => {
-    useCase = new ReorderCategoriesUseCase();
+    mockCategoryRepository = {
+      findByUserId: mock(async () => [cat1, cat2, cat3]),
+      findById: mock(async () => null),
+      findByName: mock(async () => null),
+      create: mock(async () => ({} as Category)),
+      createInternal: mock(async () => ({} as Category)),
+      update: mock(async () => ({} as Category)),
+      delete: mock(async () => {}),
+      reorder: mock(async () => {}),
+    };
+
+    mockCategoryService = new CategoryService(mockCategoryRepository);
+    // 元の validateReorder ロジックをそのままテストしたいので、
+    // ここではサービスをあえてモックせず、リポジトリのみをモックして通す
+    // ただし、UseCaseの構造に合わせてServiceをDIする
+
+    useCase = new ReorderCategoriesUseCase(mockCategoryRepository, mockCategoryService);
   });
 
   it("should successfully reorder categories when 'Others' is not included", async () => {
-    // Should not throw
-    await useCase.execute("user-1", ["cat-2", "cat-1"]);
+    await useCase.execute(userId, ["cat-2", "cat-1"]);
+    expect(mockCategoryRepository.reorder).toHaveBeenCalledWith(userId, ["cat-2", "cat-1"]);
   });
 
   it("should throw error when 'Others' category is included in reorder request", async () => {
-    expect(useCase.execute("user-1", ["cat-3", "cat-1", "cat-2"])).rejects.toThrow(/Cannot reorder 'Others' category/);
+    await expect(useCase.execute(userId, ["cat-3", "cat-1", "cat-2"])).rejects.toThrow(
+      /Cannot reorder 'Others' category/
+    );
+    expect(mockCategoryRepository.reorder).not.toHaveBeenCalled();
   });
 
   it("should throw error when reorder list does not include all reorderable categories", async () => {
-    expect(useCase.execute("user-1", ["cat-1"])).rejects.toThrow(/Reorder list must include all categories except/);
+    await expect(useCase.execute(userId, ["cat-1"])).rejects.toThrow(/Reorder list must include all categories except/);
+    expect(mockCategoryRepository.reorder).not.toHaveBeenCalled();
   });
 
   it("should throw error for duplicate IDs", async () => {
-    expect(useCase.execute("user-1", ["cat-1", "cat-1", "cat-2"])).rejects.toThrow(/Duplicate/);
+    await expect(useCase.execute(userId, ["cat-1", "cat-1", "cat-2"])).rejects.toThrow(/Duplicate/);
+    expect(mockCategoryRepository.reorder).not.toHaveBeenCalled();
+  });
+
+  it("should throw error for unauthorized category IDs", async () => {
+    await expect(useCase.execute(userId, ["cat-1", "non-existent"])).rejects.toThrow(/Unauthorized or invalid/);
+    expect(mockCategoryRepository.reorder).not.toHaveBeenCalled();
   });
 });
