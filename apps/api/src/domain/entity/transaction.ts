@@ -62,11 +62,8 @@ export class Transaction {
   /**
    * 指定されたフィールドが更新可能かどうかを判定
    */
-  canUpdateField(field: "amount" | "description" | "date"): boolean {
-    if (field === "amount" || field === "description" || field === "date") {
-      return this.isManualEntry();
-    }
-    return true;
+  canUpdateField(_field: "amount" | "description" | "date"): boolean {
+    return this.isManualEntry();
   }
 
   /**
