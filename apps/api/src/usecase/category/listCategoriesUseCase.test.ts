@@ -31,6 +31,7 @@ describe("ListCategoriesUseCase", () => {
       createInternal: mock(async (_userId: string, _data: InternalCreateCategoryInput) => ({}) as Category),
       update: mock(async (_id: string, _data: UpdateCategoryInput) => ({}) as Category),
       delete: mock(async (_id: string) => {}),
+      reorder: mock(async () => {}),
     };
     useCase = new ListCategoriesUseCase(mockCategoryRepository);
   });
