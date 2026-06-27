@@ -463,7 +463,7 @@ packages/shared/src/
 ```json
 {
   "dependencies": {
-    "zod": "^4.3.5"
+    "zod": "4.4.3"
   }
 }
 ```
